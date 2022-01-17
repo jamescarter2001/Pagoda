@@ -1,0 +1,3 @@
+[submodule "Pagoda/vendor/spdlog"]
+	path = Pagoda/vendor/spdlog
+	url = git@github.com:gabime/spdlog.git
