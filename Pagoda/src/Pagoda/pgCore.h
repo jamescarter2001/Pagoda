@@ -17,11 +17,13 @@
 #ifdef PG_ENABLE_ASSERTS
 
 #define PG_CORE_ASSERT(x, ...) {if (!x) { PG_CORE_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();} }
+#define PG_CORE_ASSERT_CRITICAL(x, ...) {if (!x) { PG_CORE_CRITICAL("Critical: {0}", __VA_ARGS__); __debugbreak();} }
 #define PG_ASSERT(x, ...) {if (!x) { PG_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();} }
 
 #else
 
 #define PG_CORE_ASSERT(x, ...)
+#define PG_CORE_ASSERT_CRITICAL(x, ...)
 #define PG_ASSERT(x, ...)
 
 #endif

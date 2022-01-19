@@ -4,7 +4,6 @@ namespace Pagoda {
 	extern Application* CreateApplication();
 }
 
-#ifdef PG_PLATFORM_WINDOWS
 int main(int argc, char** argv) {
 	Pagoda::Base::Log::Init();
 	PG_CORE_INFO("Initialized log.");
@@ -13,6 +12,4 @@ int main(int argc, char** argv) {
 	Pagoda::Base::Log::SetClientName(app->GetName());
 
 	app->Run();
-	delete app;
 }
-#endif

@@ -24,18 +24,29 @@ namespace Pagoda {
 	void Application::OnEvent(Base::Event& e) {
 		Base::EventDispatcher dispatcher(e);
 
+		// System
 		dispatcher.Dispatch<Base::WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
+
+		// Layer
+		for (std::vector<Base::Layer*>::iterator it = this->m_LayerStack.end(); it != this->m_LayerStack.begin();) {
+			(*--it)->OnEvent(e);
+		}
 	}
 
-	void Application::Setup() {
+	bool Application::Setup() {
 		PG_CORE_TRACE("Starting engine application: {}", m_Name);
+		return true;
 	}
 
 	void Application::Run() {
-		this->Setup();
+		PG_CORE_ASSERT_CRITICAL(this->Setup(), "System failed to initialize.");
 		PG_CORE_INFO("System initialization success.");
 		this->m_IsRunning = true;
 		while (m_IsRunning) {
+			for (Base::Layer* layer : this->m_LayerStack) {
+				layer->OnUpdate();
+			}
 		}
+		PG_CORE_INFO("Shutting down...");
 	}
 }

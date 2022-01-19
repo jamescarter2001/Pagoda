@@ -5,6 +5,7 @@
 #include "Base/Event/pgEvent.h"
 #include "Base/Event/pgApplicationEvent.h"
 #include "Base/Event/pgEventDispatcher.h"
+#include "Base/Layer/pgLayerStack.h"
 
 namespace Pagoda {
 	class PAGODA_API Application {
@@ -25,7 +26,7 @@ namespace Pagoda {
 			return true;
 		}
 
-		void Setup();
+		bool Setup();
 		void Run();
 
 	private:
@@ -33,5 +34,6 @@ namespace Pagoda {
 
 		std::string m_Name;
 		bool m_IsRunning;
+		Base::LayerStack m_LayerStack;
 	};
 }
