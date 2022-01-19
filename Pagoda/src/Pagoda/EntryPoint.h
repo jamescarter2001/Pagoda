@@ -12,4 +12,5 @@ int main(int argc, char** argv) {
 	Pagoda::Base::Log::SetClientName(app->GetName());
 
 	app->Run();
+	delete app;
 }
