@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Pagoda {
-	extern pgApplication* CreateApplication();
+	extern Application* CreateApplication();
 }
 
 #ifdef PG_PLATFORM_WINDOWS

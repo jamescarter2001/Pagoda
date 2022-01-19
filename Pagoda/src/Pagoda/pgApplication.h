@@ -1,12 +1,13 @@
 #pragma once
 #include "pgCore.h"
 #include "Base/Log/pgLog.h"
+#include "Base/Event/pgApplicationEvent.h"
 
 namespace Pagoda {
-	class PAGODA_API pgApplication {
+	class PAGODA_API Application {
 	public:
-		pgApplication(std::string& name);
-		virtual ~pgApplication();
+		Application(std::string& name);
+		virtual ~Application();
 
 		// Inline functions must be fully declared in header.
 		inline std::string GetName() {
@@ -17,7 +18,7 @@ namespace Pagoda {
 		void Run();
 
 	private:
-		static pgApplication* s_Instance;
+		static Application* s_Instance;
 
 		std::string m_Name;
 		bool m_IsRunning;

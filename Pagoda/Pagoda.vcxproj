@@ -116,7 +116,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;PG_PLATFORM_WINDOWS;PG_ENABLE_ASSERTS;PG_DEBUG;SPDLOG_COMPILED_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)\Pagoda\vendor\spdlog\include;$(SolutionDir)\Pagoda\src\Pagoda;$(SolutionDir)\Pagoda\src</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\Pagoda\src\Pagoda;$(SolutionDir)\Pagoda\vendor\spdlog\include;$(SolutionDir)\Pagoda\src</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pgpch.h</PrecompiledHeaderFile>
@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Pagoda\Base\Event\pgEvent.h" />
+    <ClInclude Include="src\Pagoda\Base\Event\pgApplicationEvent.h" />
     <ClInclude Include="src\Pagoda\Base\Log\pgLog.h" />
     <ClInclude Include="src\Pagoda\EntryPoint.h" />
     <ClInclude Include="src\Pagoda\Pagoda.h" />
