@@ -39,6 +39,15 @@
     <ClInclude Include="src\Pagoda\Base\Event\pgApplicationEvent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Pagoda\Base\Event\pgKeyEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pagoda\Base\Event\pgMouseEvent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Pagoda\Base\Event\pgEventDispatcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Pagoda\Base\Log\pgLog.cpp">

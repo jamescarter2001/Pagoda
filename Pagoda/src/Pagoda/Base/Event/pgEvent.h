@@ -36,7 +36,7 @@ namespace Pagoda::Base {
 		virtual std::string ToString() const {
 			return this->GetName();
 		}
-	private:
+
 		bool m_IsHandled = false;
 	};
 }

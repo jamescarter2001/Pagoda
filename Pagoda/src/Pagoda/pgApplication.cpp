@@ -16,10 +16,19 @@ namespace Pagoda {
 		s_Instance = nullptr;
 	}
 
+	bool Application::OnWindowCloseEvent(Base::Event& e) {
+		this->m_IsRunning = false;
+		return true;
+	}
+
+	void Application::OnEvent(Base::Event& e) {
+		Base::EventDispatcher dispatcher(e);
+
+		dispatcher.Dispatch<Base::WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
+	}
+
 	void Application::Setup() {
 		PG_CORE_TRACE("Starting engine application: {}", m_Name);
-
-		Base::WindowResizeEvent e(1280, 720);
 	}
 
 	void Application::Run() {
@@ -27,7 +36,6 @@ namespace Pagoda {
 		PG_CORE_INFO("System initialization success.");
 		this->m_IsRunning = true;
 		while (m_IsRunning) {
-
 		}
 	}
 }

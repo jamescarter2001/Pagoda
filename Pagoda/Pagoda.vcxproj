@@ -152,6 +152,9 @@
   <ItemGroup>
     <ClInclude Include="src\Pagoda\Base\Event\pgEvent.h" />
     <ClInclude Include="src\Pagoda\Base\Event\pgApplicationEvent.h" />
+    <ClInclude Include="src\Pagoda\Base\Event\pgEventDispatcher.h" />
+    <ClInclude Include="src\Pagoda\Base\Event\pgKeyEvent.h" />
+    <ClInclude Include="src\Pagoda\Base\Event\pgMouseEvent.h" />
     <ClInclude Include="src\Pagoda\Base\Log\pgLog.h" />
     <ClInclude Include="src\Pagoda\EntryPoint.h" />
     <ClInclude Include="src\Pagoda\Pagoda.h" />
