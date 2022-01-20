@@ -12,6 +12,7 @@
 #define PG_CORE_WARNING(...)::Pagoda::Base::CLog::GetCoreLogger()->warn(__VA_ARGS__)
 #define PG_CORE_ERROR(...)::Pagoda::Base::CLog::GetCoreLogger()->error(__VA_ARGS__)
 #define PG_CORE_CRITICAL(...)::Pagoda::Base::CLog::GetCoreLogger()->critical(__VA_ARGS__)
+#define PG_CORE_DEBUG(...)::Pagoda::Base::CLog::GetCoreLogger()->debug(__VA_ARGS__)
 
 #define PG_INFO(...)::Pagoda::Base::CLog::GetClientLogger()->info(__VA_ARGS__)
 #define PG_TRACE(...)::Pagoda::Base::CLog::GetClientLogger()->trace(__VA_ARGS__)
@@ -26,6 +27,7 @@
 #define PG_CORE_WARNING
 #define PG_CORE_ERROR
 #define PG_CORE_CRITICAL
+#define PG_CORE_DEBUG
 
 
 #define PG_INFO

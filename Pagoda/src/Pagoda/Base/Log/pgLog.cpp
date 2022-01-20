@@ -22,6 +22,5 @@ namespace Pagoda::Base {
 	void CLog::SetClientName(std::string name) {
 		std::transform(name.begin(), name.end(), name.begin(), ::toupper);
 		CLog::s_ClientLogger = spdlog::stdout_color_mt(name);
-		CLog::s_CoreLogger->debug("Client name updated: {}", name);
 	}
 }

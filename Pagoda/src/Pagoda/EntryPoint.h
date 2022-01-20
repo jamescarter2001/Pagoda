@@ -10,6 +10,7 @@ int main(int argc, char** argv) {
 
 	auto app = Pagoda::CreateApplication();
 	Pagoda::Base::CLog::SetClientName(app->GetName());
+	PG_CORE_DEBUG("Client name updated: {}", app->GetName());
 
 	app->Run();
 	delete app;

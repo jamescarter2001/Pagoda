@@ -86,45 +86,69 @@ project "TestApp"
 		"Pagoda/src/Pagoda"
 	}
 	
-	libdirs
+	--[[libdirs
 	{
 		"bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Pagoda",
 		"Pagoda/vendor/spdlog/build/%{cfg.buildcfg}"
-	}
+	}--]]
+	
+	commonLibDir = {}
+	commonLibDir["Pagoda"] = "bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Pagoda"
 
 	filter "system:windows"
 		cppdialect "C++17"
 		staticruntime "On"
 		systemversion "latest"
 
-		defines
-		{
+		defines {
 			"PG_PLATFORM_WINDOWS",
-			"PG_ENABLE_ASSERTS",
-			"PG_DEBUG",
 			"SPDLOG_COMPILED_LIB"
-		}
-		
-		links
-		{
-		"Pagoda.lib",
-		"spdlogd.lib"
 		}
 
 	filter "configurations:Debug"
 		defines {
-		"PG_DEBUG",
-		"PG_ENABLE_ASSERTS"
+			"PG_ENABLE_ASSERTS",
+			"PG_DEBUG"
 		}
 		buildoptions "/MDd"
 		symbols "On"
 
+		libdirs {
+			"%{commonLibDir.Pagoda}",
+			"Pagoda/vendor/spdlog/build/Debug"
+		}
+
+		links {
+			"Pagoda.lib",
+			"spdlogd.lib"
+		}
+
 	filter "configurations:Release"
 		defines "PG_RELEASE"
 		buildoptions "/MD"
-
 		optimize "On"
+		
+		libdirs {
+			"%{commonLibDir.Pagoda}",
+			"Pagoda/vendor/spdlog/build/Release"
+		}
+
+		links {
+			"Pagoda.lib",
+			"spdlog.lib"
+		}
+
 	filter "configurations:Dist"
 		defines "PG_DIST"
 		buildoptions "/MD"
 		optimize "On"
+		
+		libdirs {
+			"%{commonLibDir.Pagoda}",
+			"Pagoda/vendor/spdlog/build/Release"
+		}
+
+		links {
+			"Pagoda.lib",
+			"spdlog.lib"
+		}
