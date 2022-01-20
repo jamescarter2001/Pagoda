@@ -28,7 +28,7 @@ namespace Pagoda::Base {
 		EventCategoryMouseButton = BIT(4)
 	};
 
-	class Event {
+	class CEvent {
 	public:
 		virtual eEventType GetEventType() const = 0;
 		virtual const char* GetName() const = 0;

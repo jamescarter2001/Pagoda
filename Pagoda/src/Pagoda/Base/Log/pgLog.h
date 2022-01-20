@@ -7,17 +7,17 @@
 
 #ifdef PG_DEBUG
 
-#define PG_CORE_INFO(...)::Pagoda::Base::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define PG_CORE_TRACE(...)::Pagoda::Base::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define PG_CORE_WARNING(...)::Pagoda::Base::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define PG_CORE_ERROR(...)::Pagoda::Base::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define PG_CORE_CRITICAL(...)::Pagoda::Base::Log::GetCoreLogger()->critical(__VA_ARGS__)
+#define PG_CORE_INFO(...)::Pagoda::Base::CLog::GetCoreLogger()->info(__VA_ARGS__)
+#define PG_CORE_TRACE(...)::Pagoda::Base::CLog::GetCoreLogger()->trace(__VA_ARGS__)
+#define PG_CORE_WARNING(...)::Pagoda::Base::CLog::GetCoreLogger()->warn(__VA_ARGS__)
+#define PG_CORE_ERROR(...)::Pagoda::Base::CLog::GetCoreLogger()->error(__VA_ARGS__)
+#define PG_CORE_CRITICAL(...)::Pagoda::Base::CLog::GetCoreLogger()->critical(__VA_ARGS__)
 
-#define PG_INFO(...)::Pagoda::Base::Log::GetClientLogger()->info(__VA_ARGS__)
-#define PG_TRACE(...)::Pagoda::Base::Log::GetClientLogger()->trace(__VA_ARGS__)
-#define PG_WARNING(...)::Pagoda::Base::Log::GetClientLogger()->warn(__VA_ARGS__)
-#define PG_ERROR(...)::Pagoda::Base::Log::GetClientLogger()->error(__VA_ARGS__)
-#define PG_CRITICAL(...)::Pagoda::Base::Log::GetClientLogger()->critical(__VA_ARGS__)
+#define PG_INFO(...)::Pagoda::Base::CLog::GetClientLogger()->info(__VA_ARGS__)
+#define PG_TRACE(...)::Pagoda::Base::CLog::GetClientLogger()->trace(__VA_ARGS__)
+#define PG_WARNING(...)::Pagoda::Base::CLog::GetClientLogger()->warn(__VA_ARGS__)
+#define PG_ERROR(...)::Pagoda::Base::CLog::GetClientLogger()->error(__VA_ARGS__)
+#define PG_CRITICAL(...)::Pagoda::Base::CLog::GetClientLogger()->critical(__VA_ARGS__)
 
 #else
 
@@ -37,7 +37,7 @@
 #endif
 
 namespace Pagoda::Base {
-	class PAGODA_API Log {
+	class PAGODA_API CLog {
 	public:
 		static void Init();
 		static void SetClientName(std::string name);

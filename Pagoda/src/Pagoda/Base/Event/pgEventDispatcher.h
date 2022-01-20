@@ -6,9 +6,9 @@
 #include "pgEvent.h"
 
 namespace Pagoda::Base {
-	class PAGODA_API EventDispatcher {
+	class PAGODA_API CEventDispatcher {
 	public:
-		EventDispatcher(Event& e) : m_Event(e) {}
+		CEventDispatcher(CEvent& e) : m_Event(e) {}
 
 		// methods using templates must be fully declared in header to avoid linker error.
 		template<typename T>
@@ -20,6 +20,6 @@ namespace Pagoda::Base {
 		}
 
 	private:
-		Event &m_Event;
+		CEvent &m_Event;
 	};
 }

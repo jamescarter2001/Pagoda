@@ -3,23 +3,23 @@
 
 namespace Pagoda::Base {
 
-	LayerStack::LayerStack() {
+	CLayerStack::CLayerStack() {
 		this->m_LayerInsert = this->m_Layers.begin();
 	}
 
-	LayerStack::~LayerStack() {
-		for (Layer* layer : this->m_Layers) {
+	CLayerStack::~CLayerStack() {
+		for (CLayer* layer : this->m_Layers) {
 			delete layer;
 		}
 	}
 
-	void LayerStack::PushLayer(Layer* layer) {
+	void CLayerStack::PushLayer(CLayer* layer) {
 		this->m_LayerInsert = this->m_Layers.emplace(m_LayerInsert, layer);
 		layer->OnAttach();
 	}
 
-	void LayerStack::PopLayer(Layer* layer) {
-		std::vector<Layer*>::iterator it = std::find(this->m_Layers.begin(), this->m_Layers.end(), layer);
+	void CLayerStack::PopLayer(CLayer* layer) {
+		std::vector<CLayer*>::iterator it = std::find(this->m_Layers.begin(), this->m_Layers.end(), layer);
 		if (it != this->m_Layers.end()) {
 			this->m_Layers.erase(it);
 			this->m_LayerInsert--;
@@ -28,12 +28,12 @@ namespace Pagoda::Base {
 		}
 	}
 
-	void LayerStack::PushOverlay(Layer* layer) {
+	void CLayerStack::PushOverlay(CLayer* layer) {
 		this->m_Layers.emplace_back(layer);
 	}
 
-	void LayerStack::PopOverlay(Layer* layer) {
-		std::vector<Layer*>::iterator it = std::find(this->m_Layers.begin(), this->m_Layers.end(), layer);
+	void CLayerStack::PopOverlay(CLayer* layer) {
+		std::vector<CLayer*>::iterator it = std::find(this->m_Layers.begin(), this->m_Layers.end(), layer);
 		if (it != this->m_Layers.end()) {
 			this->m_Layers.erase(it);
 		} else {

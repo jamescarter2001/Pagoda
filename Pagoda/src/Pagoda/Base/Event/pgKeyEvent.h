@@ -2,7 +2,7 @@
 #include "pgEvent.h"
 
 namespace Pagoda::Base {
-	class PAGODA_API KeyEvent : public Event {
+	class PAGODA_API CKeyEvent : public CEvent {
 	public:
 		inline int getKeyCode() const {
 			return m_keyCode;
@@ -20,15 +20,15 @@ namespace Pagoda::Base {
 			return m_keyCode;
 		}
 	protected:
-		KeyEvent(int keyCode) {
+		CKeyEvent(int keyCode) {
 			this->m_keyCode = keyCode;
 		}
 		int m_keyCode;
 	};
 
-	class KeyPressedEvent : public KeyEvent {
+	class CKeyPressedEvent : public CKeyEvent {
 	public:
-		KeyPressedEvent(int keyCode, int repeatCount) : KeyEvent(keyCode) {
+		CKeyPressedEvent(int keyCode, int repeatCount) : CKeyEvent(keyCode) {
 			this->m_keyRepeatCount = repeatCount;
 		}
 		EVENT_CLASS_TYPE(KeyPressed)
@@ -36,9 +36,9 @@ namespace Pagoda::Base {
 		int m_keyRepeatCount;
 	};
 
-	class KeyReleasedEvent : public KeyEvent {
+	class CKeyReleasedEvent : public CKeyEvent {
 	public:
-		KeyReleasedEvent(int keyCode) : KeyEvent(keyCode) {}
+		CKeyReleasedEvent(int keyCode) : CKeyEvent(keyCode) {}
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 }

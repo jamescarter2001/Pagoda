@@ -3,25 +3,25 @@
 
 namespace Pagoda::Base {
 	// Bring into scope from header file.
-	std::shared_ptr<spdlog::logger> Log::s_CoreLogger;
-	std::shared_ptr<spdlog::logger> Log::s_ClientLogger;
+	std::shared_ptr<spdlog::logger> CLog::s_CoreLogger;
+	std::shared_ptr<spdlog::logger> CLog::s_ClientLogger;
 
-	void Log::Init() {
+	void CLog::Init() {
 		// Format logger output.
 		spdlog::set_pattern("%^[%T] %n: %v%$");
 
 		// Initialize loggers with names.
-		Log::s_CoreLogger = spdlog::stdout_color_mt("PAGODA");
+		CLog::s_CoreLogger = spdlog::stdout_color_mt("PAGODA");
 		// Output every log type.
 		s_CoreLogger->set_level(spdlog::level::trace);
 
-		Log::s_ClientLogger = spdlog::stdout_color_mt("CLIENT");
+		CLog::s_ClientLogger = spdlog::stdout_color_mt("CLIENT");
 		s_ClientLogger->set_level(spdlog::level::trace);
 	}
 
-	void Log::SetClientName(std::string name) {
+	void CLog::SetClientName(std::string name) {
 		std::transform(name.begin(), name.end(), name.begin(), ::toupper);
-		Log::s_ClientLogger = spdlog::stdout_color_mt(name);
-		Log::s_CoreLogger->debug("Client name updated: {}", name);
+		CLog::s_ClientLogger = spdlog::stdout_color_mt(name);
+		CLog::s_CoreLogger->debug("Client name updated: {}", name);
 	}
 }

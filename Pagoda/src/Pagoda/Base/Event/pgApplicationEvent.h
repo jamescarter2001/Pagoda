@@ -2,9 +2,9 @@
 #include "pgEvent.h"
 
 namespace Pagoda::Base {
-	class PAGODA_API WindowResizeEvent : public Event {
+	class PAGODA_API CWindowResizeEvent : public CEvent {
 	public:
-		WindowResizeEvent(int x, int y) {
+		CWindowResizeEvent(int x, int y) {
 			this->m_xValue = x;
 			this->m_yValue = y;
 		}
@@ -32,64 +32,64 @@ namespace Pagoda::Base {
 		int m_yValue;
 	};
 
-	class PAGODA_API WindowCloseEvent : public Event {
+	class PAGODA_API CWindowCloseEvent : public CEvent {
 	public:
 
-		WindowCloseEvent() {}
+		CWindowCloseEvent() {}
 
 		EVENT_CLASS_TYPE(WindowClose)
 		EVENT_CLASS_CATEGORY(eEventCategory::EventCategoryApplication)
 	};
 
-	class PAGODA_API WindowFocusEvent : public Event {
+	class PAGODA_API CWindowFocusEvent : public CEvent {
 	public:
 
-		WindowFocusEvent() {}
+		CWindowFocusEvent() {}
 
 		EVENT_CLASS_TYPE(WindowFocus)
 		EVENT_CLASS_CATEGORY(eEventCategory::EventCategoryApplication)
 	};
 
-	class PAGODA_API WindowLostFocusEvent : public Event {
+	class PAGODA_API CWindowLostFocusEvent : public CEvent {
 	public:
 
-		WindowLostFocusEvent() {}
+		CWindowLostFocusEvent() {}
 
 		EVENT_CLASS_TYPE(WindowLostFocus)
 		EVENT_CLASS_CATEGORY(eEventCategory::EventCategoryApplication)
 	};
 
-	class PAGODA_API WindowMovedEvent : public Event {
+	class PAGODA_API CWindowMovedEvent : public CEvent {
 	public:
 
-		WindowMovedEvent() {}
+		CWindowMovedEvent() {}
 
 		EVENT_CLASS_TYPE(WindowMoved)
 		EVENT_CLASS_CATEGORY(eEventCategory::EventCategoryApplication)
 	};
 
-	class PAGODA_API AppTickEvent : public Event {
+	class PAGODA_API CAppTickEvent : public CEvent {
 	public:
 
-		AppTickEvent() {}
+		CAppTickEvent() {}
 
 		EVENT_CLASS_TYPE(AppTick)
 		EVENT_CLASS_CATEGORY(eEventCategory::EventCategoryApplication)
 	};
 
-	class PAGODA_API AppRenderEvent : public Event {
+	class PAGODA_API CAppRenderEvent : public CEvent {
 	public:
 
-		AppRenderEvent() {}
+		CAppRenderEvent() {}
 
 		EVENT_CLASS_TYPE(AppRender)
 		EVENT_CLASS_CATEGORY(eEventCategory::EventCategoryApplication)
 	};
 
-	class PAGODA_API AppUpdateEvent : public Event {
+	class PAGODA_API CAppUpdateEvent : public CEvent {
 	public:
 
-		AppUpdateEvent() {}
+		CAppUpdateEvent() {}
 
 		EVENT_CLASS_TYPE(AppUpdate)
 		EVENT_CLASS_CATEGORY(eEventCategory::EventCategoryApplication)

@@ -2,36 +2,36 @@
 #include "pgEvent.h"
 
 namespace Pagoda::Base {
-	class MouseButtonEvent : public Event {
+	class CMouseButtonEvent : public CEvent {
 	public:
 		EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryMouse | EventCategoryMouseButton)
 			inline int GetMouseButton() const {
 			return m_Button;
 		}
 	protected:
-		MouseButtonEvent(int button) {
+		CMouseButtonEvent(int button) {
 			m_Button = button;
 		}
 		int m_Button;
 	};
 
-	class MouseButtonPressedEvent : public MouseButtonEvent {
+	class CMouseButtonPressedEvent : public CMouseButtonEvent {
 	public:
-		MouseButtonPressedEvent(int button) : MouseButtonEvent(button) {}
+		CMouseButtonPressedEvent(int button) : CMouseButtonEvent(button) {}
 
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
 
-	class MouseButtonReleasedEvent : public MouseButtonEvent {
+	class CMouseButtonReleasedEvent : public CMouseButtonEvent {
 	public:
-		MouseButtonReleasedEvent(int button) : MouseButtonEvent(button) {}
+		CMouseButtonReleasedEvent(int button) : CMouseButtonEvent(button) {}
 
 		EVENT_CLASS_TYPE(MouseButtonReleased)
 	};
 
-	class MouseMovedEvent : public Event {
+	class CMouseMovedEvent : public CEvent {
 	public:
-		MouseMovedEvent(float x, float y) {
+		CMouseMovedEvent(float x, float y) {
 			this->m_MouseX = x;
 			this->m_MouseY = y;
 		}
@@ -57,9 +57,9 @@ namespace Pagoda::Base {
 		float m_MouseY;
 	};
 
-	class MouseScrollEvent : public Event {
+	class CMouseScrollEvent : public CEvent {
 	public:
-		MouseScrollEvent(float x, float y) {
+		CMouseScrollEvent(float x, float y) {
 			this->m_MouseX = x;
 			this->m_MouseY = y;
 		}

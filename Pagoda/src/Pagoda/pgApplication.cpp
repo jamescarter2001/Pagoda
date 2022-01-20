@@ -3,47 +3,47 @@
 
 namespace Pagoda {
 
-	Application* Application::s_Instance = nullptr;
+	CApplication* CApplication::s_Instance = nullptr;
 
-	Application::Application(std::string& name) {
+	CApplication::CApplication(std::string& name) {
 		PG_CORE_ASSERT(!s_Instance, "Application already running!");
 		this->m_Name = name;
 		this->m_IsRunning = false;
 		this->s_Instance = this;
 	}
 
-	Application::~Application() {
+	CApplication::~CApplication() {
 		s_Instance = nullptr;
 	}
 
-	bool Application::OnWindowCloseEvent(Base::Event& e) {
+	bool CApplication::OnWindowCloseEvent(Base::CEvent& e) {
 		this->m_IsRunning = false;
 		return true;
 	}
 
-	void Application::OnEvent(Base::Event& e) {
-		Base::EventDispatcher dispatcher(e);
+	void CApplication::OnEvent(Base::CEvent& e) {
+		Base::CEventDispatcher dispatcher(e);
 
 		// System
-		dispatcher.Dispatch<Base::WindowCloseEvent>(BIND_EVENT_FN(Application::OnWindowCloseEvent));
+		dispatcher.Dispatch<Base::CWindowCloseEvent>(BIND_EVENT_FN(CApplication::OnWindowCloseEvent));
 
 		// Layer
-		for (std::vector<Base::Layer*>::iterator it = this->m_LayerStack.end(); it != this->m_LayerStack.begin();) {
+		for (std::vector<Base::CLayer*>::iterator it = this->m_LayerStack.end(); it != this->m_LayerStack.begin();) {
 			(*--it)->OnEvent(e);
 		}
 	}
 
-	bool Application::Setup() {
+	bool CApplication::Setup() {
 		PG_CORE_TRACE("Starting engine application: {}", m_Name);
 		return true;
 	}
 
-	void Application::Run() {
+	void CApplication::Run() {
 		PG_CORE_ASSERT_CRITICAL(this->Setup(), "System failed to initialize.");
 		PG_CORE_INFO("System initialization success.");
 		this->m_IsRunning = true;
 		while (m_IsRunning) {
-			for (Base::Layer* layer : this->m_LayerStack) {
+			for (Base::CLayer* layer : this->m_LayerStack) {
 				layer->OnUpdate();
 			}
 		}

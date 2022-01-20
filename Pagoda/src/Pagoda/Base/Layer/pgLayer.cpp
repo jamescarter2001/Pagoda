@@ -2,9 +2,9 @@
 #include "pgLayer.h" 
 
 namespace Pagoda::Base {
-	Layer::Layer(const std::string& name) {
+	CLayer::CLayer(const std::string& name) {
 		this->m_Name = name;
 	}
 
-	Layer::~Layer() {}
+	CLayer::~CLayer() {}
 }

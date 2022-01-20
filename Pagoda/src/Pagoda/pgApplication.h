@@ -8,20 +8,20 @@
 #include "Base/Layer/pgLayerStack.h"
 
 namespace Pagoda {
-	class PAGODA_API Application {
+	class PAGODA_API CApplication {
 	public:
-		Application(std::string& name);
-		virtual ~Application();
+		CApplication(std::string& name);
+		virtual ~CApplication();
 
 		// Inline functions must be fully declared in header.
 		inline std::string GetName() {
 			return this->m_Name;
 		}
 
-		void OnEvent(Base::Event& e);
-		bool OnWindowCloseEvent(Base::Event& e);
+		void OnEvent(Base::CEvent& e);
+		bool OnWindowCloseEvent(Base::CEvent& e);
 
-		bool TESTMETHOD(Base::Event& e) {
+		bool TESTMETHOD(Base::CEvent& e) {
 			//PG_CORE_WARNING("AAAAA");
 			return true;
 		}
@@ -30,10 +30,10 @@ namespace Pagoda {
 		void Run();
 
 	private:
-		static Application* s_Instance;
+		static CApplication* s_Instance;
 
 		std::string m_Name;
 		bool m_IsRunning;
-		Base::LayerStack m_LayerStack;
+		Base::CLayerStack m_LayerStack;
 	};
 }
