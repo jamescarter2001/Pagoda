@@ -3,15 +3,17 @@
 // DLL import/export macro, required for classes.
 
 #ifdef PG_PLATFORM_WINDOWS
-#ifdef PG_BUILD_DLL
-#define PAGODA_API __declspec(dllexport)
-#elifdef PG_USE_DLL
-#define PAGODA_API __declspec(dllimport)
+	#ifdef PG_BUILD_DLL
+		#define PAGODA_API __declspec(dllexport)
+	#elifdef PG_USE_DLL
+		#define PAGODA_API __declspec(dllimport)
+	#else
+		#define PAGODA_API
+	#endif
+#elif defined PG_PLATFORM_MACOS
+	#define PAGODA_API
 #else
-#define PAGODA_API
-#endif
-#else
-#error Unsupported platform
+	#error Unsupported platform
 #endif
 
 #ifdef PG_ENABLE_ASSERTS

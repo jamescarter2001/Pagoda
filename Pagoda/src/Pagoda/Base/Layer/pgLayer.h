@@ -3,11 +3,11 @@
 #include "Base/Event/pgEvent.h"
 
 namespace Pagoda::Base {
-	class PAGODA_API CLayer {
+	class PAGODA_API Layer {
 	public:
-		CLayer(const std::string& name);
-		virtual ~CLayer();
-		virtual void OnEvent(CEvent& e) const = 0;
+		Layer(const std::string& name);
+		virtual ~Layer();
+		virtual void OnEvent(Event& e) const = 0;
 		virtual void OnUpdate() const = 0;
 		virtual void OnAttach() const = 0;
 

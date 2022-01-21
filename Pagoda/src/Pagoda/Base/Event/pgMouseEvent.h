@@ -2,7 +2,7 @@
 #include "pgEvent.h"
 
 namespace Pagoda::Base {
-	class CMouseButtonEvent : public CEvent {
+	class CMouseButtonEvent : public Event {
 	public:
 		EVENT_CLASS_CATEGORY(EventCategoryInput | EventCategoryMouse | EventCategoryMouseButton)
 			inline int GetMouseButton() const {
@@ -29,7 +29,7 @@ namespace Pagoda::Base {
 		EVENT_CLASS_TYPE(MouseButtonReleased)
 	};
 
-	class CMouseMovedEvent : public CEvent {
+	class CMouseMovedEvent : public Event {
 	public:
 		CMouseMovedEvent(float x, float y) {
 			this->m_MouseX = x;
@@ -57,7 +57,7 @@ namespace Pagoda::Base {
 		float m_MouseY;
 	};
 
-	class CMouseScrollEvent : public CEvent {
+	class CMouseScrollEvent : public Event {
 	public:
 		CMouseScrollEvent(float x, float y) {
 			this->m_MouseX = x;

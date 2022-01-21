@@ -9,21 +9,21 @@ namespace Pagoda::Base {
 		CLayerStack();
 		virtual ~CLayerStack();
 
-		void PushLayer(CLayer* layer);
-		void PopLayer(CLayer* layer);
-		void PushOverlay(CLayer* layer);
-		void PopOverlay(CLayer* layer);
+		void PushLayer(Layer* layer);
+		void PopLayer(Layer* layer);
+		void PushOverlay(Layer* layer);
+		void PopOverlay(Layer* layer);
 
-		inline std::vector<CLayer*>::iterator begin() {
+		inline std::vector<Layer*>::iterator begin() {
 			return m_Layers.begin();
 		}
 
-		inline std::vector<CLayer*>::iterator end() {
+		inline std::vector<Layer*>::iterator end() {
 			return m_Layers.end();
 		}
 
 	private:
-		std::vector<CLayer*> m_Layers;
-		std::vector<CLayer*>::iterator m_LayerInsert;
+		std::vector<Layer*> m_Layers;
+		std::vector<Layer*>::iterator m_LayerInsert;
 	};
 }

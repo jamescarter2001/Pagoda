@@ -1,12 +1,31 @@
 workspace "Pagoda"
-	architecture "x64"
 
-	configurations
-	{
+	configurations {
 		"Debug",
 		"Release",
 		"Dist"
 	}
+
+	platforms {
+		"Win32",
+		"Win64",
+		"MacOS",
+	}
+	
+	filter { "platforms:Win32" }
+		system "windows"
+		architecture "x86"
+		defines "PG_PLATFORM_WINDOWS"
+
+	filter { "platforms:Win64" }
+		system "windows"
+		architecture "x64"
+		defines "PG_PLATFORM_WINDOWS"
+
+	filter { "platforms:MacOS" }
+		system "macosx"
+		architecture "arm64"
+		defines "PG_PLATFORM_MACOS"
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -38,9 +57,18 @@ project "Pagoda"
 		systemversion "latest"
 
 		defines {
-			"PG_PLATFORM_WINDOWS",
 			"SPDLOG_COMPILED_LIB"
 		}
+		
+	filter "system:macosx"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines {
+			"SPDLOG_COMPILED_LIB"
+		}
+
 
 		--[[postbuildcommands
 		{
@@ -101,7 +129,15 @@ project "TestApp"
 		systemversion "latest"
 
 		defines {
-			"PG_PLATFORM_WINDOWS",
+			"SPDLOG_COMPILED_LIB"
+		}
+	
+	filter "system:macosx"
+		cppdialect "C++17"
+		staticruntime "On"
+		systemversion "latest"
+
+		defines {
 			"SPDLOG_COMPILED_LIB"
 		}
 

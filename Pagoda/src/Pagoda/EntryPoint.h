@@ -1,7 +1,7 @@
 #pragma once
 
 namespace Pagoda {
-	extern CApplication* CreateApplication();
+	extern Application* CreateApplication();
 }
 
 int main(int argc, char** argv) {

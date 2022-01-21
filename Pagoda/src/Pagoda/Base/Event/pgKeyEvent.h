@@ -2,7 +2,7 @@
 #include "pgEvent.h"
 
 namespace Pagoda::Base {
-	class PAGODA_API CKeyEvent : public CEvent {
+	class PAGODA_API CKeyEvent : public Event {
 	public:
 		inline int getKeyCode() const {
 			return m_keyCode;

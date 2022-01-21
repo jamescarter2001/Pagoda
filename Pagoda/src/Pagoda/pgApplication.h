@@ -4,33 +4,28 @@
 #include "Base/Log/pgLog.h"
 #include "Base/Event/pgEvent.h"
 #include "Base/Event/pgApplicationEvent.h"
-#include "Base/Event/pgEventDispatcher.h"
+#include "Base/Message/pgMessageDispatcher.h"
 #include "Base/Layer/pgLayerStack.h"
 
 namespace Pagoda {
-	class PAGODA_API CApplication {
+	class PAGODA_API Application {
 	public:
-		CApplication(std::string& name);
-		virtual ~CApplication();
+		Application(std::string& name);
+		virtual ~Application();
 
 		// Inline functions must be fully declared in header.
 		inline std::string GetName() {
 			return this->m_Name;
 		}
 
-		void OnEvent(Base::CEvent& e);
-		bool OnWindowCloseEvent(Base::CEvent& e);
-
-		bool TESTMETHOD(Base::CEvent& e) {
-			//PG_CORE_WARNING("AAAAA");
-			return true;
-		}
+		void OnEvent(Base::Event& e);
+		bool OnWindowCloseEvent(Base::Event& e);
 
 		bool Setup();
 		void Run();
 
 	private:
-		static CApplication* s_Instance;
+		static Application* s_Instance;
 
 		std::string m_Name;
 		bool m_IsRunning;

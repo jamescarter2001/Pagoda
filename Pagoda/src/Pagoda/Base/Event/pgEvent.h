@@ -1,23 +1,17 @@
 #pragma once
 #include "pgpch.h"
+
+#include "Base/Message/pgMessage.h"
 #include "pgCore.h"
 
 namespace Pagoda::Base {
 
 	// Auto-generate
-#define EVENT_CLASS_TYPE(type) static eEventType GetStaticEventType() { return eEventType::##type; }\
+/*#define EVENT_CLASS_TYPE(type) static eEventType GetStaticEventType() { return eEventType::type; }\
 									   virtual eEventType GetEventType() const override { return GetStaticEventType(); }\
-										virtual const char* GetName() const override { return #type; }
+										virtual const char* GetName() const override { return #type; }*/
 
-#define EVENT_CLASS_CATEGORY(bitfield) virtual int GetCategories() const override { return (int) bitfield; }
-
-	enum class eEventType {
-		None = 0,
-		WindowClose, WindowResize, WindowFocus, WindowLostFocus, WindowMoved,
-		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased,
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
-	};
+#define EVENT_CLASS_CATEGORY(bitfield) virtual int GetCategories() const { return (int) bitfield; }
 
 	enum eEventCategory {
 		None = 0,
@@ -28,15 +22,12 @@ namespace Pagoda::Base {
 		EventCategoryMouseButton = BIT(4)
 	};
 
-	class CEvent {
+	class Event : public Message {
 	public:
-		virtual eEventType GetEventType() const = 0;
-		virtual const char* GetName() const = 0;
 		virtual int GetCategories() const = 0;
-		virtual std::string ToString() const {
-			return this->GetName();
-		}
 
-		bool m_IsHandled = false;
+		virtual std::string GetName() const override {
+			return "Event";
+		}
 	};
 }
