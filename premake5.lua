@@ -3,7 +3,6 @@ workspace "Pagoda"
 	configurations {
 		"Debug",
 		"Release",
-		"Dist"
 	}
 
 	platforms {
@@ -51,30 +50,23 @@ project "Pagoda"
 		"%{prj.name}/src/**.cpp"
 	}
 
+	defines {
+		"SPDLOG_COMPILED_LIB"
+	}
+
 	includedirs {
 		"%{prj.name}/src",
 		"%{prj.name}/src/Pagoda",
-		"%{prj.name}/vendor/spdlog/include",
+		"%{prj.name}/vendor/spdlog/include"
 	}
 
 	filter "system:windows"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
 
-		defines {
-			"SPDLOG_COMPILED_LIB"
-		}
-		
 	filter "system:macosx"
 		cppdialect "C++17"
-		staticruntime "On"
 		systemversion "latest"
-
-		defines {
-			"SPDLOG_COMPILED_LIB"
-		}
-
 
 		--[[postbuildcommands
 		{
@@ -86,17 +78,14 @@ project "Pagoda"
 		"PG_DEBUG",
 		"PG_ENABLE_ASSERTS"
 		}
-		buildoptions "/MDd"
+		staticruntime "Off"
+		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "PG_RELEASE"
-		buildoptions "/MD"
-		optimize "On"
-
-	filter "configurations:Dist"
-		defines "PG_DIST"
-		buildoptions "/MD"
+		staticruntime "Off"
+		runtime "Release"
 		optimize "On"
 
 project "TestApp"
@@ -104,20 +93,34 @@ project "TestApp"
 	kind "ConsoleApp"
 	language "C++"
 
+	cppdialect "C++17"
+	systemversion "latest"
+
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	files
-	{
+	files {
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
 	}
 
-	includedirs
-	{
+	defines {
+		"SPDLOG_COMPILED_LIB"
+	}
+
+	includedirs {
 		"Pagoda/vendor/spdlog/include",
 		"Pagoda/src",
 		"Pagoda/src/Pagoda"
+	}
+
+	libdirs {
+		"bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Pagoda",
+		"Pagoda/vendor/spdlog/build"
+	}
+
+	links {
+		"Pagoda.lib"
 	}
 	
 	--[[libdirs
@@ -125,72 +128,36 @@ project "TestApp"
 		"bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Pagoda",
 		"Pagoda/vendor/spdlog/build/%{cfg.buildcfg}"
 	}--]]
-	
-	commonLibDir = {}
-	commonLibDir["Pagoda"] = "bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Pagoda"
-
-	filter "system:windows"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "latest"
-
-		defines {
-			"SPDLOG_COMPILED_LIB"
-		}
-	
-	filter "system:macosx"
-		cppdialect "C++17"
-		staticruntime "On"
-		systemversion "latest"
-
-		defines {
-			"SPDLOG_COMPILED_LIB"
-		}
 
 	filter "configurations:Debug"
 		defines {
 			"PG_ENABLE_ASSERTS",
 			"PG_DEBUG"
 		}
-		buildoptions "/MDd"
+		staticruntime "Off"
+		runtime "Debug"
 		symbols "On"
 
 		libdirs {
-			"%{commonLibDir.Pagoda}",
 			"Pagoda/vendor/spdlog/build/Debug"
-		}
-
-		links {
-			"Pagoda.lib",
-			"spdlogd.lib"
 		}
 
 	filter "configurations:Release"
 		defines "PG_RELEASE"
-		buildoptions "/MD"
+		staticruntime "Off"
+		runtime "Release"
 		optimize "On"
 		
 		libdirs {
-			"%{commonLibDir.Pagoda}",
 			"Pagoda/vendor/spdlog/build/Release"
 		}
 
-		links {
-			"Pagoda.lib",
-			"spdlog.lib"
-		}
+		filter "system:windows"
+			filter "configurations:Debug"
+				links "spdlogd.lib"
 
-	filter "configurations:Dist"
-		defines "PG_DIST"
-		buildoptions "/MD"
-		optimize "On"
+			filter "configurations:Release"
+				links "spdlog.lib"
 		
-		libdirs {
-			"%{commonLibDir.Pagoda}",
-			"Pagoda/vendor/spdlog/build/Release"
-		}
-
-		links {
-			"Pagoda.lib",
-			"spdlog.lib"
-		}
+		filter "system:macosx"
+			links "libspdlog.a"
