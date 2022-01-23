@@ -3,24 +3,40 @@
 // DLL import/export macro, required for classes.
 
 #ifdef PG_PLATFORM_WINDOWS
-	#ifdef PG_BUILD_DLL
-		#define PAGODA_API __declspec(dllexport)
-	#elifdef PG_USE_DLL
-		#define PAGODA_API __declspec(dllimport)
-	#else
-		#define PAGODA_API
-	#endif
-#elif defined PG_PLATFORM_MACOS
-	#define PAGODA_API
+#ifdef PG_BUILD_DLL
+#define PAGODA_API __declspec(dllexport)
+#elifdef PG_USE_DLL
+#define PAGODA_API __declspec(dllimport)
 #else
-	#error Unsupported platform
+#define PAGODA_API
+#endif
+#else
+#define PAGODA_API
 #endif
 
 #ifdef PG_ENABLE_ASSERTS
 
-#define PG_CORE_ASSERT(x, ...) {if (!x) { PG_CORE_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();} }
-#define PG_CORE_ASSERT_CRITICAL(x, ...) {if (!x) { PG_CORE_CRITICAL("Critical: {0}", __VA_ARGS__); __debugbreak();} }
-#define PG_ASSERT(x, ...) {if (!x) { PG_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();} }
+#define PG_CORE_ASSERT(x, ...)                                   \
+    {                                                            \
+        if (!x) {                                                \
+            PG_CORE_ERROR("Assertion failed: {0}", __VA_ARGS__); \
+            __debugbreak();                                      \
+        }                                                        \
+    }
+#define PG_CORE_ASSERT_CRITICAL(x, ...)                     \
+    {                                                       \
+        if (!x) {                                           \
+            PG_CORE_CRITICAL("Critical: {0}", __VA_ARGS__); \
+            __debugbreak();                                 \
+        }                                                   \
+    }
+#define PG_ASSERT(x, ...)                                   \
+    {                                                       \
+        if (!x) {                                           \
+            PG_ERROR("Assertion failed: {0}", __VA_ARGS__); \
+            __debugbreak();                                 \
+        }                                                   \
+    }
 
 #else
 
