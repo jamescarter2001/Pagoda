@@ -12,6 +12,5 @@ namespace Pagoda::Mirage {
     }
 
     void OpenGLWindow::Init() {
-        
-    }
+        }
 }
