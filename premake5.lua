@@ -9,6 +9,7 @@ workspace "Pagoda"
 	platforms {
 		"Win32",
 		"Win64",
+		"WinARM64",
 		"MacOS",
 	}
 	
@@ -20,6 +21,11 @@ workspace "Pagoda"
 	filter { "platforms:Win64" }
 		system "windows"
 		architecture "x64"
+		defines "PG_PLATFORM_WINDOWS"
+
+	filter { "platforms:WinARM64" }
+		system "windows"
+		architecture "arm64"
 		defines "PG_PLATFORM_WINDOWS"
 
 	filter { "platforms:MacOS" }
