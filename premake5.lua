@@ -57,7 +57,8 @@ project "Pagoda"
 	includedirs {
 		"%{prj.name}/src",
 		"%{prj.name}/src/Pagoda",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{prj.name}/vendor/glfw/include"
 	}
 
 	filter "system:windows"
@@ -109,9 +110,10 @@ project "TestApp"
 	}
 
 	includedirs {
-		"Pagoda/vendor/spdlog/include",
 		"Pagoda/src",
-		"Pagoda/src/Pagoda"
+		"Pagoda/src/Pagoda",
+		"Pagoda/vendor/spdlog/include",
+		"Pagoda/vendor/glfw/include",
 	}
 
 	libdirs {
@@ -120,7 +122,8 @@ project "TestApp"
 	}
 
 	links {
-		"Pagoda.lib"
+		"Pagoda.lib",
+		"glfw3.lib"
 	}
 	
 	--[[libdirs
@@ -139,7 +142,8 @@ project "TestApp"
 		symbols "On"
 
 		libdirs {
-			"Pagoda/vendor/spdlog/build/Debug"
+			"Pagoda/vendor/spdlog/build/Debug",
+			"Pagoda/vendor/glfw/src/Debug"
 		}
 
 	filter "configurations:Release"
@@ -149,15 +153,16 @@ project "TestApp"
 		optimize "On"
 		
 		libdirs {
-			"Pagoda/vendor/spdlog/build/Release"
+			"Pagoda/vendor/spdlog/build/Release",
+			"Pagoda/vendor/glfw/src/Release"
 		}
 
-		filter "system:windows"
-			filter "configurations:Debug"
-				links "spdlogd.lib"
+	filter "system:windows"
+		filter "configurations:Debug"
+			links "spdlogd.lib"
 
-			filter "configurations:Release"
-				links "spdlog.lib"
+		filter "configurations:Release"
+			links "spdlog.lib"
 		
 		filter "system:macosx"
 			links "libspdlog.a"

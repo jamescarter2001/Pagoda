@@ -4,10 +4,10 @@
 #include "pgCore.h"
 
 namespace Pagoda::Base {
-    class PAGODA_API CLayerStack {
+    class PAGODA_API LayerStack {
     public:
-        CLayerStack();
-        virtual ~CLayerStack();
+        LayerStack();
+        virtual ~LayerStack();
 
         void PushLayer(Layer* layer);
         void PopLayer(Layer* layer);

@@ -3,22 +3,22 @@
 
 namespace Pagoda::Base {
 
-    CLayerStack::CLayerStack() {
+    LayerStack::LayerStack() {
         this->m_LayerInsert = this->m_Layers.begin();
     }
 
-    CLayerStack::~CLayerStack() {
+    LayerStack::~LayerStack() {
         for (Layer* layer : this->m_Layers) {
             delete layer;
         }
     }
 
-    void CLayerStack::PushLayer(Layer* layer) {
+    void LayerStack::PushLayer(Layer* layer) {
         this->m_LayerInsert = this->m_Layers.emplace(m_LayerInsert, layer);
         layer->OnAttach();
     }
 
-    void CLayerStack::PopLayer(Layer* layer) {
+    void LayerStack::PopLayer(Layer* layer) {
         std::vector<Layer*>::iterator it = std::find(this->m_Layers.begin(), this->m_Layers.end(), layer);
         if (it != this->m_Layers.end()) {
             this->m_Layers.erase(it);
@@ -28,11 +28,11 @@ namespace Pagoda::Base {
         }
     }
 
-    void CLayerStack::PushOverlay(Layer* layer) {
+    void LayerStack::PushOverlay(Layer* layer) {
         this->m_Layers.emplace_back(layer);
     }
 
-    void CLayerStack::PopOverlay(Layer* layer) {
+    void LayerStack::PopOverlay(Layer* layer) {
         std::vector<Layer*>::iterator it = std::find(this->m_Layers.begin(), this->m_Layers.end(), layer);
         if (it != this->m_Layers.end()) {
             this->m_Layers.erase(it);

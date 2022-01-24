@@ -2,9 +2,9 @@
 #include "pgEvent.h"
 
 namespace Pagoda::Base {
-    class PAGODA_API CWindowResizeEvent : public Event {
+    class PAGODA_API WindowResizeEvent : public Event {
     public:
-        CWindowResizeEvent(int x, int y) {
+        WindowResizeEvent(int x, int y) {
             this->m_xValue = x;
             this->m_yValue = y;
         }
