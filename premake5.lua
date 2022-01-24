@@ -31,6 +31,9 @@ workspace "Pagoda"
 		system "macosx"
 		architecture "arm64"
 		defines "PG_PLATFORM_MACOS"
+		buildoptions {
+			"-mmacosx-version-min=11.0"
+		}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -120,11 +123,6 @@ project "TestApp"
 		"bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Pagoda",
 		"Pagoda/vendor/spdlog/build"
 	}
-
-	links {
-		"Pagoda.lib",
-		"glfw3.lib"
-	}
 	
 	--[[libdirs
 	{
@@ -142,8 +140,8 @@ project "TestApp"
 		symbols "On"
 
 		libdirs {
-			"Pagoda/vendor/spdlog/build/Debug",
-			"Pagoda/vendor/glfw/src/Debug"
+			"Pagoda/vendor/spdlog/build",
+			"Pagoda/vendor/glfw/build/src"
 		}
 
 	filter "configurations:Release"
@@ -153,16 +151,33 @@ project "TestApp"
 		optimize "On"
 		
 		libdirs {
-			"Pagoda/vendor/spdlog/build/Release",
-			"Pagoda/vendor/glfw/src/Release"
+			"%{prj.name}/../Pagoda/vendor/spdlog/build",
+			"%{prj.name}/../Pagoda/vendor/glfw//build/src"
 		}
 
-	filter "system:windows"
-		filter "configurations:Debug"
-			links "spdlogd.lib"
+	filter {"system:windows", "configurations:Debug"}
+		links {
+			"Pagoda.lib",
+			"spdlogd.lib",
+			"glfw3.lib"
+		}
 
-		filter "configurations:Release"
-			links "spdlog.lib"
+	filter {"system:windows", "configurations:Release"}
+		links {
+			"Pagoda.lib",
+			"spdlog.lib",
+			"glfw3.lib"
+		}
 		
-		filter "system:macosx"
-			links "libspdlog.a"
+	filter "system:macosx"
+		links {
+			"OpenGL.framework",
+			"CoreFoundation.framework", 
+			"Cocoa.framework",
+	 		"IOKit.framework"
+		}
+		links {
+			"spdlog",
+			"Pagoda",
+			"glfw3",
+		}
