@@ -10,8 +10,14 @@ namespace Pagoda {
         this->m_Name = name;
         this->m_IsRunning = false;
 
-        this->m_Window = Mirage::Window::Create();
+        // Mirage
+        PG_CORE_TRACE("Initializing Mirage subsystem...");
+        this->m_Window = Mirage::Window::Create(Mirage::WindowProps(name));
         this->m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+
+        // Lua
+        PG_CORE_TRACE("Initializing Lua subsystem...");
+        this->m_LuaHandler = Lua::LuaHandler::Create();
 
         this->s_Instance = this;
     }
@@ -26,6 +32,7 @@ namespace Pagoda {
     }
 
     void Application::OnEvent(Base::Event& e) {
+        PG_CORE_DEBUG("Event {}", e.ToString());
         Base::MessageDispatcher dispatcher(e);
 
         // System

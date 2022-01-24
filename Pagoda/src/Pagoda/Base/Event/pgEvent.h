@@ -25,9 +25,5 @@ namespace Pagoda::Base {
     class Event : public Message {
     public:
         virtual int GetCategories() const = 0;
-
-        virtual std::string GetName() const override {
-            return "Event";
-        }
     };
 }

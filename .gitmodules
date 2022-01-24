@@ -4,3 +4,6 @@
 [submodule "Pagoda/vendor/glfw"]
 	path = Pagoda/vendor/glfw
 	url = git@github.com:glfw/glfw.git
+[submodule "Pagoda/vendor/eigen"]
+	path = Pagoda/vendor/eigen
+	url = git@gitlab.com:libeigen/eigen.git

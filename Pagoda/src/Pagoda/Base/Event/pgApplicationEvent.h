@@ -40,6 +40,10 @@ namespace Pagoda::Base {
     public:
         WindowCloseEvent() {}
 
+        std::string GetName() const override {
+            return "WindowCloseEvent";
+        }
+
         //EVENT_CLASS_TYPE(WindowClose)
         EVENT_CLASS_CATEGORY(eEventCategory::EventCategoryApplication)
     };

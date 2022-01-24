@@ -61,7 +61,10 @@ project "Pagoda"
 		"%{prj.name}/src",
 		"%{prj.name}/src/Pagoda",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/glfw/include"
+		"%{prj.name}/vendor/glfw/include",
+		"%{prj.name}/vendor/eigen",
+		"%{prj.name}/vendor/glad/include",
+		"%{prj.name}/vendor/lua/lua/include"
 	}
 
 	filter "system:windows"
@@ -117,11 +120,17 @@ project "TestApp"
 		"Pagoda/src/Pagoda",
 		"Pagoda/vendor/spdlog/include",
 		"Pagoda/vendor/glfw/include",
+		"Pagoda/vendor/eigen",
+		"Pagoda/vendor/glad/include",
+		"Pagoda/vendor/lua/lua/include"
 	}
 
 	libdirs {
-		"bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Pagoda",
-		"Pagoda/vendor/spdlog/build"
+		"bin/%{outputdir}/Pagoda",
+		"Pagoda/vendor/lua/bin/%{outputdir}/lua",
+		"Pagoda/vendor/lua/bin/",
+		"Pagoda/vendor/spdlog/build",
+		"Pagoda/vendor/glfw/build/src"
 	}
 	
 	--[[libdirs
@@ -139,34 +148,38 @@ project "TestApp"
 		runtime "Debug"
 		symbols "On"
 
-		libdirs {
-			"Pagoda/vendor/spdlog/build",
-			"Pagoda/vendor/glfw/build/src"
-		}
-
 	filter "configurations:Release"
 		defines "PG_RELEASE"
 		staticruntime "Off"
 		runtime "Release"
 		optimize "On"
-		
-		libdirs {
-			"%{prj.name}/../Pagoda/vendor/spdlog/build",
-			"%{prj.name}/../Pagoda/vendor/glfw//build/src"
-		}
 
 	filter {"system:windows", "configurations:Debug"}
+		libdirs {
+			"Pagoda/vendor/spdlog/build/Debug",
+			"Pagoda/vendor/glfw/src/Debug"
+		}
+
 		links {
 			"Pagoda.lib",
 			"spdlogd.lib",
-			"glfw3.lib"
+			"glfw3.lib",
+			"OpenGL32.lib",
+			"lua.lib"
 		}
 
 	filter {"system:windows", "configurations:Release"}
+	libdirs {
+		"Pagoda/vendor/spdlog/build/Release",
+		"Pagoda/vendor/glfw/src/Release"
+	}
+
 		links {
 			"Pagoda.lib",
 			"spdlog.lib",
-			"glfw3.lib"
+			"glfw3.lib",
+			"OpenGL32.lib",
+			"lua.lib"
 		}
 		
 	filter "system:macosx"

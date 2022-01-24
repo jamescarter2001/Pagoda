@@ -4,17 +4,17 @@
 
 namespace Pagoda::Mirage {
     struct WindowProps {
-        std::string Title;
-        int Width;
-        int Height;
+        std::string Title = "Pagoda";
+        int Width = 1280;
+        int Height = 720;
 
-        WindowProps() {
-            this->Title = "Pagoda";
-            this->Width = 1280;
-            this->Height = 720;
+        WindowProps() {}
+
+        WindowProps(std::string Title) {
+            this->Title = Title;
         }
 
-        WindowProps(int Width, int Height, std::string Title) {
+        WindowProps(std::string Title, int Width, int Height) {
             this->Title = Title;
             this->Width = Width;
             this->Height = Height;

@@ -7,6 +7,8 @@
 #include "Base/Message/pgMessageDispatcher.h"
 #include "Base/Layer/pgLayerStack.h"
 
+#include "Lua/pgLua.h"
+
 #include "Mirage/Platform/OpenGL/pgOpenGLWindow.h"
 
 namespace Pagoda {
@@ -40,5 +42,6 @@ namespace Pagoda {
         Base::LayerStack m_LayerStack;
 
         Mirage::Window* m_Window;
+        Lua::LuaHandler* m_LuaHandler;
     };
 }
