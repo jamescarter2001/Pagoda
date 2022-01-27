@@ -45,9 +45,6 @@ project "Pagoda"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	--pchheader "pgpch.h"
-	--pchsource "Pagoda/src/Pagoda/pgpch.cpp"
-
 	files {
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp"
@@ -74,6 +71,9 @@ project "Pagoda"
 	filter "system:windows"
 		cppdialect "C++17"
 		systemversion "latest"
+
+		pchheader "pgpch.h"
+		pchsource "Pagoda/src/Pagoda/pgpch.cpp"
 
 	filter "system:macosx"
 		cppdialect "C++17"
