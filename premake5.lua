@@ -45,8 +45,8 @@ project "Pagoda"
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
 
-	pchheader "pgpch.h"
-	pchsource "Pagoda/src/Pagoda/pgpch.cpp"
+	--pchheader "pgpch.h"
+	--pchsource "Pagoda/src/Pagoda/pgpch.cpp"
 
 	files {
 		"%{prj.name}/src/**.h",
@@ -57,7 +57,7 @@ project "Pagoda"
 		"SPDLOG_COMPILED_LIB"
 	}
 
-	includedirs {
+	incDirs = {
 		"%{prj.name}/src",
 		"%{prj.name}/src/Pagoda",
 		"%{prj.name}/vendor/spdlog/include",
@@ -67,6 +67,10 @@ project "Pagoda"
 		"%{prj.name}/vendor/lua/lua/include"
 	}
 
+	includedirs {
+		table.unpack(incDirs)
+	}
+
 	filter "system:windows"
 		cppdialect "C++17"
 		systemversion "latest"
@@ -74,6 +78,10 @@ project "Pagoda"
 	filter "system:macosx"
 		cppdialect "C++17"
 		systemversion "latest"
+
+		sysincludedirs {
+			table.unpack(incDirs)
+		}
 
 		--[[postbuildcommands
 		{
@@ -115,7 +123,7 @@ project "TestApp"
 		"SPDLOG_COMPILED_LIB"
 	}
 
-	includedirs {
+	incDirs = {
 		"Pagoda/src",
 		"Pagoda/src/Pagoda",
 		"Pagoda/vendor/spdlog/include",
@@ -125,10 +133,14 @@ project "TestApp"
 		"Pagoda/vendor/lua/lua/include"
 	}
 
+	includedirs {
+		table.unpack(incDirs)
+	}
+
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
 		"Pagoda/vendor/lua/bin/%{outputdir}/lua",
-		"Pagoda/vendor/lua/bin/",
+		"Pagoda/vendor/lua/bin",
 		"Pagoda/vendor/spdlog/build",
 		"Pagoda/vendor/glfw/build/src"
 	}
@@ -153,6 +165,11 @@ project "TestApp"
 		staticruntime "Off"
 		runtime "Release"
 		optimize "On"
+	
+	filter "system:macosx"
+	 sysincludedirs {
+		 table.unpack(incDirs)
+	 }
 
 	filter {"system:windows", "configurations:Debug"}
 		libdirs {
@@ -193,4 +210,5 @@ project "TestApp"
 			"spdlog",
 			"Pagoda",
 			"glfw3",
+			"lua"
 		}

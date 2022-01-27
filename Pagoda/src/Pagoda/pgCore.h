@@ -15,7 +15,7 @@
 #endif
 
 #ifdef PG_ENABLE_ASSERTS
-
+#ifdef PG_PLATFORM_WINDOWS
 #define PG_CORE_ASSERT(x, ...)                                   \
     {                                                            \
         if (!x) {                                                \
@@ -37,7 +37,30 @@
             __debugbreak();                                 \
         }                                                   \
     }
+#elif defined PG_PLATFORM_MACOS
+#define PG_CORE_ASSERT(x, ...)                                   \
+    {                                                            \
+        if (!x) {                                                \
+            PG_CORE_ERROR("Assertion failed: {0}", __VA_ARGS__); \
+            raise(SIGINT);                                       \
+        }                                                        \
+    }
+#define PG_CORE_ASSERT_CRITICAL(x, ...)                     \
+    {                                                       \
+        if (!x) {                                           \
+            PG_CORE_CRITICAL("Critical: {0}", __VA_ARGS__); \
+            raise(SIGINT);                                  \
+        }                                                   \
+    }
+#define PG_ASSERT(x, ...)                                   \
+    {                                                       \
+        if (!x) {                                           \
+            PG_ERROR("Assertion failed: {0}", __VA_ARGS__); \
+            raise(SIGINT);                                  \
+        }                                                   \
+    }
 
+#endif
 #else
 
 #define PG_CORE_ASSERT(x, ...)

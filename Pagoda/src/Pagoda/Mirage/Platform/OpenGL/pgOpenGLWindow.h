@@ -9,8 +9,8 @@
 
 namespace Pagoda::Mirage {
     struct GLVersion {
-        int Major = 4;
-        int Minor = 6;
+        int Major = 3;
+        int Minor = 2;
         unsigned int Profile = GLFW_OPENGL_CORE_PROFILE;
 
         GLVersion() {}
