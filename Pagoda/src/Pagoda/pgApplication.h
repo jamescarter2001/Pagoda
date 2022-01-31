@@ -9,7 +9,7 @@
 
 #include "Lua/pgLua.h"
 
-#include "Mirage/Platform/OpenGL/pgOpenGLWindow.h"
+#include "Mirage/Platform/OpenGL//Window/pgOpenGLWindow.h"
 
 namespace Pagoda {
     class PAGODA_API Application {
