@@ -9,8 +9,8 @@
 
 namespace Pagoda::Mirage {
     struct GLVersion {
-        int Major = 3;
-        int Minor = 2;
+        int Major = 4;
+        int Minor = 6;
         unsigned int Profile = GLFW_OPENGL_CORE_PROFILE;
 
         GLVersion() {}
@@ -22,10 +22,10 @@ namespace Pagoda::Mirage {
         }
     };
 
-    class OpenGLWindow : public Window {
+    class GLWindow : public Window {
     public:
-        OpenGLWindow(const WindowProps& props);
-        virtual ~OpenGLWindow();
+        GLWindow(const WindowProps& props);
+        virtual ~GLWindow();
         virtual void OnUpdate() override;
         virtual void Init() override;
 

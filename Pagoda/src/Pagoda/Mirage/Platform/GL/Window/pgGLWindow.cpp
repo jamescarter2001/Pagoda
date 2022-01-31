@@ -1,28 +1,29 @@
 #include "pgpch.h"
 
-#include "pgOpenGLWindow.h"
+#include "pgGLWindow.h"
 
 namespace Pagoda::Mirage {
 
-    OpenGLWindow::OpenGLWindow(const WindowProps& props) : Window(props) {
+    GLWindow::GLWindow(const WindowProps& props) : Window(props) {
         this->m_Window = nullptr;
 
-        /* #ifdef PG_PLATFORM_MACOS
+        // TODO - Export to ApplicationSetting.lua
+        #ifdef PG_PLATFORM_MACOS
         this->m_GLVersion = GLVersion(3, 2, GLFW_OPENGL_CORE_PROFILE);
-        #endif*/
+        #endif
 
         Init();
     }
 
-    OpenGLWindow::~OpenGLWindow() {
+    GLWindow::~GLWindow() {
         glfwDestroyWindow(m_Window);
     }
 
     Window* Window::Create(const WindowProps& props) {
-        return new OpenGLWindow(props);
+        return new GLWindow(props);
     }
 
-    void OpenGLWindow::Init() {
+    void GLWindow::Init() {
         PG_CORE_TRACE("Creating new OpenGL window: {0} ({1}, {2})", this->m_WindowData.Title, this->m_WindowData.Width, this->m_WindowData.Height);
         PG_CORE_ASSERT(glfwInit(), "GLFW initialization error.");
 
@@ -58,7 +59,7 @@ namespace Pagoda::Mirage {
         PG_CORE_INFO("OpenGL window initialization successful.");
     }
 
-    void OpenGLWindow::OnUpdate() {
+    void GLWindow::OnUpdate() {
         glfwSwapBuffers(m_Window);
         glfwPollEvents();
     }
