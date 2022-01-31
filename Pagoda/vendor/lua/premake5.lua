@@ -8,7 +8,7 @@ workspace "lua"
 	platforms {
 		"Win32",
 		"Win64",
-		"WinARM64",
+		"Linux",
 		"MacOS",
 	}
 	
@@ -22,10 +22,10 @@ workspace "lua"
 		architecture "x64"
 		defines "PG_PLATFORM_WINDOWS"
 
-	filter { "platforms:WinARM64" }
-		system "windows"
-		architecture "arm64"
-		defines "PG_PLATFORM_WINDOWS"
+	filter { "platforms:Linux" }
+		system "linux"
+		architecture "x64"
+		defines "PG_PLATFORM_LINUX"
 
 	filter { "platforms:MacOS" }
 		system "macosx"
@@ -55,6 +55,10 @@ project "lua"
 	}
 
 	filter "system:windows"
+		cppdialect "C++17"
+		systemversion "latest"
+	
+	filter "system:linux"
 		cppdialect "C++17"
 		systemversion "latest"
 

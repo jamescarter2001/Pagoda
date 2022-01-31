@@ -37,7 +37,7 @@
             __debugbreak();                                 \
         }                                                   \
     }
-#elif defined PG_PLATFORM_MACOS
+#else
 #define PG_CORE_ASSERT(x, ...)                                   \
     {                                                            \
         if (!x) {                                                \

@@ -8,7 +8,7 @@ workspace "Pagoda"
 	platforms {
 		"Win32",
 		"Win64",
-		"WinARM64",
+		"Linux",
 		"MacOS",
 	}
 	
@@ -22,10 +22,10 @@ workspace "Pagoda"
 		architecture "x64"
 		defines "PG_PLATFORM_WINDOWS"
 
-	filter { "platforms:WinARM64" }
-		system "windows"
-		architecture "arm64"
-		defines "PG_PLATFORM_WINDOWS"
+	filter { "platforms:Linux" }
+		system "linux"
+		architecture "x64"
+		defines "PG_PLATFORM_LINUX"
 
 	filter { "platforms:MacOS" }
 		system "macosx"
@@ -41,6 +41,9 @@ project "Pagoda"
 	location "Pagoda"
 	kind "StaticLib"
 	language "C++"
+
+	cppdialect "C++17"
+	systemversion "latest"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "/%{prj.name}")
@@ -69,16 +72,10 @@ project "Pagoda"
 	}
 
 	filter "system:windows"
-		cppdialect "C++17"
-		systemversion "latest"
-
 		pchheader "pgpch.h"
 		pchsource "Pagoda/src/Pagoda/pgpch.cpp"
 
 	filter "system:macosx"
-		cppdialect "C++17"
-		systemversion "latest"
-
 		sysincludedirs {
 			table.unpack(incDirs)
 		}
@@ -178,11 +175,11 @@ project "TestApp"
 		}
 
 		links {
-			"Pagoda.lib",
-			"spdlogd.lib",
-			"glfw3.lib",
-			"OpenGL32.lib",
-			"lua.lib"
+			"Pagoda",
+			"spdlogd",
+			"glfw3",
+			"OpenGL32",
+			"lua"
 		}
 
 	filter {"system:windows", "configurations:Release"}
@@ -192,11 +189,11 @@ project "TestApp"
 	}
 
 		links {
-			"Pagoda.lib",
-			"spdlog.lib",
-			"glfw3.lib",
-			"OpenGL32.lib",
-			"lua.lib"
+			"Pagoda",
+			"spdlog",
+			"glfw3",
+			"OpenGL32",
+			"lua"
 		}
 		
 	filter "system:macosx"
@@ -207,6 +204,19 @@ project "TestApp"
 	 		"IOKit.framework"
 		}
 		links {
+			"spdlog",
+			"Pagoda",
+			"glfw3",
+			"lua"
+		}
+
+	filter "system:linux"
+		sysincludedirs {
+			table.unpack(incDirs)
+		}
+		links {
+			"pthread",
+			"dl",
 			"spdlog",
 			"Pagoda",
 			"glfw3",

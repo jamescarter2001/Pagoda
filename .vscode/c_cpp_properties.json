@@ -1,0 +1,25 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/Pagoda/src",
+                "${workspaceFolder}/Pagoda/src/Pagoda",
+                "${workspaceFolder}/Pagoda/vendor/spdlog/include",
+                "${workspaceFolder}/Pagoda/vendor/glfw/include",
+                "${workspaceFolder}/Pagoda/vendor/eigen",
+                "${workspaceFolder}/Pagoda/vendor/glad/include",
+                "${workspaceFolder}/Pagoda/vendor/lua/lua/include"
+            ],
+            "defines": [
+                "PG_ENABLE_ASSERTS",
+                "PG_PLATFORM_LINUX"
+            ],
+            "compilerPath": "/usr/bin/clang",
+            "cStandard": "c17",
+            "cppStandard": "c++14",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}
