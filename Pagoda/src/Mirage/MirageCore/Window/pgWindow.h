@@ -38,6 +38,8 @@ namespace Pagoda::Mirage {
             m_WindowData.Height = props.Height;
         }
 
+        virtual ~Window() {}
+
         virtual void Init() = 0;
         virtual void OnUpdate() = 0;
 

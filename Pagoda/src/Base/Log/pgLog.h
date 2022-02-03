@@ -3,7 +3,7 @@
 #include <spdlog/fmt/ostr.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 
-#include "Pagoda/pgCore.h"
+#include "pgCore.h"
 
 #ifdef PG_DEBUG
 

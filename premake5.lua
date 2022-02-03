@@ -59,7 +59,6 @@ project "Pagoda"
 
 	incDirs = {
 		"%{prj.name}/src",
-		"%{prj.name}/src/Pagoda",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{prj.name}/vendor/glfw/include",
 		"%{prj.name}/vendor/eigen",
@@ -73,7 +72,7 @@ project "Pagoda"
 
 	filter "system:windows"
 		pchheader "pgpch.h"
-		pchsource "Pagoda/src/Pagoda/pgpch.cpp"
+		pchsource "Pagoda/src/pgpch.cpp"
 
 	filter "system:macosx"
 		sysincludedirs {
@@ -122,7 +121,6 @@ project "TestApp"
 
 	incDirs = {
 		"Pagoda/src",
-		"Pagoda/src/Pagoda",
 		"Pagoda/vendor/spdlog/include",
 		"Pagoda/vendor/glfw/include",
 		"Pagoda/vendor/eigen",
