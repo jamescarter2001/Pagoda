@@ -11,7 +11,7 @@ namespace Pagoda::Base {
 										virtual const char* GetName() const override { return #type; }*/
 
 #define EVENT_CLASS_CATEGORY(bitfield) \
-    virtual int GetCategories() const { return (int)bitfield; }
+    virtual int GetCategories() const override { return (int)bitfield; }
 
     enum eEventCategory {
         None = 0,

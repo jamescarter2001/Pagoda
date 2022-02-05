@@ -9,6 +9,9 @@ namespace Pagoda::Mirage {
     public:
         Model(VertexBuffer& vb, IndexBuffer& ib);
         virtual ~Model();
+
+        void Bind() const;
+        void Unbind() const;
     private:
         VertexBuffer& m_VertexBuffer;
         IndexBuffer& m_IndexBuffer;

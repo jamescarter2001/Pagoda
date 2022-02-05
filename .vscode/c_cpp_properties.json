@@ -1,10 +1,9 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "MacOS",
             "includePath": [
                 "${workspaceFolder}/Pagoda/src",
-                "${workspaceFolder}/Pagoda/src/Pagoda",
                 "${workspaceFolder}/Pagoda/vendor/spdlog/include",
                 "${workspaceFolder}/Pagoda/vendor/glfw/include",
                 "${workspaceFolder}/Pagoda/vendor/eigen",
@@ -13,11 +12,11 @@
             ],
             "defines": [
                 "PG_ENABLE_ASSERTS",
-                "PG_PLATFORM_LINUX"
+                "PG_PLATFORM_MACOS"
             ],
             "compilerPath": "/usr/bin/clang",
             "cStandard": "c17",
-            "cppStandard": "c++14",
+            "cppStandard": "c++17",
             "intelliSenseMode": "linux-clang-x64"
         }
     ],
