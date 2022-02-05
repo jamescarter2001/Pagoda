@@ -7,7 +7,7 @@
 #include "Mirage/MirageCore/Buffer/pgVertexBufferLayout.h"
 
 namespace Pagoda::Mirage {
-    class GLVertexBufferLayout : public VertexBufferLayout {
+    class PAGODA_API GLVertexBufferLayout : public VertexBufferLayout {
     public:
         virtual ~GLVertexBufferLayout();
 

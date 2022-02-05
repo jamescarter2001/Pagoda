@@ -4,7 +4,7 @@
 #include "pgBuffer.h"
 
 namespace Pagoda::Mirage {
-    class IndexBuffer : public Buffer<unsigned int*> {
+    class PAGODA_API IndexBuffer : public Buffer<unsigned int*> {
     public:
         static IndexBuffer* Create(unsigned int* data, const unsigned int size);
 

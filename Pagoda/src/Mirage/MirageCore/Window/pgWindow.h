@@ -30,7 +30,7 @@ namespace Pagoda::Mirage {
         };
     };
 
-    class Window {
+    class PAGODA_API Window {
     public:
         Window(const WindowProps& props) {
             m_WindowData.Title = props.Title;

@@ -9,7 +9,7 @@ namespace Pagoda::Mirage {
         unsigned char normalized;
     };
 
-    class VertexBufferLayout {
+    class PAGODA_API VertexBufferLayout {
     public:
         static VertexBufferLayout* Create();
 
