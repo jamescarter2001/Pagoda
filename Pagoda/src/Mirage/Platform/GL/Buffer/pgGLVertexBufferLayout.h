@@ -26,20 +26,20 @@ namespace Pagoda::Mirage {
         void Push(unsigned int count) {
             static_assert(false);
         }
-
-        template<>
-        void Push<float>(unsigned int count) override {
-            this->PushElement<float>(GL_FLOAT, count, GL_FALSE);
-        }
-
-        template<>
-        void Push<unsigned int>(unsigned int count) {
-            this->PushElement<unsigned int>(GL_UNSIGNED_INT, count, GL_TRUE);
-        }
-
-        template<>
-        void Push<unsigned char>(unsigned int count) {
-            this->PushElement<unsigned char>(GL_UNSIGNED_BYTE, count, GL_TRUE);
-        }
     };
+    // Explicit template specialisation must be declared outside of class scope.
+    template <>
+    void GLVertexBufferLayout::Push<float>(unsigned int count) {
+        this->PushElement<float>(GL_FLOAT, count, GL_FALSE);
+    }
+
+    template <>
+    void GLVertexBufferLayout::Push<unsigned int>(unsigned int count) {
+        this->PushElement<unsigned int>(GL_UNSIGNED_INT, count, GL_TRUE);
+    }
+
+    template <>
+    void GLVertexBufferLayout::Push<unsigned char>(unsigned int count) {
+        this->PushElement<unsigned char>(GL_UNSIGNED_BYTE, count, GL_TRUE);
+    }
 }
