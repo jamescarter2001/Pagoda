@@ -18,6 +18,25 @@
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "linux-clang-x64"
+        },
+        {
+            "name": "Windows",
+            "includePath": [
+                "${workspaceFolder}/Pagoda/src",
+                "${workspaceFolder}/Pagoda/vendor/spdlog/include",
+                "${workspaceFolder}/Pagoda/vendor/glfw/include",
+                "${workspaceFolder}/Pagoda/vendor/eigen",
+                "${workspaceFolder}/Pagoda/vendor/glad/include",
+                "${workspaceFolder}/Pagoda/vendor/lua/lua/include"
+            ],
+            "defines": [
+                "PG_ENABLE_ASSERTS",
+                "PG_PLATFORM_WINDOWS"
+            ],
+            "compilerPath": "D:/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "windows-msvc-x64"
         }
     ],
     "version": 4
