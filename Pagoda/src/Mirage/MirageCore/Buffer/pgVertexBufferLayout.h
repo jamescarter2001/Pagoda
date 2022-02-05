@@ -11,12 +11,13 @@ namespace Pagoda::Mirage {
 
     class VertexBufferLayout {
     public:
+        static VertexBufferLayout* Create();
+        
         static int GetSizeOfType(unsigned int type);
 
-        template <typename T>
-        void Push(unsigned int count) {
-            static_assert(false);
-        }
+        virtual void PushFloat(unsigned int count) = 0;
+        virtual void PushInt(unsigned int count) = 0;
+        virtual void PushChar(unsigned int count) = 0;
 
         inline unsigned int GetStride() {
             return m_Stride;

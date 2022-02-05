@@ -1,7 +1,7 @@
 #pragma once
 #include "pgpch.h"
 
-#include "glad/glad.h"
+#include <glad/glad.h>
 
 #include "Mirage/MirageCore/Buffer/pgVertexBuffer.h"
 
