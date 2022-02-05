@@ -22,14 +22,14 @@ namespace Pagoda::Mirage {
         }
 
     void GLVertexBufferLayout::PushFloat(unsigned int count) {
-        this->PushElement<float>(GL_FLOAT, count, GL_FALSE);
+        this->Push<float>(GL_FLOAT, count, GL_FALSE);
     }
 
     void GLVertexBufferLayout::PushInt(unsigned int count) {
-        this->PushElement<unsigned int>(GL_UNSIGNED_INT, count, GL_TRUE);
+        this->Push<unsigned int>(GL_UNSIGNED_INT, count, GL_TRUE);
     }
 
     void GLVertexBufferLayout::PushChar(unsigned int count) {
-        this->PushElement<unsigned char>(GL_UNSIGNED_BYTE, count, GL_TRUE);
+        this->Push<unsigned char>(GL_UNSIGNED_BYTE, count, GL_TRUE);
     }
 }

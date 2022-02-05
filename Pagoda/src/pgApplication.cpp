@@ -61,7 +61,7 @@ namespace Pagoda {
     }
 
     bool Application::Setup() {
-        PG_CORE_TRACE("Starting engine application: {}", m_Name);
+        PG_CORE_TRACE("Starting engine application: {}", this->m_Name);
         return true;
     }
 

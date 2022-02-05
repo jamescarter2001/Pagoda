@@ -29,7 +29,7 @@ namespace Pagoda::Mirage {
 
     protected:
         template <typename T>
-        void PushElement(unsigned int type, unsigned int count, unsigned char normalized) {
+        void Push(unsigned int type, unsigned int count, unsigned char normalized) {
             m_Elements.push_back({type, count, normalized});
             m_Stride += sizeof(T) * count;
         }
