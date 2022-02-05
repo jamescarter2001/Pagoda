@@ -12,6 +12,8 @@ namespace Pagoda::Mirage {
     class VertexBufferLayout {
     public:
         static VertexBufferLayout* Create();
+
+        virtual ~VertexBufferLayout() {}
         
         static int GetSizeOfType(unsigned int type);
 

@@ -3,10 +3,11 @@
 #include "pgGLVertexBufferLayout.h"
 
 namespace Pagoda::Mirage {
-
     VertexBufferLayout* VertexBufferLayout::Create() {
         return new GLVertexBufferLayout();
     }
+
+    GLVertexBufferLayout::~GLVertexBufferLayout() {}
 
     int VertexBufferLayout::GetSizeOfType(unsigned int type) {
             switch (type) {

@@ -8,7 +8,9 @@
 
 namespace Pagoda::Mirage {
     class GLVertexBufferLayout : public VertexBufferLayout {
-    public:  
+    public:
+        virtual ~GLVertexBufferLayout();
+
         virtual void PushFloat(unsigned int count) override;
         
         virtual void PushInt(unsigned int count) override;
