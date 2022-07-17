@@ -3,7 +3,7 @@
 
 namespace Pagoda::Mirage {
     template<typename T>
-    class Buffer {
+    class PAGODA_API Buffer {
     public:
         virtual ~Buffer() {}
 

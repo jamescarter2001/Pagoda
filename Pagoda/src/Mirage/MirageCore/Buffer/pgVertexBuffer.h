@@ -4,7 +4,7 @@
 #include "pgBuffer.h"
 
 namespace Pagoda::Mirage {
-    class VertexBuffer : public Buffer<void*> {
+    class PAGODA_API VertexBuffer : public Buffer<void*> {
     public:
         static VertexBuffer* Create(void* data, const unsigned int size);
 

@@ -6,7 +6,7 @@
 #include "Mirage/MirageCore/Buffer/pgIndexBuffer.h"
 
 namespace Pagoda::Mirage {
-    class GLIndexBuffer : public IndexBuffer {
+    class PAGODA_API GLIndexBuffer : public IndexBuffer {
     public:
         static IndexBuffer* Create(unsigned int* data, const unsigned int size);
 

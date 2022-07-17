@@ -6,7 +6,7 @@
 #include "Mirage/MirageCore/Buffer/pgVertexBuffer.h"
 
 namespace Pagoda::Mirage {
-    class GLVertexBuffer : public VertexBuffer {
+    class PAGODA_API GLVertexBuffer : public VertexBuffer {
     public:
         static VertexBuffer* Create(void* data, const unsigned int size);
 

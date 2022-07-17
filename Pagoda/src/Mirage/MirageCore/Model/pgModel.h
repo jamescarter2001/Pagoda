@@ -6,7 +6,7 @@
 #include "Mirage/MirageCore/Buffer/pgIndexBuffer.h"
 
 namespace Pagoda::Mirage {
-    class Model {
+    class PAGODA_API Model {
     public:
         Model(VertexBuffer& vb, VertexBufferLayout& vbl, IndexBuffer& ib);
         virtual ~Model();
