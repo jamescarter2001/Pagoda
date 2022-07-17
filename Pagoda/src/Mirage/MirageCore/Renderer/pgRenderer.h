@@ -4,10 +4,13 @@
 namespace Pagoda::Mirage {
     class Renderer {
     public:
-        Renderer();
+        Renderer(Model& model);
         ~Renderer();
 
         virtual void Clear() const = 0;
-        virtual void Draw(Model& model) const = 0;
+        virtual void Draw() const = 0;
+
+    protected:
+        Model& m_Model;
     };
 }

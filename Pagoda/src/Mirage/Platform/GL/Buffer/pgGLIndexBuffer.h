@@ -8,8 +8,6 @@
 namespace Pagoda::Mirage {
     class PAGODA_API GLIndexBuffer : public IndexBuffer {
     public:
-        static IndexBuffer* Create(unsigned int* data, const unsigned int size);
-
         GLIndexBuffer(unsigned int* data, const unsigned int size);
         ~GLIndexBuffer();
 

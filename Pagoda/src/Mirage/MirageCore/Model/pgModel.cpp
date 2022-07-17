@@ -8,12 +8,10 @@ namespace Pagoda::Mirage {
     Model::~Model() {}
 
     void Model::Bind() const {
-        this->m_VertexBuffer.Bind();
         this->m_IndexBuffer.Bind();
     }
 
     void Model::Unbind() const {
-        this->m_VertexBuffer.Unbind();
         this->m_IndexBuffer.Unbind();
     }
 }

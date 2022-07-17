@@ -1,5 +1,7 @@
 #pragma once
 
+#include "pgApplication.h"
+
 namespace Pagoda {
     extern Application* CreateApplication();
 }

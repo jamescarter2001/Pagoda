@@ -23,6 +23,12 @@ namespace Pagoda::Mirage {
         return new GLWindow(props);
     }
 
+    void GLAPIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+        fprintf(stderr, "[OpenGL] %s type = 0x%x, severity = 0x%x, message = %s\n",
+                (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+                type, severity, message);
+    }
+
     void GLWindow::Init() {
         PG_CORE_TRACE("Creating new OpenGL window: {0} ({1}, {2})", this->m_WindowData.Title, this->m_WindowData.Width, this->m_WindowData.Height);
         PG_CORE_ASSERT(glfwInit(), "GLFW initialization error.");
@@ -59,10 +65,16 @@ namespace Pagoda::Mirage {
             windowData->EventCallback(e);
         });
 
+        /* Causes black screen with 2D
+        
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_CULL_FACE);
         glFrontFace(GL_CW);
         glCullFace(GL_BACK);
+
+        */
+
+        glDebugMessageCallback(DebugCallback, 0);
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

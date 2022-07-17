@@ -7,6 +7,7 @@
 #include <sstream>
 #include <functional>
 #include <csignal>
+#include <fstream>
 
 #include "Base/Log/pgLog.h"
 #include "pgCore.h"

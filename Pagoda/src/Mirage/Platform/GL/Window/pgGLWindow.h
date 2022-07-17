@@ -22,6 +22,8 @@ namespace Pagoda::Mirage {
         }
     };
 
+    void GLAPIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam);
+
     class GLWindow : public Window {
     public:
         GLWindow(const WindowProps& props);

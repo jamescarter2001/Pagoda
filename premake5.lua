@@ -62,7 +62,7 @@ project "Pagoda"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{prj.name}/vendor/glfw/include",
 		"%{prj.name}/vendor/eigen",
-		"%{prj.name}/vendor/glad/include",
+		"%{prj.name}/vendor/glad/glad/include",
 		"%{prj.name}/vendor/lua/lua/include"
 	}
 
@@ -174,7 +174,7 @@ project "TestApp"
 		}
 
 		links {
-			"Pagoda",
+			"pagoda",
 			"spdlogd",
 			"glfw3",
 			"OpenGL32",
@@ -189,7 +189,7 @@ project "TestApp"
 	}
 
 		links {
-			"Pagoda",
+			"pagoda",
 			"spdlog",
 			"glfw3",
 			"OpenGL32",
@@ -206,7 +206,7 @@ project "TestApp"
 		}
 		links {
 			"spdlog",
-			"Pagoda",
+			"pagoda",
 			"glfw3",
 			"lua",
 			"glad"
@@ -220,7 +220,7 @@ project "TestApp"
 			"pthread",
 			"dl",
 			"spdlog",
-			"Pagoda",
+			"pagoda",
 			"glfw3",
 			"lua",
 			"glad"

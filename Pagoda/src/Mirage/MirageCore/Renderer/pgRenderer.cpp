@@ -2,6 +2,6 @@
 #include "pgRenderer.h"
 
 namespace Pagoda::Mirage {
-    Renderer::Renderer() {}
+    Renderer::Renderer(Model& model) : m_Model(model) {}
     Renderer::~Renderer() {}
 }

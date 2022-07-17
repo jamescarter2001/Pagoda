@@ -8,8 +8,6 @@
 namespace Pagoda::Mirage {
     class PAGODA_API GLVertexBuffer : public VertexBuffer {
     public:
-        static VertexBuffer* Create(void* data, const unsigned int size);
-
         GLVertexBuffer(void* data, const unsigned int size);
         ~GLVertexBuffer();
 

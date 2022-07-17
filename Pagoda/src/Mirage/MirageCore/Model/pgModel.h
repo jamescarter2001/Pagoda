@@ -14,9 +14,9 @@ namespace Pagoda::Mirage {
         void Bind() const;
         void Unbind() const;
 
-        inline VertexBuffer& GetVertexBuffer() { return this->m_VertexBuffer; };
-        inline VertexBufferLayout& GetVertexBufferLayout() { return this->m_VertexBufferLayout; };
-        inline IndexBuffer& getIndexBuffer() { return this->m_IndexBuffer; };
+        inline VertexBuffer& GetVertexBuffer() const { return this->m_VertexBuffer; };
+        inline VertexBufferLayout& GetVertexBufferLayout() const { return this->m_VertexBufferLayout; };
+        inline IndexBuffer& GetIndexBuffer() const { return this->m_IndexBuffer; };
     private:
         VertexBuffer& m_VertexBuffer;
         VertexBufferLayout& m_VertexBufferLayout;
