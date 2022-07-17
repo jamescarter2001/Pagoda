@@ -3,7 +3,7 @@
 #include "pgModel.h"
 
 namespace Pagoda::Mirage {
-    Model::Model(VertexBuffer& vb, IndexBuffer& ib) : m_VertexBuffer(vb), m_IndexBuffer(ib) {}
+    Model::Model(VertexBuffer& vb, VertexBufferLayout& vbl, IndexBuffer& ib) : m_VertexBuffer(vb), m_VertexBufferLayout(vbl), m_IndexBuffer(ib) {}
 
     Model::~Model() {}
 

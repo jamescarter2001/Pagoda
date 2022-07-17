@@ -21,7 +21,7 @@ namespace Pagoda::Mirage {
         virtual void PushInt(unsigned int count) = 0;
         virtual void PushChar(unsigned int count) = 0;
 
-        inline unsigned int GetStride() {
+        inline unsigned int GetStride() const {
             return m_Stride;
         }
 

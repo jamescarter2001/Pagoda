@@ -41,6 +41,8 @@ namespace Pagoda::Mirage {
         /* Make the window's context current */
         glfwMakeContextCurrent(m_Window);
 
+        PG_CORE_ASSERT(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "GLAD initialization error.");
+
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
             WindowData* windowData = (WindowData*)glfwGetWindowUserPointer(window);
             Base::WindowCloseEvent e = Base::WindowCloseEvent();
@@ -56,6 +58,15 @@ namespace Pagoda::Mirage {
 
             windowData->EventCallback(e);
         });
+
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_CULL_FACE);
+        glFrontFace(GL_CW);
+        glCullFace(GL_BACK);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         PG_CORE_INFO("OpenGL window initialization successful.");
     }
 

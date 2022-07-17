@@ -1,6 +1,8 @@
 #include "pgpch.h"
 #include "pgApplication.h"
 
+#include "Mirage/Platform/GL/Buffer/pgGLVertexBuffer.h"
+
 namespace Pagoda {
 
     Application* Application::s_Instance = nullptr;

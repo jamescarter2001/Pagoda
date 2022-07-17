@@ -62,7 +62,7 @@ project "Pagoda"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{prj.name}/vendor/glfw/include",
 		"%{prj.name}/vendor/eigen",
-		"%{prj.name}/vendor/glad/include",
+		"%{prj.name}/vendor/glad/glad/include",
 		"%{prj.name}/vendor/lua/lua/include"
 	}
 
@@ -124,7 +124,7 @@ project "TestApp"
 		"Pagoda/vendor/spdlog/include",
 		"Pagoda/vendor/glfw/include",
 		"Pagoda/vendor/eigen",
-		"Pagoda/vendor/glad/include",
+		"Pagoda/vendor/glad/glad/include",
 		"Pagoda/vendor/lua/lua/include"
 	}
 
@@ -135,6 +135,7 @@ project "TestApp"
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
 		"Pagoda/vendor/lua/bin/%{outputdir}/lua",
+		"Pagoda/vendor/glad/bin/%{outputdir}/glad",
 		"Pagoda/vendor/lua/bin",
 		"Pagoda/vendor/spdlog/build",
 		"Pagoda/vendor/glfw/build/src"
@@ -177,6 +178,7 @@ project "TestApp"
 			"spdlogd",
 			"glfw3",
 			"OpenGL32",
+			"glad",
 			"lua"
 		}
 
@@ -191,6 +193,7 @@ project "TestApp"
 			"spdlog",
 			"glfw3",
 			"OpenGL32",
+			"glad",
 			"lua"
 		}
 		
@@ -205,7 +208,8 @@ project "TestApp"
 			"spdlog",
 			"Pagoda",
 			"glfw3",
-			"lua"
+			"lua",
+			"glad"
 		}
 
 	filter "system:linux"
@@ -218,5 +222,6 @@ project "TestApp"
 			"spdlog",
 			"Pagoda",
 			"glfw3",
-			"lua"
+			"lua",
+			"glad"
 		}
