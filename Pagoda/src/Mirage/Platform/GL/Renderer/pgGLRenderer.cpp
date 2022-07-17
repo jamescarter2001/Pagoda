@@ -14,5 +14,7 @@ namespace Pagoda::Mirage {
         vao.Bind();
 
         vao.AddBuffer(model.GetVertexBuffer(), model.GetVertexBufferLayout());
+        
+        
     }
 }
