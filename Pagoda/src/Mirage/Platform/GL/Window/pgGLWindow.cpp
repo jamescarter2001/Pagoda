@@ -24,14 +24,15 @@ namespace Pagoda::Mirage {
     }
 
     void GLAPIENTRY DebugCallback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
-        fprintf(stderr, "[OpenGL] %s type = 0x%x, severity = 0x%x, message = %s\n",
+        /* fprintf(stderr, "[OpenGL] %s type = 0x%x, severity = 0x%x, message = %s\n",
                 (type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-                type, severity, message);
+                type, severity, message);*/
+        PG_CORE_WARNING("[OpenGL] type = {0}, severity = {1}, message = {2}", type == GL_DEBUG_TYPE_ERROR ? "ERROR" : "INFO", severity, message);
     }
 
     void GLWindow::Init() {
         PG_CORE_TRACE("Creating new OpenGL window: {0} ({1}, {2})", this->m_WindowData.Title, this->m_WindowData.Width, this->m_WindowData.Height);
-        PG_CORE_ASSERT(glfwInit(), "GLFW initialization error.");
+        PG_CORE_ASSERT(glfwInit(), "GLFW initialisation error.");
 
         glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, m_GLVersion.Major);
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, m_GLVersion.Minor);
@@ -47,7 +48,7 @@ namespace Pagoda::Mirage {
         /* Make the window's context current */
         glfwMakeContextCurrent(m_Window);
 
-        PG_CORE_ASSERT(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "GLAD initialization error.");
+        PG_CORE_ASSERT(gladLoadGLLoader((GLADloadproc)glfwGetProcAddress), "GLAD initialisation error.");
 
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
             WindowData* windowData = (WindowData*)glfwGetWindowUserPointer(window);
@@ -79,7 +80,7 @@ namespace Pagoda::Mirage {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-        PG_CORE_INFO("OpenGL window initialization successful.");
+        PG_CORE_INFO("OpenGL window initialisation successful");
     }
 
     void GLWindow::OnUpdate() {

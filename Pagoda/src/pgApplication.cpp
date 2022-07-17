@@ -14,12 +14,14 @@ namespace Pagoda {
 
         // Mirage
         PG_CORE_TRACE("Initializing Mirage subsystem...");
-        this->m_Window = Mirage::Window::Create(Mirage::WindowProps(name));
+        this->m_Window = Mirage::MiragePipelineFactory::CreateWindow(Mirage::WindowProps(name));
         this->m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
+        PG_CORE_INFO("Mirage initialisation successful");
 
-        // Lua
+        // Luanne
         PG_CORE_TRACE("Initializing Lua subsystem...");
-        this->m_LuaHandler = Lua::LuaHandler::Create();
+        this->m_LuaHandler = Luanne::LuaHandler::Create();
+        PG_CORE_INFO("Lua initialisation successful");
 
         this->s_Instance = this;
     }
@@ -68,8 +70,8 @@ namespace Pagoda {
     }
 
     void Application::Run() {
-        PG_CORE_ASSERT_CRITICAL(this->Setup(), "System failed to initialize.");
-        PG_CORE_INFO("System initialization success.");
+        PG_CORE_ASSERT_CRITICAL(this->Setup(), "System failed to initialise.");
+        PG_CORE_INFO("System initialisation success");
         this->m_IsRunning = true;
 
         while (m_IsRunning) {

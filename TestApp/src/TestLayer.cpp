@@ -1,5 +1,7 @@
 #include "TestLayer.h"
 
+using namespace Pagoda::Mirage;
+
 TestLayer::TestLayer(const std::string& name) : Layer(name) {}
 
 TestLayer::~TestLayer() {
@@ -26,10 +28,10 @@ void TestLayer::OnAttach() {
         2, 3, 0
    };
 
-   Pagoda::Mirage::VertexBuffer* vertexBuffer = Pagoda::Mirage::GLVertexBuffer::Create(vertex, sizeof(vertex));
-   Pagoda::Mirage::VertexBufferLayout* layout = Pagoda::Mirage::GLVertexBufferLayout::Create();
+   Pagoda::Mirage::VertexBuffer* vertexBuffer = MiragePipelineFactory::CreateVertexBuffer(vertex, sizeof(vertex));
+   Pagoda::Mirage::VertexBufferLayout* layout = MiragePipelineFactory::CreateVertexBufferLayout();
 
-   Pagoda::Mirage::IndexBuffer* indexBuffer = Pagoda::Mirage::GLIndexBuffer::Create(indicies, sizeof(indicies));
+   Pagoda::Mirage::IndexBuffer* indexBuffer = MiragePipelineFactory::CreateIndexBuffer(indicies, sizeof(indicies));
 
    layout->PushFloat(2);
 
@@ -38,5 +40,5 @@ void TestLayer::OnAttach() {
    std::string shaderPath("E:/Dev/Pagoda/Pagoda/res/shader/Basic2D.shader");
    Pagoda::Mirage::GLShader* shaderProgram = new Pagoda::Mirage::GLShader(shaderPath);
 
-   this->m_Renderer = new Pagoda::Mirage::GLRenderer(*model, *shaderProgram);
+   this->m_Renderer = MiragePipelineFactory::CreateRenderer(*model, *shaderProgram);
 }

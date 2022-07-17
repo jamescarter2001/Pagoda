@@ -7,9 +7,9 @@
 #include "Base/Message/pgMessageDispatcher.h"
 #include "Base/Layer/pgLayerStack.h"
 
-#include "Lua/pgLua.h"
+#include "Luanne/pgLuanne.h"
 
-#include "Mirage/Platform/GL/Window/pgGLWindow.h"
+#include "Mirage/pgMiragePipelineFactory.h"
 
 namespace Pagoda {
     class PAGODA_API Application {
@@ -42,6 +42,6 @@ namespace Pagoda {
         Base::LayerStack m_LayerStack;
 
         Mirage::Window* m_Window;
-        Lua::LuaHandler* m_LuaHandler;
+        Luanne::LuaHandler* m_LuaHandler;
     };
 }

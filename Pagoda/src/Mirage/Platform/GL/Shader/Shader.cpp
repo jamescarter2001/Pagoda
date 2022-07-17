@@ -63,14 +63,18 @@ namespace Pagoda::Mirage {
         glGetShaderiv(id, GL_COMPILE_STATUS, &result);
 
         if (result == GL_FALSE) {
-            std::cout << "Shader Compilation Error [" << (type == GL_VERTEX_SHADER ? "Vertex" : "Fragment") << "]" << std::endl;
+            //std::cout << "Shader Compilation Error [" << (type == GL_VERTEX_SHADER ? "Vertex" : "Fragment") << "]" << std::endl;
+            PG_CORE_ERROR("OpenGL Shader compilation error: ({0})", type == GL_VERTEX_SHADER ? "Vertex" : "Fragment");
 
             int length;
             glGetShaderiv(id, GL_INFO_LOG_LENGTH, &length);
             char* message = (char*)alloca(length * sizeof(char));
             glGetShaderInfoLog(id, length, &length, message);
 
-            std::cout << message << std::endl;
+            std::string errorMessage(message);
+            errorMessage.pop_back();
+
+            PG_CORE_ERROR(errorMessage);
             glDeleteShader(id);
             return 0;
         }

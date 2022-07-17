@@ -8,8 +8,8 @@ class SandboxApp : public Pagoda::Application {
 public:
 	// Application default constructor called automatically.
 	SandboxApp(std::string& name) : Pagoda::Application(name) {
-		PG_TRACE("Created new engine application.");
-            PushLayer(new TestLayer("TestLayer"));
+		PG_TRACE("Created new engine application");
+        PushLayer(new TestLayer("TestLayer"));
 		//PushOverlay(new GameEngine::ReddogLayer());
 	}
 };
