@@ -13,13 +13,13 @@ namespace Pagoda {
         this->m_IsRunning = false;
 
         // Mirage
-        PG_CORE_TRACE("Initializing Mirage subsystem...");
+        PG_CORE_TRACE("Initialising Mirage subsystem...");
         this->m_Window = Mirage::MiragePipelineFactory::CreateWindow(Mirage::WindowProps(name));
         this->m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
         PG_CORE_INFO("Mirage initialisation successful");
 
         // Luanne
-        PG_CORE_TRACE("Initializing Lua subsystem...");
+        PG_CORE_TRACE("Initialising Lua subsystem...");
         this->m_LuaHandler = Luanne::LuaHandler::Create();
         PG_CORE_INFO("Lua initialisation successful");
 
