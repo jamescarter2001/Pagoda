@@ -1,4 +1,7 @@
 #pragma once
+
+#include "pgpch.h"
+
 #include "Mirage/MirageCore/Window/pgWindow.h"
 #include "Mirage/Platform/GL/Window/pgGLWindow.h"
 
@@ -14,6 +17,9 @@
 #include "Mirage/MirageCore/Renderer/pgRenderer.h"
 #include "Mirage/Platform/GL/Renderer/pgGLRenderer.h"
 
+#include "Mirage/MirageCore/Shader/pgShader.h"
+#include "Mirage/Platform/GL/Shader/pgGLShader.h"
+
 namespace Pagoda::Mirage {
     class MiragePipelineFactory {
     public:
@@ -23,6 +29,8 @@ namespace Pagoda::Mirage {
         static VertexBufferLayout* CreateVertexBufferLayout();
         static IndexBuffer* CreateIndexBuffer(unsigned int* data, const unsigned int size);
 
-        static Renderer* CreateRenderer(Model& model, GLShader& shader);
+        static Shader* CreateShader(std::string& filePath);
+
+        static Renderer* CreateRenderer(Model& model, Shader& shader);
     };
-}
+};

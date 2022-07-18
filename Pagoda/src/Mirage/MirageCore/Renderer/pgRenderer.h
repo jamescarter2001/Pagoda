@@ -5,9 +5,8 @@ namespace Pagoda::Mirage {
     class Renderer {
     public:
         Renderer(Model& model);
-        ~Renderer();
+        virtual ~Renderer();
 
-        virtual void Clear() const = 0;
         virtual void Draw() const = 0;
 
     protected:

@@ -12,5 +12,5 @@ class TestLayer : public  Pagoda::Base::Layer {
         virtual void OnAttach() override;
 
     private:
-        Pagoda::Mirage::Renderer* m_Renderer;
+        Pagoda::Mirage::FXPipeline* m_FXPipeline;
 };

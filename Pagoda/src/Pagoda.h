@@ -7,4 +7,7 @@
 #include "Base/Event/pgEvent.h"
 
 #include "Mirage/MirageCore/Model/pgModel.h"
+
+#include "Mirage/Platform/GL/Pipeline/pgGLFXPipeline.h"
+
 #include "Mirage/pgMiragePipelineFactory.h"

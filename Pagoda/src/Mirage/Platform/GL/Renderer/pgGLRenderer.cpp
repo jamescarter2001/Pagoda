@@ -2,7 +2,7 @@
 #include "pgGLRenderer.h"
 
 namespace Pagoda::Mirage {
-    GLRenderer::GLRenderer(Model& model, GLShader& shader) : Renderer(model), m_Shader(shader) {
+    GLRenderer::GLRenderer(Model& model, Shader& shader) : Renderer(model), m_Shader(shader) {
 
         this->m_Vao = new GLVertexArray();
 
@@ -14,13 +14,7 @@ namespace Pagoda::Mirage {
         delete m_Vao;
     }
 
-    void GLRenderer::Clear() const {
-        glClear(GL_COLOR_BUFFER_BIT);
-    }
-
     void GLRenderer::Draw() const {
-        this->Clear();
-
         this->m_Model.Bind();
         this->m_Shader.Bind();
         glDrawElements(GL_TRIANGLES, this->m_Model.GetIndexBuffer().GetCount(), GL_UNSIGNED_INT, nullptr);

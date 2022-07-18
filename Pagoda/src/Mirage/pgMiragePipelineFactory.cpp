@@ -19,7 +19,11 @@ namespace Pagoda::Mirage {
         return GLIndexBuffer::Create(data, size);
     }
 
-    Renderer* MiragePipelineFactory::CreateRenderer(Model& model, GLShader& shader) {
+    Renderer* MiragePipelineFactory::CreateRenderer(Model& model, Shader& shader) {
         return new GLRenderer(model, shader);
+    }
+
+    Shader* MiragePipelineFactory::CreateShader(std::string& filePath) {
+        return new GLShader(filePath);
     }
 }

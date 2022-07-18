@@ -12,7 +12,7 @@ void TestLayer::OnEvent(Pagoda::Base::Event& e) const {
 }
 
 void TestLayer::OnUpdate() const {
-    this->m_Renderer->Draw();
+    this->m_FXPipeline->Run();
 }
 
 void TestLayer::OnAttach() {
@@ -40,5 +40,6 @@ void TestLayer::OnAttach() {
    std::string shaderPath("E:/Dev/Pagoda/Pagoda/res/shader/Basic2D.shader");
    Pagoda::Mirage::GLShader* shaderProgram = new Pagoda::Mirage::GLShader(shaderPath);
 
-   this->m_Renderer = MiragePipelineFactory::CreateRenderer(*model, *shaderProgram);
+   this->m_FXPipeline = new Pagoda::Mirage::GLFXPipeline();
+   this->m_FXPipeline->Register(model);
 }
