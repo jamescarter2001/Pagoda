@@ -6,15 +6,15 @@ workspace "Pagoda"
 	}
 
 	platforms {
-		"Win32",
+		"WinARM64",
 		"Win64",
 		"Linux",
 		"MacOS",
 	}
 	
-	filter { "platforms:Win32" }
+	filter { "platforms:WinARM64" }
 		system "windows"
-		architecture "x86"
+		architecture "arm64"
 		defines "PG_PLATFORM_WINDOWS"
 
 	filter { "platforms:Win64" }
