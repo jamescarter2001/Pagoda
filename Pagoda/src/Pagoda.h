@@ -10,4 +10,4 @@
 
 #include "Mirage/Platform/GL/Pipeline/pgGLFXPipeline.h"
 
-#include "Mirage/pgMiragePipelineFactory.h"
+#include "Mirage/pgMirageFactory.h"

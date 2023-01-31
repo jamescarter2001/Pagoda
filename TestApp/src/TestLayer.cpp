@@ -28,10 +28,10 @@ void TestLayer::OnAttach() {
         2, 3, 0
    };
 
-   Pagoda::Mirage::VertexBuffer* vertexBuffer = MiragePipelineFactory::CreateVertexBuffer(vertex, sizeof(vertex));
-   Pagoda::Mirage::VertexBufferLayout* layout = MiragePipelineFactory::CreateVertexBufferLayout();
+   Pagoda::Mirage::VertexBuffer* vertexBuffer = MirageFactory::CreateVertexBuffer(vertex, sizeof(vertex));
+   Pagoda::Mirage::VertexBufferLayout* layout = MirageFactory::CreateVertexBufferLayout();
 
-   Pagoda::Mirage::IndexBuffer* indexBuffer = MiragePipelineFactory::CreateIndexBuffer(indicies, sizeof(indicies));
+   Pagoda::Mirage::IndexBuffer* indexBuffer = MirageFactory::CreateIndexBuffer(indicies, sizeof(indicies));
 
    layout->PushFloat(2);
 

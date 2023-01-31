@@ -9,7 +9,7 @@
 
 #include "Luanne/pgLuanne.h"
 
-#include "Mirage/pgMiragePipelineFactory.h"
+#include "Mirage/pgMirageFactory.h"
 
 namespace Pagoda {
     class PAGODA_API Application {

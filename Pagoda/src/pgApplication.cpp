@@ -14,7 +14,7 @@ namespace Pagoda {
 
         // Mirage
         PG_CORE_TRACE("Initialising Mirage subsystem...");
-        this->m_Window = Mirage::MiragePipelineFactory::CreateWindow(Mirage::WindowProps(name));
+        this->m_Window = Mirage::MirageFactory::CreateWindow(Mirage::WindowProps(name));
         this->m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
         PG_CORE_INFO("Mirage initialisation successful");
 

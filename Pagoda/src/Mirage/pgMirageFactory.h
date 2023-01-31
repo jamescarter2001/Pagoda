@@ -21,7 +21,7 @@
 #include "Mirage/Platform/GL/Shader/pgGLShader.h"
 
 namespace Pagoda::Mirage {
-    class MiragePipelineFactory {
+    class MirageFactory {
     public:
         static Window* CreateWindow(const WindowProps& props);
 

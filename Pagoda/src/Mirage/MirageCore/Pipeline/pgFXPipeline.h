@@ -2,7 +2,7 @@
 
 #include "pgpch.h"
 
-#include "Mirage/pgMiragePipelineFactory.h"
+#include "Mirage/pgMirageFactory.h"
 
 namespace Pagoda::Mirage {
     class FXPipeline {
@@ -17,7 +17,8 @@ namespace Pagoda::Mirage {
         virtual void Clear() const = 0;
 
     private:
-        std::vector<Model*> m_Models;
+        std::unordered_map<Model*, Renderer*> m_ModelRenderers;
+        std::vector<Renderer*> m_Renderers;
         Shader* m_Shader;
     };
 }
