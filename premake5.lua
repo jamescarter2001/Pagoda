@@ -78,11 +78,6 @@ project "Pagoda"
 			table.unpack(incDirs)
 		}
 
-		--[[postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/TestApp")
-		}--]]
-
 	filter "configurations:Debug"
 		defines {
 		"PG_DEBUG",
@@ -121,10 +116,6 @@ project "TestApp"
 	incDirs = {
 		"Pagoda/src",
 		"Pagoda/vendor/spdlog/include",
-		--[["Pagoda/vendor/glfw/include",
-		"Pagoda/vendor/eigen",
-		"Pagoda/vendor/glad/glad/include",
-		"Pagoda/vendor/lua/lua/include"--]]
 	}
 
 	includedirs {
@@ -133,11 +124,7 @@ project "TestApp"
 
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
-		"Pagoda/vendor/spdlog/build",
-		--[["Pagoda/vendor/lua/bin/%{outputdir}/lua",
-		"Pagoda/vendor/glad/bin/%{outputdir}/glad",
-		"Pagoda/vendor/lua/bin",
-		"Pagoda/vendor/glfw/build/src"--]]
+		"Pagoda/vendor/spdlog/build"
 	}
 
 	filter "configurations:Debug"
@@ -169,10 +156,9 @@ project "TestApp"
 		links {
 			"pagoda",
 			"spdlogd",
-			--[["glfw3",
-			"OpenGL32",
-			"glad",
-			"lua"--]]
+			"d3d11",
+			"dxgi",
+			"d3dcompiler"
 		}
 
 	filter {"system:windows", "configurations:Release"}
@@ -184,10 +170,9 @@ project "TestApp"
 		links {
 			"pagoda",
 			"spdlog",
-			--[["glfw3",
-			"OpenGL32",
-			"glad",
-			"lua"--]]
+			"d3d11",
+			"dxgi",
+			"d3dcompiler"
 		}
 		
 	filter "system:macosx"
@@ -198,10 +183,7 @@ project "TestApp"
 		}
 		links {
 			"spdlog",
-			"pagoda",
-			--[["glfw3",
-			"lua",
-			"glad"--]]
+			"pagoda"
 		}
 
 	filter "system:linux"
@@ -212,8 +194,5 @@ project "TestApp"
 			"pthread",
 			"dl",
 			"spdlog",
-			"pagoda",
-			--[["glfw3",
-			"lua",
-			"glad"--]]
+			"pagoda"
 		}
