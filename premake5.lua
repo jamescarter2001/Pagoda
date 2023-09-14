@@ -60,22 +60,21 @@ project "Pagoda"
 	incDirs = {
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/glfw/include",
+		--[["%{prj.name}/vendor/glfw/include",
 		"%{prj.name}/vendor/eigen",
 		"%{prj.name}/vendor/glad/glad/include",
-		"%{prj.name}/vendor/lua/lua/include"
+		"%{prj.name}/vendor/lua/lua/include"--]]
 	}
 
 	includedirs {
 		table.unpack(incDirs)
 	}
 
-	filter "system:windows"
-		pchheader "pgpch.h"
-		pchsource "Pagoda/src/pgpch.cpp"
+	pchheader "pgpch.h"
+	pchsource "Pagoda/src/pgpch.cpp"
 
 	filter "system:macosx"
-		sysincludedirs {
+		externalincludedirs { --[[  sysincludedirs --]]
 			table.unpack(incDirs)
 		}
 
@@ -122,10 +121,10 @@ project "TestApp"
 	incDirs = {
 		"Pagoda/src",
 		"Pagoda/vendor/spdlog/include",
-		"Pagoda/vendor/glfw/include",
+		--[["Pagoda/vendor/glfw/include",
 		"Pagoda/vendor/eigen",
 		"Pagoda/vendor/glad/glad/include",
-		"Pagoda/vendor/lua/lua/include"
+		"Pagoda/vendor/lua/lua/include"--]]
 	}
 
 	includedirs {
@@ -134,18 +133,12 @@ project "TestApp"
 
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
-		"Pagoda/vendor/lua/bin/%{outputdir}/lua",
+		"Pagoda/vendor/spdlog/build",
+		--[["Pagoda/vendor/lua/bin/%{outputdir}/lua",
 		"Pagoda/vendor/glad/bin/%{outputdir}/glad",
 		"Pagoda/vendor/lua/bin",
-		"Pagoda/vendor/spdlog/build",
-		"Pagoda/vendor/glfw/build/src"
+		"Pagoda/vendor/glfw/build/src"--]]
 	}
-	
-	--[[libdirs
-	{
-		"bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Pagoda",
-		"Pagoda/vendor/spdlog/build/%{cfg.buildcfg}"
-	}--]]
 
 	filter "configurations:Debug"
 		defines {
@@ -163,7 +156,7 @@ project "TestApp"
 		optimize "On"
 	
 	filter "system:macosx"
-	 sysincludedirs {
+	 externalincludedirs {
 		 table.unpack(incDirs)
 	 }
 
@@ -176,10 +169,10 @@ project "TestApp"
 		links {
 			"pagoda",
 			"spdlogd",
-			"glfw3",
+			--[["glfw3",
 			"OpenGL32",
 			"glad",
-			"lua"
+			"lua"--]]
 		}
 
 	filter {"system:windows", "configurations:Release"}
@@ -191,15 +184,14 @@ project "TestApp"
 		links {
 			"pagoda",
 			"spdlog",
-			"glfw3",
+			--[["glfw3",
 			"OpenGL32",
 			"glad",
-			"lua"
+			"lua"--]]
 		}
 		
 	filter "system:macosx"
 		links {
-			"OpenGL.framework",
 			"CoreFoundation.framework", 
 			"Cocoa.framework",
 	 		"IOKit.framework"
@@ -207,13 +199,13 @@ project "TestApp"
 		links {
 			"spdlog",
 			"pagoda",
-			"glfw3",
+			--[["glfw3",
 			"lua",
-			"glad"
+			"glad"--]]
 		}
 
 	filter "system:linux"
-		sysincludedirs {
+		externalincludedirs {
 			table.unpack(incDirs)
 		}
 		links {
@@ -221,7 +213,7 @@ project "TestApp"
 			"dl",
 			"spdlog",
 			"pagoda",
-			"glfw3",
+			--[["glfw3",
 			"lua",
-			"glad"
+			"glad"--]]
 		}

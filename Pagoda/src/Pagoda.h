@@ -1,13 +1,7 @@
 #pragma once
 
-#include "pgApplication.h"
+#include "pg_application.h"
 
-#include "Base/Log/pgLog.h"
-#include "Base/Layer/pgLayer.h"
-#include "Base/Event/pgEvent.h"
+#include "base/layer/pg_layer.h"
 
-#include "Mirage/MirageCore/Model/pgModel.h"
-
-#include "Mirage/Platform/GL/Pipeline/pgGLFXPipeline.h"
-
-#include "Mirage/pgMirageFactory.h"
+#include "mirage/core/window/pg_window.h"

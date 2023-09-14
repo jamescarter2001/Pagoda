@@ -1,0 +1,22 @@
+#pragma once
+#include "pg_core.h"
+#include "pg_event.h"
+
+namespace Pagoda::Base {
+    class PAGODA_API EventDispatcher {
+    public:
+        EventDispatcher(Event& m) : m_Message(m) {}
+
+        // methods using templates must be fully declared in header to avoid linker error.
+        template <typename T>
+        inline void Dispatch(std::function<bool(T&)> func) const {
+            if (dynamic_cast<T*>(&m_Message) != nullptr) {
+                //PG_CORE_TRACE("Processing message: {}", this->m_Message.ToString());
+                this->m_Message.m_IsHandled = func((T&)this->m_Message);
+            }
+        }
+
+    private:
+        Event& m_Message;
+    };
+}

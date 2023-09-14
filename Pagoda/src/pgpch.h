@@ -1,14 +1,20 @@
 #pragma once
 
+// C++
+
 #include <iostream>
 #include <string>
-#include <vector>
-#include <algorithm>
 #include <sstream>
 #include <functional>
-#include <csignal>
-#include <fstream>
-#include <map>
+#include <algorithm>
+#include <locale>
+#include <codecvt>
 
-#include "Base/Log/pgLog.h"
-#include "pgCore.h"
+// Windows
+
+#include <windows.h>
+#include <windowsx.h>
+
+// Pagoda
+
+#include "pg_core.h"
