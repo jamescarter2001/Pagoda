@@ -1,6 +1,8 @@
 #pragma once
 #include "pgpch.h"
 
+#include "base/log/pg_log.h"
+
 #include "base/message/pg_message_dispatcher.h"
 #include "base/event/pg_event.h"
 #include "base/event/pg_application_event.h"
@@ -8,7 +10,7 @@
 #include "base/layer/pg_layer_stack.h"
 
 #include "mirage/core/window/pg_window.h"
-#include "mirage/platform/d3d11/pg_d3d11_window.h"
+#include "mirage/platform/d3d11/window/pg_d3d11_window.h"
 
 namespace Pagoda {
     class PAGODA_API Application {

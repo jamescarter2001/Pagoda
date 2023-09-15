@@ -10,6 +10,7 @@ void TestLayer::OnEvent(Pagoda::Base::Event& e) const {
 }
 
 void TestLayer::OnUpdate() const {
+
 }
 
 void TestLayer::OnAttach() {

@@ -1,7 +1,8 @@
 #pragma once
-#include "base/layer/pg_layer.h"
+#include "pgpch.h"
+
 #include "base/log/pg_log.h"
-#include "pg_core.h"
+#include "base/layer/pg_layer.h"
 
 namespace Pagoda::Base {
     class PAGODA_API LayerStack {

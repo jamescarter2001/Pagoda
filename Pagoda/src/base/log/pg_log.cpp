@@ -10,7 +10,7 @@ namespace Pagoda::Base {
         // Format logger output.
         spdlog::set_pattern("%^[%T] %n: %v%$");
 
-        // initialize loggers with names.
+        // initialise loggers with names.
         Log::s_CoreLogger = spdlog::stdout_color_mt("PAGODA");
         // Output every log type.
         s_CoreLogger->set_level(spdlog::level::trace);

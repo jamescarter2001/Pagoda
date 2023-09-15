@@ -1,9 +1,6 @@
 #pragma once
 #include "pgpch.h"
 
-#include "pg_core.h"
-
-#include "base/log/pg_log.h"
 #include "pg_application.h"
 
 namespace Pagoda {

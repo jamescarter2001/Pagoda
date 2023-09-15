@@ -5,7 +5,18 @@ namespace Pagoda::Mirage {
     D3D11Window::D3D11Window(const WindowProps& props) : Window(props) {
         this->m_Window = nullptr;
 
+        this->m_DevicePtr = nullptr;
+        this->m_DeviceContextPtr = nullptr;
+        this->m_SwapChainPtr = nullptr;
+        this->m_RenderTargetViewPtr = nullptr;
+
+        this->m_SwapChainDesc = {0};
+
         Init();
+    }
+
+    D3D11Window::~D3D11Window() {
+        this->m_DevicePtr->Release();
     }
 
     Window* Window::Create(const WindowProps& props) {
@@ -28,6 +39,8 @@ namespace Pagoda::Mirage {
     }
 
     void D3D11Window::Init() {
+        PG_CORE_DEBUG("Using graphics API: Direct3D11");
+
         HINSTANCE hInstance = GetModuleHandle(NULL);
 
         // the handle for the window, filled by a function
@@ -68,35 +81,25 @@ namespace Pagoda::Mirage {
         ShowWindow(hWnd, SW_SHOW);
 
         this->Direct3D11Init(hWnd);
-        PG_CORE_DEBUG("Using graphics API: Direct3D11");
     }
 
     void D3D11Window::Direct3D11Init(HWND hWnd) {
-        // Pointers required to interface with D3D11 functions.
-
-        ID3D11Device* devicePtr = NULL;
-        ID3D11DeviceContext* deviceContextPtr = NULL;
-        IDXGISwapChain* swapChainPtr = NULL;
-        ID3D11RenderTargetView* render_target_view_ptr = NULL;
-
-        DXGI_SWAP_CHAIN_DESC swapChainDesc = {0};
-
         // Numerator and denominator for drawing as fast as possible.
 
-        swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
-        swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+        m_SwapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
+        m_SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 
-        swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        m_SwapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
         // Default values here as no multi sample anti aliasing is in use.
 
-        swapChainDesc.SampleDesc.Count = 1;
-        swapChainDesc.SampleDesc.Quality = 0;
+        m_SwapChainDesc.SampleDesc.Count = 1;
+        m_SwapChainDesc.SampleDesc.Quality = 0;
 
-        swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swapChainDesc.BufferCount = 1;
-        swapChainDesc.OutputWindow = hWnd;
-        swapChainDesc.Windowed = true;
+        m_SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        m_SwapChainDesc.BufferCount = 1;
+        m_SwapChainDesc.OutputWindow = hWnd;
+        m_SwapChainDesc.Windowed = true;
 
         D3D_FEATURE_LEVEL featureLevel;
         UINT flags = D3D11_CREATE_DEVICE_SINGLETHREADED;
@@ -108,19 +111,37 @@ namespace Pagoda::Mirage {
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
             NULL,                       // Pointer to the video adapter to use, passing null selects the default
             D3D_DRIVER_TYPE_HARDWARE,   // Represents the driver type to create
-            NULL,                       // Handle to a DLL that implements a software rasterizer, must not be NULL if previous arg is D3D_DRIVER_TYPE_SOFTWARE
+            NULL,                       // Handle to a DLL that implements a software rasteriser, must not be NULL if previous arg is D3D_DRIVER_TYPE_SOFTWARE
             flags,                      // Runtime layers to enable, values can be OR'd together
             NULL,                       // Determines the order of feature levels to create
             0,                          // The number of elements in the feature level array supplied above
             D3D11_SDK_VERSION,          // The SDK version to use
-            &swapChainDesc,             // Populate the pointers
-            &swapChainPtr,
-            &devicePtr,
+            &m_SwapChainDesc,             // Populate the pointers
+            &m_SwapChainPtr,
+            &m_DevicePtr,
             &featureLevel,
-            &deviceContextPtr
+            &m_DeviceContextPtr
         );
 
-        PG_CORE_ASSERT_CRITICAL(!hr, "Direct3D11 failed to initialize");
+        PG_CORE_DEBUG("D3D11CreateDeviceAndSwapChain HRESULT: {}", hr == S_OK ? "S_OK" : std::to_string(hr));
+
+        PG_CORE_ASSERT_CRITICAL(hr == S_OK, "Direct3D11 failed to initialize");
+
+        ID3D11Texture2D* framebuffer = NULL;
+        hr = m_SwapChainPtr->GetBuffer(
+            0,
+            __uuidof(ID3D11Texture2D),
+            (void**)&framebuffer);
+
+        if (framebuffer != NULL) {
+            hr = m_DevicePtr->CreateRenderTargetView(
+                framebuffer, 0, &m_RenderTargetViewPtr);
+            framebuffer->Release();
+        } else {
+            PG_CORE_WARNING("Unable to fetch framebuffer from swap chain pointer");
+        }
+
+
     }
 
     void D3D11Window::OnUpdate() {
