@@ -27,3 +27,8 @@
 #define PG_FLOAT 0
 #define PG_UNSIGNED_INT 1
 #define PG_UNSIGNED_BYTE 2
+
+// Vector types
+
+#define PG_VECTOR3 0
+#define PG_VECTOR4 1

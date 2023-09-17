@@ -6,6 +6,8 @@
 
 #include "mirage/core/window/pg_window.h"
 
+#include "mirage/platform/d3d11/context/pg_d3d11_context.h"
+
 namespace Pagoda::Mirage {
 
     class PAGODA_API D3D11Window : public Window {
@@ -13,6 +15,7 @@ namespace Pagoda::Mirage {
         D3D11Window(const WindowProps& props);
         virtual ~D3D11Window();
         virtual void Init() override;
+        virtual void BeforeUpdate() override;
         virtual void OnUpdate() override;
     private:
         HWND m_Window;

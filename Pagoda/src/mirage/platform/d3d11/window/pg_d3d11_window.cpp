@@ -17,6 +17,9 @@ namespace Pagoda::Mirage {
 
     D3D11Window::~D3D11Window() {
         this->m_DevicePtr->Release();
+        this->m_DeviceContextPtr->Release();
+        this->m_SwapChainPtr->Release();
+        this->m_RenderTargetViewPtr->Release();
     }
 
     Window* Window::Create(const WindowProps& props) {
@@ -141,7 +144,29 @@ namespace Pagoda::Mirage {
             PG_CORE_WARNING("Unable to fetch framebuffer from swap chain pointer");
         }
 
+        // Init context
 
+        D3D11Context::Init(m_DevicePtr, m_DeviceContextPtr, m_SwapChainPtr, m_RenderTargetViewPtr);
+    }
+
+    void D3D11Window::BeforeUpdate() {
+        float backgroundColour[4] = {
+            0x64 / 255.0f, 0x95 / 255.0f, 0xED / 255.0f, 1.0f};
+        this->m_DeviceContextPtr->ClearRenderTargetView(
+            this->m_RenderTargetViewPtr, backgroundColour);
+
+        RECT winRect;
+        GetClientRect(this->m_Window, &winRect);
+        D3D11_VIEWPORT viewport = {
+            0.0f,
+            0.0f,
+            (FLOAT)(winRect.right - winRect.left),
+            (FLOAT)(winRect.bottom - winRect.top),
+            0.0f,
+            1.0f};
+        this->m_DeviceContextPtr->RSSetViewports(1, &viewport);
+
+        this->m_DeviceContextPtr->OMSetRenderTargets(1, &this->m_RenderTargetViewPtr, NULL);
     }
 
     void D3D11Window::OnUpdate() {
@@ -160,6 +185,8 @@ namespace Pagoda::Mirage {
                 Base::WindowCloseEvent e = Base::WindowCloseEvent();
                 this->m_WindowData.EventCallback(e);
             }
+        } else {
+            this->m_SwapChainPtr->Present(1, 0);
         }
     }
 }

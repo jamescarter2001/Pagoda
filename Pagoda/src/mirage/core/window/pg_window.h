@@ -45,6 +45,7 @@ namespace Pagoda::Mirage {
         virtual ~Window() {}
 
         virtual void Init() = 0;
+        virtual void BeforeUpdate() = 0;
         virtual void OnUpdate() = 0;
 
         inline int GetWidth() {

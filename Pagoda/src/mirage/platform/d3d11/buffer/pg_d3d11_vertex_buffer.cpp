@@ -2,8 +2,12 @@
 #include "pg_d3d11_vertex_buffer.h"
 
 namespace Pagoda::Mirage {
-    D3D11VertexBuffer::D3D11VertexBuffer(ID3D11Device* device, float* buffer, int count) : VertexBuffer(buffer, count), m_Device(device) {
-        this->m_Device = device;
+    D3D11VertexBuffer::D3D11VertexBuffer(float* buffer, int count, VertexBufferLayout& vertexBufferLayout) : VertexBuffer(buffer, count, vertexBufferLayout) {
+        D3D11Context context = D3D11Context();
+
+        this->m_Device = context.GetDevicePtr();
+        this->m_DeviceContext = context.GetDeviceContextPtr();
+
         this->m_VertexBufferPtr = NULL;
 
         D3D11_BUFFER_DESC vertexBufferDescriptor = {};
@@ -25,7 +29,17 @@ namespace Pagoda::Mirage {
     }
 
 	void D3D11VertexBuffer::Bind() const {
+        unsigned int stride = this->m_VertexBufferLayout.GetStride();
+        unsigned int offset = 0;
 
+        this->m_DeviceContext->IASetPrimitiveTopology(
+            D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+        this->m_DeviceContext->IASetVertexBuffers(
+            0,
+            1,
+            &this->m_VertexBufferPtr,
+            &stride,
+            &offset);
     }
 
 	void D3D11VertexBuffer::Unbind() const {

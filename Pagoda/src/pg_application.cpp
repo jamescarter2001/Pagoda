@@ -68,6 +68,7 @@ namespace Pagoda {
         this->m_IsRunning = true;
 
         while (m_IsRunning) {
+            this->m_Window->BeforeUpdate();
             for (Base::Layer* layer : this->m_LayerStack) {
                 layer->OnUpdate();
             }

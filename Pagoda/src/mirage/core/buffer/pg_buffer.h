@@ -10,6 +10,10 @@ namespace Pagoda::Mirage {
             this->m_Count = count;
         }
 
+        inline unsigned int GetCount() const {
+            return m_Count;
+        }
+
         virtual ~Buffer() {}
     protected:
         T* m_BufferData;
