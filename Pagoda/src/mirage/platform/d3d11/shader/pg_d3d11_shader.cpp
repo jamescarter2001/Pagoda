@@ -2,7 +2,7 @@
 #include "pg_d3d11_shader.h"
 
 namespace Pagoda::Mirage {
-    D3D11Shader::D3D11Shader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType& shaderType) : Shader(filePath, vertexBufferLayout, shaderType) {
+    D3D11Shader::D3D11Shader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) : Shader(filePath, vertexBufferLayout, shaderType) {
         D3D11Context context = D3D11Context();
 
         this->m_Device = context.GetDevicePtr();
@@ -53,20 +53,24 @@ namespace Pagoda::Mirage {
         std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
         auto elements = this->m_VertexBufferLayout.GetElements();
 
-        int index = 0;
+        /* int index = 0;
         for (VertexBufferElement& e : elements) {
             desc.push_back({e.name.c_str(), 0, this->GetDXGIFormat(e.platformFormat), 0, (index > 0 ? D3D11_APPEND_ALIGNED_ELEMENT : 0), D3D11_INPUT_PER_VERTEX_DATA, 0});
             index++;
-        }
+        }*/
+
+        D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
+            {"POS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
+        };
 
         HRESULT ilhr = this->m_Device->CreateInputLayout(
-            &desc[0],
-            elements.size(),
+            inputDesc,
+            (UINT)elements.size(),
             this->m_BlobPtr->GetBufferPointer(),
             this->m_BlobPtr->GetBufferSize(),
             &this->m_InputLayout);
 
-        PG_CORE_ASSERT(ilhr == S_OK, "Error creating input layout.");
+        PG_CORE_ASSERT(ilhr == S_OK, "Error creating input layout");
     }
 
     void D3D11Shader::CreatePixelShader(UINT flags) {
@@ -87,7 +91,7 @@ namespace Pagoda::Mirage {
             nullptr,
             D3D_COMPILE_STANDARD_FILE_INCLUDE,
             (this->m_ShaderType == ShaderType::SHADER_TYPE_VERTEX ? "vs_main" : "ps_main"),
-            "ps_5_0",
+            (this->m_ShaderType == ShaderType::SHADER_TYPE_VERTEX ? "vs_5_0" : "ps_5_0"),
             flags,
             0,
             &this->m_BlobPtr,
@@ -96,6 +100,7 @@ namespace Pagoda::Mirage {
             if (errPtr) {
                 PG_CORE_WARNING("Failed to compile {} shader: {} ({})", this->GetShaderType(), this->m_FilePath, std::to_string(hr));
                 OutputDebugStringA((char*)errPtr->GetBufferPointer());
+                PG_CORE_WARNING((char*)errPtr->GetBufferPointer());
                 errPtr->Release();
             }
             if (this->m_BlobPtr) {

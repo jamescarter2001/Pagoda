@@ -12,7 +12,7 @@
 namespace Pagoda::Mirage {
     class D3D11Shader : public Shader {
     public:
-        D3D11Shader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType& shaderType);
+        D3D11Shader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType);
         virtual ~D3D11Shader();
 
         virtual void Bind() override;

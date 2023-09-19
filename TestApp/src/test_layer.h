@@ -10,4 +10,10 @@ class TestLayer : public  Pagoda::Base::Layer {
         virtual void OnEvent(Pagoda::Base::Event& e) const override;
         virtual void OnUpdate() const override;
         virtual void OnAttach() override;
+
+    private:
+        Pagoda::Mirage::Model m_Model;
+        Pagoda::Mirage::ShaderData m_ShaderData;
+
+        Pagoda::Mirage::Renderer* m_Renderer;
 };

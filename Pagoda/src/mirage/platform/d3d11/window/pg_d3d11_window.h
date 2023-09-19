@@ -30,6 +30,6 @@ namespace Pagoda::Mirage {
         // this is the main message handler for the program
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-        void Direct3D11Init(HWND hWnd);
+        void Direct3D11Init();
     };
 }

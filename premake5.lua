@@ -59,11 +59,7 @@ project "Pagoda"
 
 	incDirs = {
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include",
-		--[["%{prj.name}/vendor/glfw/include",
-		"%{prj.name}/vendor/eigen",
-		"%{prj.name}/vendor/glad/glad/include",
-		"%{prj.name}/vendor/lua/lua/include"--]]
+		"%{prj.name}/vendor/spdlog/include"
 	}
 
 	includedirs {
@@ -92,6 +88,16 @@ project "Pagoda"
 		staticruntime "Off"
 		runtime "Release"
 		optimize "On"
+		
+	filter "system:windows"
+		files {
+		"%{prj.name}/res/**.hlsl"
+		}
+		
+	filter "files:**.hlsl"
+		shadertype "Vertex"
+		shaderentry "vs_main"
+		shadermodel "5.0"
 
 project "TestApp"
 	location "TestApp"

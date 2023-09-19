@@ -46,8 +46,6 @@ namespace Pagoda::Mirage {
 
         HINSTANCE hInstance = GetModuleHandle(NULL);
 
-        // the handle for the window, filled by a function
-        HWND hWnd;
         // this struct holds information for the window class
         WNDCLASSEX wc;
 
@@ -67,7 +65,7 @@ namespace Pagoda::Mirage {
         RegisterClassEx(&wc);
 
         // create the window and use the result as the handle
-        hWnd = CreateWindowEx(NULL,
+        this->m_Window = CreateWindowEx(NULL,
                               L"WindowClass1",                        // name of the window class
                               STR_TO_WSTR(this->GetTitle()).c_str(),  // title of the window
                               WS_OVERLAPPEDWINDOW,                    // window style
@@ -81,12 +79,12 @@ namespace Pagoda::Mirage {
                               NULL);                                  // used with multiple windows, NULL
 
         // display the window on the screen
-        ShowWindow(hWnd, SW_SHOW);
+        ShowWindow(this->m_Window, SW_SHOW);
 
-        this->Direct3D11Init(hWnd);
+        this->Direct3D11Init();
     }
 
-    void D3D11Window::Direct3D11Init(HWND hWnd) {
+    void D3D11Window::Direct3D11Init() {
         // Numerator and denominator for drawing as fast as possible.
 
         m_SwapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
@@ -101,7 +99,7 @@ namespace Pagoda::Mirage {
 
         m_SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         m_SwapChainDesc.BufferCount = 1;
-        m_SwapChainDesc.OutputWindow = hWnd;
+        m_SwapChainDesc.OutputWindow = this->m_Window;
         m_SwapChainDesc.Windowed = true;
 
         D3D_FEATURE_LEVEL featureLevel;
@@ -151,12 +149,15 @@ namespace Pagoda::Mirage {
 
     void D3D11Window::BeforeUpdate() {
         float backgroundColour[4] = {
-            0x64 / 255.0f, 0x95 / 255.0f, 0xED / 255.0f, 1.0f};
+            // 60.0f / 255.0f, 60.0f / 255.0f, 60.0f / 255.0f, 1.0f
+            0.0f, 0.0f, 0.0f, 1.0f
+        };
         this->m_DeviceContextPtr->ClearRenderTargetView(
             this->m_RenderTargetViewPtr, backgroundColour);
 
         RECT winRect;
         GetClientRect(this->m_Window, &winRect);
+
         D3D11_VIEWPORT viewport = {
             0.0f,
             0.0f,
@@ -185,8 +186,8 @@ namespace Pagoda::Mirage {
                 Base::WindowCloseEvent e = Base::WindowCloseEvent();
                 this->m_WindowData.EventCallback(e);
             }
-        } else {
-            this->m_SwapChainPtr->Present(1, 0);
         }
+
+        this->m_SwapChainPtr->Present(1, 0);
     }
 }

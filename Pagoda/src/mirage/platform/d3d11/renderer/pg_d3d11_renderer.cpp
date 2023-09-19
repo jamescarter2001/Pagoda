@@ -10,9 +10,10 @@ namespace Pagoda::Mirage {
 
     }
 
-    void D3D11Renderer::Draw(Model& model, Shader& shader) {
+    void D3D11Renderer::Draw(const Model& model, const ShaderData& shader) const {
         Renderer::Draw(model, shader);
 
-        this->m_DeviceContext->Draw(model.GetVertexCount(), 0);
+        // this->m_DeviceContext->Draw(model.GetVertexCount(), 0);
+        this->m_DeviceContext->DrawIndexed(model.GetVertexCount(), 0, 0);
     }
 }

@@ -11,7 +11,7 @@ namespace Pagoda::Mirage {
         D3D11Renderer();
         virtual ~D3D11Renderer();
 
-        virtual void Draw(Model& model, Shader& shader) override;
+        virtual void Draw(const Model& model, const ShaderData& shader) const override;
 
     private:
         ID3D11DeviceContext* m_DeviceContext;

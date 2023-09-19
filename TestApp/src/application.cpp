@@ -4,6 +4,7 @@
 #include "test_layer.h"
 
 class TestApp : public Pagoda::Application {
+public:
     TestApp(std::string& name) : Pagoda::Application(name) {
         PG_TRACE("Created new engine application");
         PushLayer(new TestLayer("TestLayer"));
@@ -12,5 +13,5 @@ class TestApp : public Pagoda::Application {
 };
 
 Pagoda::Application* Pagoda::CreateApplication() {
-    return new Pagoda::Application(std::string("TestApp"));
+    return new TestApp(std::string("TestApp"));
 }

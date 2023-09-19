@@ -30,11 +30,15 @@ namespace Pagoda::Mirage {
         }
 
         inline unsigned int GetCount() const {
-            return this->m_Elements.size();
+            return (unsigned int) this->m_Elements.size();
         }
 
         inline unsigned int GetStride() const {
             return m_Stride;
+        }
+
+        inline const unsigned int* GetStridePtr() const {
+            return &m_Stride;
         }
 
         inline std::vector<VertexBufferElement> GetElements() const& {

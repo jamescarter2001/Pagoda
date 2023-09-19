@@ -2,8 +2,13 @@
 #include "pg_renderer.h"
 
 namespace Pagoda::Mirage {
-    void Renderer::Draw(Model& model, Shader& shader) {
+    Renderer::Renderer() {}
+
+    Renderer::~Renderer() {}
+
+    void Renderer::Draw(const Model& model, const ShaderData& shader) const {
         model.Bind();
-        shader.Bind();
+        shader.vertexShader->Bind();
+        shader.fragmentShader->Bind();
     }
 }

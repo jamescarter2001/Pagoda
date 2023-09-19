@@ -6,12 +6,12 @@
 namespace Pagoda::Mirage {
     enum class ShaderType {
         SHADER_TYPE_VERTEX,
-        SHADER_TYPE_FRAGMENT
+        SHADER_TYPE_PIXEL
     };
 
     class Shader {
     public:
-        Shader(std::string filePath, VertexBufferLayout vertexBufferLayout, ShaderType& shaderType) : m_FilePath(filePath), m_VertexBufferLayout(vertexBufferLayout), m_ShaderType(shaderType) {}
+        Shader(std::string filePath, VertexBufferLayout vertexBufferLayout, ShaderType shaderType) : m_FilePath(filePath), m_VertexBufferLayout(vertexBufferLayout), m_ShaderType(shaderType) {}
         virtual ~Shader() {}
 
         virtual void Bind() = 0;

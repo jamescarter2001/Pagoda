@@ -10,6 +10,6 @@ namespace Pagoda::Mirage {
         Renderer();
         virtual ~Renderer();
 
-        virtual void Draw(Model& model, Shader& shader);
+        virtual void Draw(const Model& model, const ShaderData& shader) const;
     };
 }

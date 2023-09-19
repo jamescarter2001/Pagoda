@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <locale>
 #include <codecvt>
+#include <iterator>
 
 // Windows
 
