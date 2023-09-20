@@ -5,8 +5,5 @@ Pagoda/x64/
 bin/
 bin-int/
 **/.DS_Store
-Pagoda/vendor/glad/**/*.c
-Pagoda/vendor/glad/**/*.h
-Pagoda/vendor/lua/**/*.c
-Pagoda/vendor/lua/**/*.h
-Pagoda/vendor/lua/**/*.hpp
+*.sln
+**/*vcxproj*

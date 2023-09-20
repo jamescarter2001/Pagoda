@@ -1,14 +1,27 @@
 #pragma once
 
+// C++
+
 #include <iostream>
 #include <string>
-#include <vector>
-#include <algorithm>
 #include <sstream>
-#include <functional>
-#include <csignal>
 #include <fstream>
-#include <map>
+#include <functional>
+#include <algorithm>
+#include <locale>
+#include <codecvt>
+#include <iterator>
 
-#include "Base/Log/pgLog.h"
-#include "pgCore.h"
+// Windows
+
+#define WIN32_LEAN_AND_MEAN
+
+#include <windows.h>
+#include <windowsx.h>
+#include <d3d11.h>        // D3D interface
+#include <dxgi.h>         // DirectX driver interface
+#include <d3dcompiler.h>  // shader compiler
+
+// Pagoda
+
+#include "pg_core.h"

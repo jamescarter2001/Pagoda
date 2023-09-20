@@ -59,30 +59,20 @@ project "Pagoda"
 
 	incDirs = {
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/glfw/include",
-		"%{prj.name}/vendor/eigen",
-		"%{prj.name}/vendor/glad/glad/include",
-		"%{prj.name}/vendor/lua/lua/include"
+		"%{prj.name}/vendor/spdlog/include"
 	}
 
 	includedirs {
 		table.unpack(incDirs)
 	}
 
-	filter "system:windows"
-		pchheader "pgpch.h"
-		pchsource "Pagoda/src/pgpch.cpp"
+	pchheader "pgpch.h"
+	pchsource "Pagoda/src/pgpch.cpp"
 
 	filter "system:macosx"
-		sysincludedirs {
+		externalincludedirs { --[[  sysincludedirs --]]
 			table.unpack(incDirs)
 		}
-
-		--[[postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/TestApp")
-		}--]]
 
 	filter "configurations:Debug"
 		defines {
@@ -98,6 +88,16 @@ project "Pagoda"
 		staticruntime "Off"
 		runtime "Release"
 		optimize "On"
+		
+	filter "system:windows"
+		files {
+		"%{prj.name}/res/**.hlsl"
+		}
+		
+	filter "files:**.hlsl"
+		shadertype "Vertex"
+		shaderentry "vs_main"
+		shadermodel "5.0"
 
 project "TestApp"
 	location "TestApp"
@@ -122,10 +122,6 @@ project "TestApp"
 	incDirs = {
 		"Pagoda/src",
 		"Pagoda/vendor/spdlog/include",
-		"Pagoda/vendor/glfw/include",
-		"Pagoda/vendor/eigen",
-		"Pagoda/vendor/glad/glad/include",
-		"Pagoda/vendor/lua/lua/include"
 	}
 
 	includedirs {
@@ -134,18 +130,8 @@ project "TestApp"
 
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
-		"Pagoda/vendor/lua/bin/%{outputdir}/lua",
-		"Pagoda/vendor/glad/bin/%{outputdir}/glad",
-		"Pagoda/vendor/lua/bin",
-		"Pagoda/vendor/spdlog/build",
-		"Pagoda/vendor/glfw/build/src"
+		"Pagoda/vendor/spdlog/build"
 	}
-	
-	--[[libdirs
-	{
-		"bin/%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}/Pagoda",
-		"Pagoda/vendor/spdlog/build/%{cfg.buildcfg}"
-	}--]]
 
 	filter "configurations:Debug"
 		defines {
@@ -163,7 +149,7 @@ project "TestApp"
 		optimize "On"
 	
 	filter "system:macosx"
-	 sysincludedirs {
+	 externalincludedirs {
 		 table.unpack(incDirs)
 	 }
 
@@ -176,10 +162,9 @@ project "TestApp"
 		links {
 			"pagoda",
 			"spdlogd",
-			"glfw3",
-			"OpenGL32",
-			"glad",
-			"lua"
+			"d3d11",
+			"dxgi",
+			"d3dcompiler"
 		}
 
 	filter {"system:windows", "configurations:Release"}
@@ -191,37 +176,29 @@ project "TestApp"
 		links {
 			"pagoda",
 			"spdlog",
-			"glfw3",
-			"OpenGL32",
-			"glad",
-			"lua"
+			"d3d11",
+			"dxgi",
+			"d3dcompiler"
 		}
 		
 	filter "system:macosx"
 		links {
-			"OpenGL.framework",
 			"CoreFoundation.framework", 
 			"Cocoa.framework",
 	 		"IOKit.framework"
 		}
 		links {
 			"spdlog",
-			"pagoda",
-			"glfw3",
-			"lua",
-			"glad"
+			"pagoda"
 		}
 
 	filter "system:linux"
-		sysincludedirs {
+		externalincludedirs {
 			table.unpack(incDirs)
 		}
 		links {
 			"pthread",
 			"dl",
 			"spdlog",
-			"pagoda",
-			"glfw3",
-			"lua",
-			"glad"
+			"pagoda"
 		}
