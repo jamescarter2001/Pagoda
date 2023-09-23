@@ -15,7 +15,7 @@ namespace Pagoda::Mirage {
 
         UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
         #ifdef PG_DEBUG
-                flags |= D3DCOMPILE_DEBUG;  // add more debug output
+        flags |= D3DCOMPILE_DEBUG;  // add more debug output
         #endif
 
         if (this->IsVertexShader()) {
@@ -51,11 +51,11 @@ namespace Pagoda::Mirage {
         PG_CORE_ASSERT(vshr == S_OK, "Failed to create vertex shader");
 
         std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
-        auto elements = this->m_VertexBufferLayout.GetElements();
+        auto elements = this->m_vertexBufferLayout.GetElements();
 
         int index = 0;
         for (VertexBufferElement& e : elements) {
-            desc.push_back({e.name.c_str(), 0, this->GetDXGIFormat(e.platformFormat), 0, (index > 0 ? D3D11_APPEND_ALIGNED_ELEMENT : 0), D3D11_INPUT_PER_VERTEX_DATA, 0});
+            desc.push_back({e.name.c_str(), 0, D3DUtil::GetDXGIFormat(e.platformFormat), 0, (index > 0 ? D3D11_APPEND_ALIGNED_ELEMENT : 0), D3D11_INPUT_PER_VERTEX_DATA, 0});
             index++;
         }
 
@@ -103,29 +103,5 @@ namespace Pagoda::Mirage {
                 this->m_BlobPtr->Release();
             }
         }
-    }
-
-    DXGI_FORMAT D3D11Shader::GetDXGIFormat(unsigned int pgFormat) {
-        switch (pgFormat) {
-            case PG_VECTOR3:
-                return DXGI_FORMAT_R32G32B32_FLOAT;
-            case PG_VECTOR4:
-                return DXGI_FORMAT_R32G32B32A32_FLOAT;
-            default:
-                return DXGI_FORMAT_R32G32B32A32_FLOAT;
-        }
-    }
-
-	void D3D11Shader::Bind() {
-        if (this->m_ShaderType == ShaderType::SHADER_TYPE_VERTEX) {
-            this->m_DeviceContext->IASetInputLayout(this->m_InputLayout);
-            this->m_DeviceContext->VSSetShader(this->m_VertexShader, NULL, 0);
-        } else {
-            this->m_DeviceContext->PSSetShader(this->m_PixelShader, NULL, 0);
-        }
-    }
-
-    void D3D11Shader::Unbind() {
-
     }
 }

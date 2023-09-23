@@ -23,7 +23,7 @@ namespace Pagoda::Mirage {
             0,
             1,
             &this->m_VertexBufferPtr,
-            this->m_VertexBufferLayout.GetStridePtr(),
+            this->m_vertexBufferLayout.GetStridePtr(),
             &this->ms_Offset);
     }
 

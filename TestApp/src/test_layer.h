@@ -13,7 +13,7 @@ class TestLayer : public  Pagoda::Base::Layer {
 
     private:
         Pagoda::Mirage::Model m_Model;
-        Pagoda::Mirage::ShaderData m_ShaderData;
+        Pagoda::Mirage::PipelineState* m_pipelineState;
 
         Pagoda::Mirage::Renderer* m_Renderer;
 };

@@ -6,9 +6,8 @@ namespace Pagoda::Mirage {
 
     Renderer::~Renderer() {}
 
-    void Renderer::Draw(const Model& model, const ShaderData& shader) const {
+    void Renderer::Draw(const Model& model, const PipelineState* pipelineState) const {
+        pipelineState->Bind();
         model.Bind();
-        shader.vertexShader->Bind();
-        shader.fragmentShader->Bind();
     }
 }

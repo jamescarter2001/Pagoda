@@ -9,10 +9,6 @@ namespace Pagoda::Mirage {
     D3D12Window::~D3D12Window() {
     }
 
-    Window* Window::Create(const WindowProps& props) {
-        return new D3D12Window(props);
-    }
-
     LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         // sort through and find what code to run for the message given
         switch (message) {
@@ -87,14 +83,14 @@ namespace Pagoda::Mirage {
         ComPtr<IDXGIAdapter1> hardwareAdapter;
         GetHardwareAdapter(factory.Get(), &hardwareAdapter);
 
-        LogOnError(D3D12CreateDevice(hardwareAdapter.Get(), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&m_device)), "Failed to create ID3D12Device");
+        LogOnError(D3D12CreateDevice(hardwareAdapter.Get(), D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&this->m_device)), "Failed to create ID3D12Device");
 
         // Describe and create the command queue.
         D3D12_COMMAND_QUEUE_DESC queueDesc = {};
         queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
         queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
 
-        LogOnError(m_device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&m_commandQueue)), "Failed to create Command Queue");
+        LogOnError(this->m_device->CreateCommandQueue(&queueDesc, IID_PPV_ARGS(&this->m_commandQueue)), "Failed to create Command Queue");
 
         // Describe and create the swap chain.
         DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
@@ -110,17 +106,17 @@ namespace Pagoda::Mirage {
 
         ComPtr<IDXGISwapChain> swapChain;
         LogOnError(factory->CreateSwapChain(
-            m_commandQueue.Get(),  // Swap chain needs the queue so that it can force a flush on it.
+            this->m_commandQueue.Get(),  // Swap chain needs the queue so that it can force a flush on it.
             &swapChainDesc,
             &swapChain),
             "Failed to create Swap Chain");
 
-        LogOnError(swapChain.As(&m_swapChain), "Failed to assign Swap Chain");
+        LogOnError(swapChain.As(&this->m_swapChain), "Failed to assign Swap Chain");
 
         // This sample does not support fullscreen transitions.
         LogOnError(factory->MakeWindowAssociation(this->m_Window, DXGI_MWA_NO_ALT_ENTER), "Failed to make window association");
 
-        m_frameIndex = m_swapChain->GetCurrentBackBufferIndex();
+        this->m_frameIndex = this->m_swapChain->GetCurrentBackBufferIndex();
 
         // Create descriptor heaps.
         {
@@ -129,28 +125,78 @@ namespace Pagoda::Mirage {
             rtvHeapDesc.NumDescriptors = FrameCount;
             rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
             rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-            LogOnError(m_device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&m_rtvHeap)), "Failed to create Descriptor Heap");
+            LogOnError(this->m_device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&this->m_rtvHeap)), "Failed to create Descriptor Heap");
 
-            m_rtvDescriptorSize = m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+            this->m_rtvDescriptorSize = this->m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
         }
 
         // Create frame resources.
         {
-            CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
+            CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(this->m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
 
             // Create a RTV for each frame.
             for (UINT n = 0; n < FrameCount; n++) {
-                LogOnError(m_swapChain->GetBuffer(n, IID_PPV_ARGS(&m_renderTargets[n])), "Failed to create Render Target View");
-                m_device->CreateRenderTargetView(m_renderTargets[n].Get(), nullptr, rtvHandle);
-                rtvHandle.Offset(1, m_rtvDescriptorSize);
+                LogOnError(this->m_swapChain->GetBuffer(n, IID_PPV_ARGS(&this->m_renderTargets[n])), "Failed to create Render Target View");
+                this->m_device->CreateRenderTargetView(this->m_renderTargets[n].Get(), nullptr, rtvHandle);
+                rtvHandle.Offset(1, this->m_rtvDescriptorSize);
             }
         }
 
-        LogOnError(m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&m_commandAllocator)), "Failed to create Command Allocator");
+        LogOnError(this->m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->m_commandAllocator)), "Failed to create Command Allocator");
+
+        // Create an empty root signature.
+        {
+            CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
+            rootSignatureDesc.Init(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+
+            ComPtr<ID3DBlob> signature;
+            ComPtr<ID3DBlob> error;
+            LogOnError(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
+            LogOnError(this->m_device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&this->m_rootSignature)));
+        }
+
+        // Create synchronization objects and wait until assets have been uploaded to the GPU.
+        {
+            LogOnError(this->m_device->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&this->m_fence)), "Failed to create Fence");
+            this->m_fenceValue = 1;
+
+            // Create an event handle to use for frame synchronization.
+            this->m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+            if (this->m_fenceEvent == nullptr) {
+                LogOnError(HRESULT_FROM_WIN32(GetLastError()));
+            }
+
+            // Wait for the command list to execute; we are reusing the same command
+            // list in our main loop but for now, we just want to wait for setup to
+            // complete before continuing.
+            WaitForPreviousFrame();
+        }
+
+        LogOnError(this->m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, this->m_commandAllocator.Get(), this->m_pipelineState.Get(), IID_PPV_ARGS(&this->m_commandList)), "Failed to create Command List");
+        LogOnError(this->m_commandList->Close(), "Failed to close initial Command List");
 
         // Init context
 
-        // D3D12Context::Init(m_devicePtr, m_deviceContextPtr, m_swapChainPtr, m_renderTargetViewPtr);
+        D3D12Context::Init(this->m_swapChain, this->m_device, this->m_renderTargets, this->m_commandAllocator, this->m_commandQueue, this->m_rootSignature, this->m_rtvHeap, this->m_commandList);
+    }
+
+    void D3D12Window::WaitForPreviousFrame() {
+        // WAITING FOR THE FRAME TO COMPLETE BEFORE CONTINUING IS NOT BEST PRACTICE.
+        // This is code implemented as such for simplicity. More advanced samples
+        // illustrate how to use fences for efficient resource usage.
+
+        // Signal and increment the fence value.
+        const UINT64 fence = this->m_fenceValue;
+        LogOnError(this->m_commandQueue->Signal(this->m_fence.Get(), fence), "Failed to send signal");
+        this->m_fenceValue++;
+
+        // Wait until the previous frame is finished.
+        if (this->m_fence->GetCompletedValue() < fence) {
+            LogOnError(this->m_fence->SetEventOnCompletion(fence, this->m_fenceEvent), "Failed to set event completion");
+            WaitForSingleObject(this->m_fenceEvent, INFINITE);
+        }
+
+        this->m_frameIndex = this->m_swapChain->GetCurrentBackBufferIndex();
     }
 
     void D3D12Window::GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter) {
@@ -173,32 +219,43 @@ namespace Pagoda::Mirage {
         }
     }
 
-    void D3D12Window::LogOnError(HRESULT hr, char err[] = "Failed to initialise Direct3D12 context") {
+    void D3D12Window::LogOnError(HRESULT hr, char err[]) {
         if (hr != S_OK) {
             PG_CORE_CRITICAL(err);
         }
     }
 
     void D3D12Window::BeforeUpdate() {
-        /* float backgroundColour[4] = {
-            // 60.0f / 255.0f, 60.0f / 255.0f, 60.0f / 255.0f, 1.0f
-            0.0f, 0.0f, 0.0f, 1.0f};
-        this->m_deviceContextPtr->ClearRenderTargetView(
-            this->m_renderTargetViewPtr, backgroundColour);
-
         RECT winRect;
         GetClientRect(this->m_Window, &winRect);
 
-        D3D11_VIEWPORT viewport = {
+        D3D12_VIEWPORT viewport = {
             0.0f,
             0.0f,
             (FLOAT)(winRect.right - winRect.left),
             (FLOAT)(winRect.bottom - winRect.top),
             0.0f,
             1.0f};
-        this->m_deviceContextPtr->RSSetViewports(1, &viewport);
 
-        this->m_deviceContextPtr->OMSetRenderTargets(1, &this->m_renderTargetViewPtr, NULL);*/
+        LogOnError(this->m_commandAllocator->Reset(), "Failed to reset Command Allocator");
+        LogOnError(this->m_commandList->Reset(this->m_commandAllocator.Get(), this->m_pipelineState.Get()), "Failed to reset Command List");
+
+        // Set necessary state.
+        this->m_commandList->SetGraphicsRootSignature(this->m_rootSignature.Get());
+        this->m_commandList->RSSetViewports(1, &viewport);
+        this->m_commandList->RSSetScissorRects(1, &winRect);
+
+        // Indicate that the back buffer will be used as a render target.
+        this->m_barrier = CD3DX12_RESOURCE_BARRIER::Transition(this->m_renderTargets[this->m_frameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        this->m_commandList->ResourceBarrier(1, &this->m_barrier);
+
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(this->m_rtvHeap->GetCPUDescriptorHandleForHeapStart(), this->m_frameIndex, this->m_rtvDescriptorSize);
+        this->m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
+
+        // Record commands.
+        const float clearColor[] = {0.0f, 0.2f, 0.4f, 1.0f};
+        this->m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+        this->m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     }
 
     void D3D12Window::OnUpdate() {
@@ -219,6 +276,19 @@ namespace Pagoda::Mirage {
             }
         }
 
-        //this->m_swapChainPtr->Present(1, 0);
+        // Indicate that the back buffer will now be used to present.
+        this->m_barrier = CD3DX12_RESOURCE_BARRIER::Transition(this->m_renderTargets[this->m_frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+        this->m_commandList->ResourceBarrier(1, &this->m_barrier);
+
+        LogOnError(this->m_commandList->Close(), "Failed to close Command List");
+
+        // Execute the command list.
+        ID3D12CommandList* ppCommandLists[] = {this->m_commandList.Get()};
+        this->m_commandQueue->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+
+        // Present the frame.
+        LogOnError(this->m_swapChain->Present(1, 0), "Failed to present frame");
+
+        WaitForPreviousFrame();
     }
 }

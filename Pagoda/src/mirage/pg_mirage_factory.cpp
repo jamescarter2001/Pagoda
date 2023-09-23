@@ -8,19 +8,23 @@ namespace Pagoda::Mirage {
     }
 
     VertexBuffer* MirageFactory::CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) {
-        return new D3D11VertexBuffer(buffer, bufferCount, vertexCount, layout);
+        return new D3D12VertexBuffer(buffer, bufferCount, vertexCount, layout);
     }
 
     IndexBuffer* MirageFactory::CreateIndexBuffer(int buffer[], int bufferCount) {
-        return new D3D11IndexBuffer(buffer, bufferCount);
+        return new D3D12IndexBuffer(buffer, bufferCount);
     }
 
     Shader* MirageFactory::CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) {
-        return new D3D11Shader(filePath, vertexBufferLayout, shaderType);
+        return new D3D12Shader(filePath, vertexBufferLayout, shaderType);
     }
 
     Renderer* MirageFactory::CreateRenderer() {
-        return new D3D11Renderer();
+        return new D3D12Renderer();
+    }
+
+    PipelineState* MirageFactory::CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) {
+        return new D3D12PipelineState(vertexShader, fragmentShader, vertexBufferLayout);
     }
     #endif
 }

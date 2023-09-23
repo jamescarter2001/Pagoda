@@ -8,14 +8,17 @@ namespace Pagoda::Mirage {
     class Model {
     public:
         Model() : m_IndexBuffer(nullptr), m_IsIndexed(false) {}
-        Model(std::vector<VertexBuffer*> vbs, IndexBuffer* ib) : m_VertexBuffers(vbs), m_IndexBuffer(ib), m_IsIndexed(true) {}
+        Model(std::vector<VertexBuffer*> vbs, IndexBuffer* ib = nullptr) : m_VertexBuffers(vbs), m_IndexBuffer(ib), m_IsIndexed(false) {}
         virtual ~Model() {}
 
         void Bind() const {
             for (VertexBuffer* buff : this->m_VertexBuffers) {
                 buff->Bind();
             }
-            this->m_IndexBuffer->Bind();
+
+            if (m_IsIndexed) {
+                this->m_IndexBuffer->Bind();
+            }
         }
 
         inline unsigned int GetVertexCount() const {

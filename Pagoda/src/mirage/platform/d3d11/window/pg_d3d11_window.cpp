@@ -22,10 +22,6 @@ namespace Pagoda::Mirage {
         this->m_renderTargetViewPtr->Release();
     }
 
-    Window* Window::Create(const WindowProps& props) {
-        return new D3D11Window(props);
-    }
-
     LRESULT CALLBACK D3D11Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         // sort through and find what code to run for the message given
         switch (message) {

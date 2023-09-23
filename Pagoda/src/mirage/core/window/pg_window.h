@@ -64,8 +64,6 @@ namespace Pagoda::Mirage {
             this->m_WindowData.EventCallback = callback;
         }
 
-        static Window* Create(const WindowProps& props = WindowProps());
-
     protected:
         WindowData m_WindowData;
     };

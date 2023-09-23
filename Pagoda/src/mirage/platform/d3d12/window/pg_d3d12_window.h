@@ -6,6 +6,8 @@
 
 #include "mirage/core/window/pg_window.h"
 
+#include "mirage/platform/d3d12/context/pg_d3d12_context.h"
+
 namespace Pagoda::Mirage {
 
     class PAGODA_API D3D12Window : public Window {
@@ -15,6 +17,8 @@ namespace Pagoda::Mirage {
         virtual void Init() override;
         virtual void BeforeUpdate() override;
         virtual void OnUpdate() override;
+
+        void WaitForPreviousFrame();
 
     private:
         HWND m_Window;
@@ -33,15 +37,13 @@ namespace Pagoda::Mirage {
 
         UINT m_rtvDescriptorSize;
 
-        // App resources.
-        ComPtr<ID3D12Resource> m_vertexBuffer;
-        D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
-
         // Synchronization objects.
         UINT m_frameIndex;
         HANDLE m_fenceEvent;
         ComPtr<ID3D12Fence> m_fence;
         UINT64 m_fenceValue;
+
+        CD3DX12_RESOURCE_BARRIER m_barrier;
 
         // this is the main message handler for the program
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
@@ -49,6 +51,6 @@ namespace Pagoda::Mirage {
         static void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter);
 
         void Direct3D12Init();
-        void LogOnError(HRESULT hr, char err[]);
+        void LogOnError(HRESULT hr, char err[] = "Failed to initialise Direct3D12 context");
     };
 }
