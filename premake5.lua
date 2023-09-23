@@ -59,7 +59,9 @@ project "Pagoda"
 
 	incDirs = {
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{prj.name}/vendor/DirectX-Headers/include",
+		"%{prj.name}/vendor/glad/include"
 	}
 
 	includedirs {
@@ -122,6 +124,7 @@ project "TestApp"
 	incDirs = {
 		"Pagoda/src",
 		"Pagoda/vendor/spdlog/include",
+		"Pagoda/vendor/DirectX-Headers/include"
 	}
 
 	includedirs {
@@ -163,6 +166,7 @@ project "TestApp"
 			"pagoda",
 			"spdlogd",
 			"d3d11",
+			"d3d12",
 			"dxgi",
 			"d3dcompiler"
 		}

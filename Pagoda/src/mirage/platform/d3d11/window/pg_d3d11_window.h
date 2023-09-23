@@ -20,10 +20,10 @@ namespace Pagoda::Mirage {
     private:
         HWND m_Window;
 
-        ID3D11Device* m_DevicePtr;
-        ID3D11DeviceContext* m_DeviceContextPtr;
-        IDXGISwapChain* m_SwapChainPtr;
-        ID3D11RenderTargetView* m_RenderTargetViewPtr;
+        ID3D11Device* m_devicePtr;
+        ID3D11DeviceContext* m_deviceContextPtr;
+        IDXGISwapChain* m_swapChainPtr;
+        ID3D11RenderTargetView* m_renderTargetViewPtr;
 
         DXGI_SWAP_CHAIN_DESC m_SwapChainDesc = {0};
 

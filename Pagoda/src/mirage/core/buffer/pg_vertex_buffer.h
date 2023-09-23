@@ -9,7 +9,7 @@
 namespace Pagoda::Mirage {
     class PAGODA_API VertexBuffer : public Buffer<float> {
     public:
-        VertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout layout) : Buffer(buffer, bufferCount), m_VertexCount(vertexCount), m_VertexBufferLayout(layout) { PG_CORE_DEBUG("Created vertex buffer: [BufferCount {} : VertexCount {}]", bufferCount, vertexCount); };
+        VertexBuffer(float buffer[], int size, int vertexCount, VertexBufferLayout layout) : Buffer(buffer, size), m_VertexCount(vertexCount), m_VertexBufferLayout(layout) { PG_CORE_DEBUG("Created vertex buffer: [Size {} : VertexCount {}]", size, vertexCount); };
         virtual ~VertexBuffer() {};
 
         inline int GetVertexCount() {

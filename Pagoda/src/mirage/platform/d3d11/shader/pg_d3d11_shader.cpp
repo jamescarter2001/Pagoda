@@ -48,23 +48,19 @@ namespace Pagoda::Mirage {
             NULL,
             &m_VertexShader);
 
-        PG_CORE_ASSERT(vshr == S_OK, "Failed to create vertex shader")
+        PG_CORE_ASSERT(vshr == S_OK, "Failed to create vertex shader");
 
         std::vector<D3D11_INPUT_ELEMENT_DESC> desc;
         auto elements = this->m_VertexBufferLayout.GetElements();
 
-        /* int index = 0;
+        int index = 0;
         for (VertexBufferElement& e : elements) {
             desc.push_back({e.name.c_str(), 0, this->GetDXGIFormat(e.platformFormat), 0, (index > 0 ? D3D11_APPEND_ALIGNED_ELEMENT : 0), D3D11_INPUT_PER_VERTEX_DATA, 0});
             index++;
-        }*/
-
-        D3D11_INPUT_ELEMENT_DESC inputDesc[] = {
-            {"POS", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}
-        };
+        }
 
         HRESULT ilhr = this->m_Device->CreateInputLayout(
-            inputDesc,
+            &desc[0],
             (UINT)elements.size(),
             this->m_BlobPtr->GetBufferPointer(),
             this->m_BlobPtr->GetBufferSize(),

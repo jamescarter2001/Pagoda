@@ -10,7 +10,7 @@
 #include "base/layer/pg_layer_stack.h"
 
 #include "mirage/core/window/pg_window.h"
-#include "mirage/platform/d3d11/window/pg_d3d11_window.h"
+#include "mirage/pg_mirage_factory.h"
 
 namespace Pagoda {
     class PAGODA_API Application {

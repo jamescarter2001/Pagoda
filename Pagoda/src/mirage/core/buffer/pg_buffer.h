@@ -5,11 +5,11 @@ namespace Pagoda::Mirage {
     template<typename T>
     class PAGODA_API Buffer {
     public:
-        Buffer(T buffer[], int bufferCount) {
-            this->m_BufferData = new T[bufferCount];
-            memcpy(m_BufferData, buffer, bufferCount);
+        Buffer(T buffer[], int size) {
+            this->m_BufferData = new T[size];
+            memcpy(m_BufferData, buffer, size);
 
-            this->m_BufferCount = bufferCount;
+            this->m_BufferSize = size;
         }
 
         virtual ~Buffer() {
@@ -19,11 +19,11 @@ namespace Pagoda::Mirage {
         virtual void Bind() const = 0;
         virtual void Unbind() const = 0;
 
-        inline unsigned int GetBufferCount() const {
-            return m_BufferCount;
+        inline unsigned int GetSize() const {
+            return m_BufferSize;
         }
     protected:
         T* m_BufferData;
-        int m_BufferCount;
+        int m_BufferSize;
     };
 }

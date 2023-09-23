@@ -1,0 +1,54 @@
+#pragma once
+#include "pgpch.h"
+
+#include "base/log/pg_log.h"
+#include "base/util/pg_util.h"
+
+#include "mirage/core/window/pg_window.h"
+
+namespace Pagoda::Mirage {
+
+    class PAGODA_API D3D12Window : public Window {
+    public:
+        D3D12Window(const WindowProps& props);
+        virtual ~D3D12Window();
+        virtual void Init() override;
+        virtual void BeforeUpdate() override;
+        virtual void OnUpdate() override;
+
+    private:
+        HWND m_Window;
+
+        static const UINT FrameCount = 2;
+
+        ComPtr<IDXGISwapChain3> m_swapChain;
+        ComPtr<ID3D12Device> m_device;
+        ComPtr<ID3D12Resource> m_renderTargets[FrameCount];
+        ComPtr<ID3D12CommandAllocator> m_commandAllocator;
+        ComPtr<ID3D12CommandQueue> m_commandQueue;
+        ComPtr<ID3D12RootSignature> m_rootSignature;
+        ComPtr<ID3D12DescriptorHeap> m_rtvHeap;
+        ComPtr<ID3D12PipelineState> m_pipelineState;
+        ComPtr<ID3D12GraphicsCommandList> m_commandList;
+
+        UINT m_rtvDescriptorSize;
+
+        // App resources.
+        ComPtr<ID3D12Resource> m_vertexBuffer;
+        D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
+
+        // Synchronization objects.
+        UINT m_frameIndex;
+        HANDLE m_fenceEvent;
+        ComPtr<ID3D12Fence> m_fence;
+        UINT64 m_fenceValue;
+
+        // this is the main message handler for the program
+        static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+       
+        static void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter);
+
+        void Direct3D12Init();
+        void LogOnError(HRESULT hr, char err[]);
+    };
+}

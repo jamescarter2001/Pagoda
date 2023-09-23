@@ -1,3 +1,9 @@
 [submodule "Pagoda/vendor/spdlog"]
 	path = Pagoda/vendor/spdlog
 	url = https://github.com/gabime/spdlog.git
+[submodule "Pagoda/vendor/glfw"]
+	path = Pagoda/vendor/glfw
+	url = git@github.com:glfw/glfw.git
+[submodule "Pagoda/vendor/DirectX-Headers"]
+	path = Pagoda/vendor/DirectX-Headers
+	url = git@github.com:microsoft/DirectX-Headers.git

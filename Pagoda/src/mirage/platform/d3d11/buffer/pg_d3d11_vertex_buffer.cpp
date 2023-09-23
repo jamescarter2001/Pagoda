@@ -2,13 +2,13 @@
 #include "pg_d3d11_vertex_buffer.h"
 
 namespace Pagoda::Mirage {
-    D3D11VertexBuffer::D3D11VertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout vertexBufferLayout) : VertexBuffer(buffer, bufferCount, vertexCount, vertexBufferLayout) {
+    D3D11VertexBuffer::D3D11VertexBuffer(float buffer[], int size, int vertexCount, VertexBufferLayout vertexBufferLayout) : VertexBuffer(buffer, size, vertexCount, vertexBufferLayout) {
         D3D11Context context = D3D11Context();
 
         this->m_Device = context.GetDevicePtr();
         this->m_DeviceContext = context.GetDeviceContextPtr();
 
-        D3D11BufferAllocator::Allocate<float>(this->m_VertexBufferPtr, buffer, bufferCount, D3D11_BIND_VERTEX_BUFFER);
+        D3D11BufferAllocator::Allocate<float>(this->m_VertexBufferPtr, buffer, size, D3D11_BIND_VERTEX_BUFFER);
         PG_CORE_ASSERT(this->m_VertexBufferPtr != NULL, "Vertex buffer pointer should not be null!");
     }
 

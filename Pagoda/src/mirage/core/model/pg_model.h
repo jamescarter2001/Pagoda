@@ -21,7 +21,7 @@ namespace Pagoda::Mirage {
         inline unsigned int GetVertexCount() const {
             // Return IndexBuffer count if in use, otherwise aggregate the total verticies in each buffer
             if (m_IsIndexed) {
-                return this->m_IndexBuffer->GetBufferCount();
+                return this->m_IndexBuffer->GetCount();
             } else {
                 unsigned int count = 0;
                 for (VertexBuffer* buff : this->m_VertexBuffers) {
