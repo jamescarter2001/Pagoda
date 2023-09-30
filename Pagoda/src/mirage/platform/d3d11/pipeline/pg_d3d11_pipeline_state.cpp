@@ -3,14 +3,17 @@
 
 namespace Pagoda::Mirage {
     D3D11PipelineState::D3D11PipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) : PipelineState(vertexShader, fragmentShader, vertexBufferLayout) {
+        this->m_device = D3D11Context().GetDevicePtr();
         this->m_deviceContext = D3D11Context().GetDeviceContextPtr();
+
+        this->m_inputLayout = NULL;
 
         D3D11Shader* vs = dynamic_cast<D3D11Shader*>(this->m_vertexShader);
         D3D11Shader* ps = dynamic_cast<D3D11Shader*>(this->m_fragmentShader);
 
         if (vs != nullptr && ps != nullptr) {
             this->m_vs = vs->GetD3D11VertexShader();
-            this->m_ps = vs->GetD3D11PixelShader();
+            this->m_ps = ps->GetD3D11PixelShader();
         } else {
             PG_CORE_ERROR("Failed to cast Direct3D11 shaders");
             this->m_vs = NULL;
@@ -31,7 +34,7 @@ namespace Pagoda::Mirage {
             &desc[0],
             (UINT)elements.size(),
             vs->GetBlob()->GetBufferPointer(),
-            ps->GetBlob()->GetBufferSize(),
+            vs->GetBlob()->GetBufferSize(),
             &this->m_inputLayout);
 
         PG_CORE_ASSERT(ilhr == S_OK, "Failed to create Input Layout");

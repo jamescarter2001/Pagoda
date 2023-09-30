@@ -22,7 +22,7 @@ TestLayer::TestLayer(const std::string& name) : Layer(name) {
         3, 0, 2,
     };
 
-    Pagoda::Mirage::VertexBuffer* buff = Pagoda::Mirage::MirageFactory::CreateVertexBuffer(triangleArray, sizeof(triangleArray), 3, layout);
+    Pagoda::Mirage::VertexBuffer* buff = Pagoda::Mirage::MirageFactory::CreateVertexBuffer(squareArray, sizeof(squareArray), 4, layout);
     Pagoda::Mirage::IndexBuffer* indexBuff = Pagoda::Mirage::MirageFactory::CreateIndexBuffer(indicies, sizeof(indicies));
     Pagoda::Mirage::Shader* vShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_VERTEX);
     Pagoda::Mirage::Shader* pShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_FRAGMENT);

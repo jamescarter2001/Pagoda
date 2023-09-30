@@ -16,6 +16,7 @@
 #include "mirage/platform/d3d11/buffer/pg_d3d11_index_buffer.h"
 #include "mirage/platform/d3d11/shader/pg_d3d11_shader.h"
 #include "mirage/platform/d3d11/renderer/pg_d3d11_renderer.h"
+#include "mirage/platform/d3d11/pipeline/pg_d3d11_pipeline_state.h"
 
 #include "mirage/platform/d3d12/window/pg_d3d12_window.h"
 #include "mirage/platform/d3d12/buffer/pg_d3d12_vertex_buffer.h"

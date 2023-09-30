@@ -8,7 +8,7 @@ namespace Pagoda::Mirage {
     class Model {
     public:
         Model() : m_IndexBuffer(nullptr), m_IsIndexed(false) {}
-        Model(std::vector<VertexBuffer*> vbs, IndexBuffer* ib = nullptr) : m_VertexBuffers(vbs), m_IndexBuffer(ib), m_IsIndexed(false) {}
+        Model(std::vector<VertexBuffer*> vbs, IndexBuffer* ib = nullptr) : m_VertexBuffers(vbs), m_IndexBuffer(ib), m_IsIndexed(true) {}
         virtual ~Model() {}
 
         void Bind() const {

@@ -60,8 +60,7 @@ project "Pagoda"
 	incDirs = {
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/DirectX-Headers/include",
-		"%{prj.name}/vendor/glad/include"
+		"%{prj.name}/vendor/DirectX-Headers/include"
 	}
 
 	includedirs {
@@ -133,7 +132,8 @@ project "TestApp"
 
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
-		"Pagoda/vendor/spdlog/build"
+		"Pagoda/vendor/spdlog/build",
+		"Pagoda/vendor/HedgeLib/lib"
 	}
 
 	filter "configurations:Debug"
@@ -181,6 +181,7 @@ project "TestApp"
 			"pagoda",
 			"spdlog",
 			"d3d11",
+			"d3d12",
 			"dxgi",
 			"d3dcompiler"
 		}

@@ -14,6 +14,6 @@ namespace Pagoda::Mirage {
         Renderer::Draw(model, pipelineState);
 
         // this->m_DeviceContext->Draw(model.GetVertexCount(), 0);
-        this->m_commandList->DrawInstanced(model.GetVertexCount(), 1, 0, 0);
+        this->m_commandList->DrawIndexedInstanced(model.GetVertexCount(), 1, 0, 0, 0);
     }
 }

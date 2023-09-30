@@ -187,8 +187,8 @@ namespace Pagoda::Mirage {
 
         // Signal and increment the fence value.
         const UINT64 fence = this->m_fenceValue;
-        LogOnError(this->m_commandQueue->Signal(this->m_fence.Get(), fence), "Failed to send signal");
         this->m_fenceValue++;
+        LogOnError(this->m_commandQueue->Signal(this->m_fence.Get(), fence), "Failed to send signal");
 
         // Wait until the previous frame is finished.
         if (this->m_fence->GetCompletedValue() < fence) {
@@ -253,7 +253,7 @@ namespace Pagoda::Mirage {
         this->m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
 
         // Record commands.
-        const float clearColor[] = {0.0f, 0.2f, 0.4f, 1.0f};
+        const float clearColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
         this->m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
         this->m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     }
