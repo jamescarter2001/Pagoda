@@ -6,14 +6,16 @@
 #include "mirage/platform/d3d12/context/pg_d3d12_context.h"
 
 namespace Pagoda::Mirage {
-    class D3D12ResourceManager {
+    class D3D12ResourceAllocator {
     public:
-        D3D12ResourceManager();
-        virtual ~D3D12ResourceManager();
+        D3D12ResourceAllocator();
+        virtual ~D3D12ResourceAllocator();
 
-        void CopyAndTransition(ID3D12Resource* dest, ID3D12Resource* src);
+        void Allocate(ID3D12Resource** res, void* buff, int size);
 
     private:
+        void CopyAndTransition(ID3D12Resource* dest, ID3D12Resource* src);
+
         ComPtr<ID3D12Device> m_device;
         ComPtr<ID3D12CommandQueue> m_commandQueue;
         ComPtr<ID3D12CommandAllocator> m_commandAllocator;

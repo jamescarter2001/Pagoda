@@ -165,11 +165,6 @@ namespace Pagoda::Mirage {
             if (this->m_fenceEvent == nullptr) {
                 LogOnError(HRESULT_FROM_WIN32(GetLastError()));
             }
-
-            // Wait for the command list to execute; we are reusing the same command
-            // list in our main loop but for now, we just want to wait for setup to
-            // complete before continuing.
-            WaitForPreviousFrame();
         }
 
         LogOnError(this->m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, this->m_commandAllocator.Get(), this->m_pipelineState.Get(), IID_PPV_ARGS(&this->m_commandList)), "Failed to create Command List");

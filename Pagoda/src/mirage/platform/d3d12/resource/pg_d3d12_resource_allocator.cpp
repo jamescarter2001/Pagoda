@@ -1,8 +1,8 @@
 #include "pgpch.h"
-#include "pg_d3d12_resource_manager.h"
+#include "pg_d3d12_resource_allocator.h"
 
 namespace Pagoda::Mirage {
-    D3D12ResourceManager::D3D12ResourceManager() {
+    D3D12ResourceAllocator::D3D12ResourceAllocator() {
         this->m_device = D3D12Context().GetDevice();
         this->m_commandQueue = D3D12Context().GetCommandQueue();
 
@@ -20,15 +20,49 @@ namespace Pagoda::Mirage {
 
         long res = fr & cmr & clr;
 
-        PG_CORE_ASSERT(res == S_OK, "Failed to initalise D3D12ResourceManager");
+        PG_CORE_ASSERT(res == S_OK, "Failed to initalise D3D12ResourceAllocator");
 
         this->m_commandList->Close();
     }
 
-    D3D12ResourceManager::~D3D12ResourceManager() {
+    D3D12ResourceAllocator::~D3D12ResourceAllocator() {
     }
 
-    void D3D12ResourceManager::CopyAndTransition(ID3D12Resource* dest, ID3D12Resource* src) {
+    void D3D12ResourceAllocator::Allocate(ID3D12Resource** res, void* buff, int size) {
+        CD3DX12_HEAP_PROPERTIES heapProps(D3D12_HEAP_TYPE_DEFAULT);
+        CD3DX12_HEAP_PROPERTIES uploadProps(D3D12_HEAP_TYPE_UPLOAD);
+        auto desc = CD3DX12_RESOURCE_DESC::Buffer(size);
+
+        ComPtr<ID3D12Resource> uploadBuffer;
+
+        HRESULT ur = this->m_device->CreateCommittedResource(
+            &uploadProps,                       // a default heap
+            D3D12_HEAP_FLAG_NONE,               // no flags
+            &desc,                              // resource description for a buffer
+            D3D12_RESOURCE_STATE_GENERIC_READ,  // start in the copy destination state
+            nullptr,                            // optimized clear value must be null for this type of resource
+            IID_PPV_ARGS(&uploadBuffer));
+
+        HRESULT hr = this->m_device->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(res));
+
+        if (hr != S_OK || ur != S_OK) {
+            PG_CORE_ERROR("Failed to allocate Committed Resources");
+            return;
+        }
+
+        // Copy the triangle data to the vertex buffer.
+        UINT8* pVertexDataBegin;
+        CD3DX12_RANGE readRange(0, 0);  // We do not intend to read from this resource on the CPU.
+        uploadBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin));
+        memcpy(pVertexDataBegin, buff, size);
+        uploadBuffer->Unmap(0, nullptr);
+
+        this->CopyAndTransition(*res, uploadBuffer.Get());
+
+        PG_CORE_DEBUG("Allocated GPU resource with size: {}", size);
+    }
+
+    void D3D12ResourceAllocator::CopyAndTransition(ID3D12Resource* dest, ID3D12Resource* src) {
         this->m_commandAllocator->Reset();
         this->m_commandList->Reset(this->m_commandAllocator.Get(), NULL);
         this->m_commandList->CopyResource(dest, src);
