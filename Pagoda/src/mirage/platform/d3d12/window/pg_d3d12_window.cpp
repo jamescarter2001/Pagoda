@@ -167,7 +167,7 @@ namespace Pagoda::Mirage {
             }
         }
 
-        LogOnError(this->m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, this->m_commandAllocator.Get(), this->m_pipelineState.Get(), IID_PPV_ARGS(&this->m_commandList)), "Failed to create Command List");
+        LogOnError(this->m_device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, this->m_commandAllocator.Get(), NULL, IID_PPV_ARGS(&this->m_commandList)), "Failed to create Command List");
         LogOnError(this->m_commandList->Close(), "Failed to close initial Command List");
 
         // Init context
@@ -233,7 +233,7 @@ namespace Pagoda::Mirage {
             1.0f};
 
         LogOnError(this->m_commandAllocator->Reset(), "Failed to reset Command Allocator");
-        LogOnError(this->m_commandList->Reset(this->m_commandAllocator.Get(), this->m_pipelineState.Get()), "Failed to reset Command List");
+        LogOnError(this->m_commandList->Reset(this->m_commandAllocator.Get(), NULL), "Failed to reset Command List");
 
         // Set necessary state.
         this->m_commandList->SetGraphicsRootSignature(this->m_rootSignature.Get());

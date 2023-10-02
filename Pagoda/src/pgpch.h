@@ -39,3 +39,4 @@ using namespace Microsoft::WRL;
 // Pagoda
 
 #include "pg_core.h"
+#include "math/pg_math.h"

@@ -7,3 +7,6 @@
 [submodule "Pagoda/vendor/DirectX-Headers"]
 	path = Pagoda/vendor/DirectX-Headers
 	url = git@github.com:microsoft/DirectX-Headers.git
+[submodule "Pagoda/vendor/glm"]
+	path = Pagoda/vendor/glm
+	url = git@github.com:g-truc/glm.git

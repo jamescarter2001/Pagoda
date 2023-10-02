@@ -3,6 +3,7 @@
 TestLayer::TestLayer(const std::string& name) : Layer(name) {
     Pagoda::Mirage::VertexBufferLayout layout = Pagoda::Mirage::VertexBufferLayout();
     layout.PushVector3f("POS");
+    layout.PushVector4f("COL");
 
     float triangleArray[] = {
          0.0f,  0.5f, 0.0f,  // point at top
@@ -11,10 +12,10 @@ TestLayer::TestLayer(const std::string& name) : Layer(name) {
     };
 
     float squareArray[] = {
-       -0.5f,  0.5f, 0.0f,   // point at top-left        0
-        0.5f,  0.5f, 0.0f,   // point at top-right       1
-        0.5f, -0.5f, 0.0f,   // point at bottom-right    2
-       -0.5f, -0.5f, 0.0f,   // point at bottom-left     3
+       -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,   // point at top-left        0
+        0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,    // point at top-right       1
+        0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // point at bottom-right    2
+       -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f  // point at bottom-left     3
     };
 
     int indicies[] = {
@@ -24,8 +25,8 @@ TestLayer::TestLayer(const std::string& name) : Layer(name) {
 
     Pagoda::Mirage::VertexBuffer* buff = Pagoda::Mirage::MirageFactory::CreateVertexBuffer(squareArray, sizeof(squareArray), 4, layout);
     Pagoda::Mirage::IndexBuffer* indexBuff = Pagoda::Mirage::MirageFactory::CreateIndexBuffer(indicies, sizeof(indicies));
-    Pagoda::Mirage::Shader* vShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_VERTEX);
-    Pagoda::Mirage::Shader* pShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_FRAGMENT);
+    Pagoda::Mirage::Shader* vShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("C:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_VERTEX);
+    Pagoda::Mirage::Shader* pShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("C:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_FRAGMENT);
 
     this->m_Model = Pagoda::Mirage::Model({buff}, indexBuff);
     this->m_pipelineState = Pagoda::Mirage::MirageFactory::CreatePipelineState(vShader, pShader, layout);
