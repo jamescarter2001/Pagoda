@@ -8,12 +8,12 @@
 namespace Pagoda::Mirage {
     class D3D12Renderer : public Renderer {
     public:
-        D3D12Renderer();
+        D3D12Renderer(D3D12Context context);
         virtual ~D3D12Renderer();
 
         virtual void Draw(const Model& model, const PipelineState* pipelineState) const override;
 
     private:
-        ComPtr<ID3D12GraphicsCommandList> m_commandList;
+        D3D12Context m_context;
     };
 }

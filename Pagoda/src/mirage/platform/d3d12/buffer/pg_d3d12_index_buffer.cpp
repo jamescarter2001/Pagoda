@@ -2,13 +2,9 @@
 #include "pg_d3d12_index_buffer.h"
 
 namespace Pagoda::Mirage {
-    D3D12IndexBuffer::D3D12IndexBuffer(int buffer[], int size) : IndexBuffer(buffer, size) {
-        D3D12Context context = D3D12Context();
-
-        this->m_commandList = context.GetCommandList();
-
+    D3D12IndexBuffer::D3D12IndexBuffer(D3D12Context context, int buffer[], int size) : IndexBuffer(buffer, size), m_context(context) {
         std::unique_ptr<D3D12ResourceAllocator> ra = std::make_unique<D3D12ResourceAllocator>();
-        ra->Allocate(&m_indexBuffer, buffer, size);
+        ra->AllocateDefault(&m_indexBuffer, buffer, size);
 
         // Initialize the index buffer view.
         m_indexBufferView.BufferLocation = m_indexBuffer->GetGPUVirtualAddress();
@@ -19,7 +15,7 @@ namespace Pagoda::Mirage {
     D3D12IndexBuffer::~D3D12IndexBuffer() {}
 
 	void D3D12IndexBuffer::Bind() const {
-        this->m_commandList->IASetIndexBuffer(&this->m_indexBufferView);
+        this->m_context.GetCommandList()->IASetIndexBuffer(&this->m_indexBufferView);
     }
 
 	void D3D12IndexBuffer::Unbind() const {

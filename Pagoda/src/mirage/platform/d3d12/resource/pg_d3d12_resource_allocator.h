@@ -11,7 +11,8 @@ namespace Pagoda::Mirage {
         D3D12ResourceAllocator();
         virtual ~D3D12ResourceAllocator();
 
-        void Allocate(ID3D12Resource** res, void* buff, int size);
+        void AllocateDefault(ID3D12Resource** res, void* buff, int size);
+        void AllocateUpload(ID3D12Resource** res, void* buff, int size);
 
     private:
         void CopyAndTransition(ID3D12Resource* dest, ID3D12Resource* src);

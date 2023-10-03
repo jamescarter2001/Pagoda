@@ -147,7 +147,13 @@ namespace Pagoda::Mirage {
         // Create an empty root signature.
         {
             CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
-            rootSignatureDesc.Init(0, nullptr, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+            D3D12_ROOT_PARAMETER params[1];
+            params[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+            params[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+            params[0].Descriptor.ShaderRegister = 0;
+            params[0].Descriptor.RegisterSpace = 0;
+
+            rootSignatureDesc.Init(1, params, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
             ComPtr<ID3DBlob> signature;
             ComPtr<ID3DBlob> error;

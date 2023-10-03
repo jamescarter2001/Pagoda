@@ -60,7 +60,8 @@ project "Pagoda"
 	incDirs = {
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
-		"%{prj.name}/vendor/DirectX-Headers/include"
+		"%{prj.name}/vendor/DirectX-Headers/include",
+		"%{prj.name}/vendor/glm"
 	}
 
 	includedirs {
@@ -123,7 +124,8 @@ project "TestApp"
 	incDirs = {
 		"Pagoda/src",
 		"Pagoda/vendor/spdlog/include",
-		"Pagoda/vendor/DirectX-Headers/include"
+		"Pagoda/vendor/DirectX-Headers/include",
+		"Pagoda/vendor/glm"
 	}
 
 	includedirs {

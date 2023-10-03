@@ -2,8 +2,8 @@
 #include "pg_d3d12_renderer.h"
 
 namespace Pagoda::Mirage {
-    D3D12Renderer::D3D12Renderer() {
-        this->m_commandList = D3D12Context().GetCommandList();
+    D3D12Renderer::D3D12Renderer(D3D12Context context) : Renderer(), m_context(context) {
+        
     }
 
     D3D12Renderer::~D3D12Renderer() {
@@ -14,6 +14,6 @@ namespace Pagoda::Mirage {
         Renderer::Draw(model, pipelineState);
 
         // this->m_DeviceContext->Draw(model.GetVertexCount(), 0);
-        this->m_commandList->DrawIndexedInstanced(model.GetVertexCount(), 1, 0, 0, 0);
+        this->m_context.GetCommandList()->DrawIndexedInstanced(model.GetVertexCount(), 1, 0, 0, 0);
     }
 }

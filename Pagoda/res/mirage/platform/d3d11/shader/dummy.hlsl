@@ -10,9 +10,15 @@ struct vs_out {
     float4 color : COLOR;
 };
 
-vs_out vs_main(vs_in input) {
+cbuffer mvpMatrix : register(b0)
+{
+    matrix g_mat;
+};
+
+vs_out vs_main(vs_in input)
+{
     vs_out output = (vs_out)0;  // zero the memory first
-    output.position_clip = float4(input.position_local, 1.0);
+    output.position_clip = mul(float4(input.position_local, 1.0), g_mat);
     output.color = input.color_local;
     return output;
 }

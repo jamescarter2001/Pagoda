@@ -15,5 +15,14 @@ class TestLayer : public  Pagoda::Base::Layer {
         Pagoda::Mirage::Model m_Model;
         Pagoda::Mirage::PipelineState* m_pipelineState;
 
+        Pagoda::Mirage::ConstantBuffer<float>* m_constantBuffer;
+
         Pagoda::Mirage::Renderer* m_Renderer;
+
+        glm::mat4 m_translation;
+        glm::mat4 m_projection;
+        glm::mat4 m_rotation;
+        glm::mat4 m_identity;
+
+        float m_scale = 0.0f;
 };

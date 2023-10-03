@@ -14,13 +14,13 @@
 namespace Pagoda::Mirage {
     class PAGODA_API D3D12VertexBuffer : public VertexBuffer {
     public:
-        D3D12VertexBuffer(float buffer[], int size, int vertexCount, VertexBufferLayout vertexBufferLayout);
+        D3D12VertexBuffer(D3D12Context context, float buffer[], int size, int vertexCount, VertexBufferLayout vertexBufferLayout);
         virtual ~D3D12VertexBuffer();
 
         virtual void Bind() const override;
         virtual void Unbind() const override;
     private:
-        ComPtr<ID3D12GraphicsCommandList> m_commandList;
+        D3D12Context m_context;
         ComPtr<ID3D12Resource> m_vertexBuffer;
         D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;
     };

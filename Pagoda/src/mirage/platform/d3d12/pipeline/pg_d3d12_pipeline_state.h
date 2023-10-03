@@ -14,13 +14,14 @@
 namespace Pagoda::Mirage {
     class D3D12PipelineState : public PipelineState {
     public:
-        D3D12PipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout);
+        D3D12PipelineState(D3D12Context context, Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout);
         virtual ~D3D12PipelineState();
 
         virtual void Bind() const override;
         virtual void Unbind() const override;
 
     private:
+        D3D12Context m_context;
         ComPtr<ID3D12PipelineState> m_pipelineState;
     };
 }

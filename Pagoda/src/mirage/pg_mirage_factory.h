@@ -18,9 +18,11 @@
 #include "mirage/platform/d3d11/renderer/pg_d3d11_renderer.h"
 #include "mirage/platform/d3d11/pipeline/pg_d3d11_pipeline_state.h"
 
+#include "mirage/platform/d3d12/context/pg_d3d12_context.h"
 #include "mirage/platform/d3d12/window/pg_d3d12_window.h"
 #include "mirage/platform/d3d12/buffer/pg_d3d12_vertex_buffer.h"
 #include "mirage/platform/d3d12/buffer/pg_d3d12_index_buffer.h"
+#include "mirage/platform/d3d12/buffer/pg_d3d12_constant_buffer.h"
 #include "mirage/platform/d3d12/shader/pg_d3d12_shader.h"
 #include "mirage/platform/d3d12/renderer/pg_d3d12_renderer.h"
 #include "mirage/platform/d3d12/pipeline/pg_d3d12_pipeline_state.h"
@@ -30,11 +32,21 @@
 namespace Pagoda::Mirage {
     class PAGODA_API MirageFactory {
     public:
+        static void Init();
         static Window* CreateContext(WindowProps& wp);
         static VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout);
         static IndexBuffer* CreateIndexBuffer(int buffer[], int bufferCount);
         static Shader* CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType);
         static Renderer* CreateRenderer();
         static PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout);
+
+        template <typename T>
+        static ConstantBuffer<T>* CreateConstantBuffer(T buffer[], int size) {
+            return new D3D12ConstantBuffer(s_context, buffer, size);
+        }
+    private:
+        #ifdef PG_PLATFORM_WINDOWS
+        static D3D12Context s_context;
+        #endif
     };
 }
