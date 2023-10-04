@@ -35,16 +35,23 @@ namespace Pagoda::Mirage {
         static void Init();
         static Window* CreateContext(WindowProps& wp);
         static VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout);
-        static IndexBuffer* CreateIndexBuffer(int buffer[], int bufferCount);
+        static IndexBuffer* CreateIndexBuffer(unsigned int buffer[], int bufferCount);
         static Shader* CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType);
         static Renderer* CreateRenderer();
         static PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout);
 
         template <typename T>
-        static ConstantBuffer<T>* CreateConstantBuffer(T buffer[], int size) {
-            return new D3D12ConstantBuffer(s_context, buffer, size);
+        static ConstantBuffer<T>* CreateTransformConstantBuffer(int size) {
+            return new D3D12ConstantBuffer<T>(s_context, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
+        }
+
+        template <typename T>
+        static ConstantBuffer<T>* CreateTransformConstantBuffer(T buffer[], int size) {
+            return new D3D12ConstantBuffer<T>(s_context, buffer, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
         }
     private:
+        static WindowData* s_windowData;
+
         #ifdef PG_PLATFORM_WINDOWS
         static D3D12Context s_context;
         #endif

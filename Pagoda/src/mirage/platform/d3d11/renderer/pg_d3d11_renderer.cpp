@@ -2,7 +2,7 @@
 #include "pg_d3d11_renderer.h"
 
 namespace Pagoda::Mirage {
-    D3D11Renderer::D3D11Renderer() {
+    D3D11Renderer::D3D11Renderer(WindowData* wd) : Renderer(wd) {
         this->m_DeviceContext = D3D11Context().GetDeviceContextPtr();
     }
 
@@ -10,8 +10,14 @@ namespace Pagoda::Mirage {
 
     }
 
-    void D3D11Renderer::Draw(const Model& model, const PipelineState* pipelineState) const {
-        Renderer::Draw(model, pipelineState);
+    ConstantBuffer<float>* D3D11Renderer::CreateMVP() {
+        // TODO: Add D3D11 constant buffer
+        PG_CORE_WARNING("No implementation of D3D11ConstantBuffer!");
+        return nullptr;
+    }
+
+    void D3D11Renderer::Draw(const Model& model, const PipelineState* pipelineState, const ConstantBuffer<float>* transform, bool project) {
+        Renderer::Draw(model, pipelineState, transform, project);
 
         // this->m_DeviceContext->Draw(model.GetVertexCount(), 0);
         this->m_DeviceContext->DrawIndexed(model.GetVertexCount(), 0, 0);

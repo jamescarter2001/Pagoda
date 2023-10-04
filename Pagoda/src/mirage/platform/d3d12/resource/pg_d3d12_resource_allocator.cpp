@@ -28,7 +28,7 @@ namespace Pagoda::Mirage {
     D3D12ResourceAllocator::~D3D12ResourceAllocator() {
     }
 
-    void D3D12ResourceAllocator::AllocateUpload(ID3D12Resource** res, void* buff, int size) {
+    void D3D12ResourceAllocator::AllocateUpload(ID3D12Resource** res, int size) {
         CD3DX12_HEAP_PROPERTIES uploadProps(D3D12_HEAP_TYPE_UPLOAD);
         auto desc = CD3DX12_RESOURCE_DESC::Buffer(size);
 

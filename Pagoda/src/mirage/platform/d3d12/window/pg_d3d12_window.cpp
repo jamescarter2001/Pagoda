@@ -147,18 +147,26 @@ namespace Pagoda::Mirage {
         // Create an empty root signature.
         {
             CD3DX12_ROOT_SIGNATURE_DESC rootSignatureDesc;
-            D3D12_ROOT_PARAMETER params[1];
+            D3D12_ROOT_PARAMETER params[2];
+
+            // MVP
             params[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
             params[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
             params[0].Descriptor.ShaderRegister = 0;
             params[0].Descriptor.RegisterSpace = 0;
 
-            rootSignatureDesc.Init(1, params, 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
+            // Transform
+            params[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+            params[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+            params[1].Descriptor.ShaderRegister = 1;
+            params[1].Descriptor.RegisterSpace = 0;
+
+            rootSignatureDesc.Init(2, &params[0], 0, nullptr, D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT);
 
             ComPtr<ID3DBlob> signature;
             ComPtr<ID3DBlob> error;
-            LogOnError(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error));
-            LogOnError(this->m_device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&this->m_rootSignature)));
+            LogOnError(D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &signature, &error), "Failed to serialize Root Signature");
+            LogOnError(this->m_device->CreateRootSignature(0, signature->GetBufferPointer(), signature->GetBufferSize(), IID_PPV_ARGS(&this->m_rootSignature)), "Failed to create Root Signature");
         }
 
         // Create synchronization objects and wait until assets have been uploaded to the GPU.

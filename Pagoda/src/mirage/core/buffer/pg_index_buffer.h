@@ -7,9 +7,9 @@
 #include "mirage/core/buffer/pg_vertex_buffer_layout.h"
 
 namespace Pagoda::Mirage {
-    class PAGODA_API IndexBuffer : public Buffer<int> {
+    class PAGODA_API IndexBuffer : public Buffer<unsigned int> {
     public:
-        IndexBuffer(int buffer[], int size) : Buffer(buffer, size) { PG_CORE_DEBUG("Created index buffer: [Size {}]", size); };
+        IndexBuffer(unsigned int buffer[], int size) : Buffer(buffer, size) { PG_CORE_DEBUG("Created index buffer: [Size {}]", size); };
         virtual ~IndexBuffer() {};
 
         inline unsigned int GetCount() {

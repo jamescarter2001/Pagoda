@@ -12,13 +12,21 @@ struct vs_out {
 
 cbuffer mvpMatrix : register(b0)
 {
-    matrix g_mat;
+    matrix g_mvpMat;
+};
+
+cbuffer transformMatrix : register(b1)
+{
+    matrix g_transMat;
 };
 
 vs_out vs_main(vs_in input)
 {
     vs_out output = (vs_out)0;  // zero the memory first
-    output.position_clip = mul(float4(input.position_local, 1.0), g_mat);
+    float4 pos = float4(input.position_local, 1.0);
+    
+    float4 transformed = mul(g_transMat, pos);
+    output.position_clip = mul(g_mvpMat, transformed);
     output.color = input.color_local;
     return output;
 }

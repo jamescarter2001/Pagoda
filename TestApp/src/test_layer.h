@@ -8,7 +8,7 @@ class TestLayer : public  Pagoda::Base::Layer {
         ~TestLayer();
 
         virtual void OnEvent(Pagoda::Base::Event& e) const override;
-        virtual void OnUpdate() const override;
+        virtual void OnUpdate() override;
         virtual void OnAttach() override;
 
     private:
@@ -21,7 +21,6 @@ class TestLayer : public  Pagoda::Base::Layer {
 
         glm::mat4 m_translation;
         glm::mat4 m_projection;
-        glm::mat4 m_rotation;
         glm::mat4 m_identity;
 
         float m_scale = 0.0f;

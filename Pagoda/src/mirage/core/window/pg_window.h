@@ -60,6 +60,10 @@ namespace Pagoda::Mirage {
             return m_WindowData.Title;
         }
 
+        inline WindowData* GetWindowData() {
+            return &m_WindowData;
+        }
+
         void SetEventCallback(const std::function<void(Base::Event& m)>& callback) {
             this->m_WindowData.EventCallback = callback;
         }

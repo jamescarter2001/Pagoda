@@ -8,7 +8,7 @@ namespace Pagoda::Base {
         Layer(const std::string& name);
         virtual ~Layer();
         virtual void OnEvent(Event& e) const = 0;
-        virtual void OnUpdate() const = 0;
+        virtual void OnUpdate() = 0;
         virtual void OnAttach() = 0;
 
         inline std::string GetName() {

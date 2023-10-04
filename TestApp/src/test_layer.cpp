@@ -18,36 +18,47 @@ TestLayer::TestLayer(const std::string& name) : Layer(name) {
        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f  // point at bottom-left     3
     };
 
-    int indicies[] = {
-        0, 1, 2,
-        3, 0, 2,
+    float cubeArray[] = {
+        0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+       -0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+       -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+        0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
+       -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f
     };
 
-    float fov = 90.0f;
-    float tanHalfFov = glm::tan(glm::radians(fov / 2.0f));
-    float f = 1 / tanHalfFov;
+    unsigned int Indices[] = {
+        0, 1, 2,
+        1, 3, 4,
+        5, 6, 3,
+        7, 3, 6,
+        2, 4, 7,
+        0, 7, 6,
+        0, 5, 1,
+        1, 5, 3,
+        5, 0, 6,
+        7, 4, 3,
+        2, 1, 4,
+        0, 2, 7};
 
     m_translation = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
                               0.0f, 1.0f, 0.0f, 0.0f,
-                              0.0f, 0.0f, 1.0f, 3.0f,
-                              0.0f, 0.0f, 0.0f, 1.0f);
-
-    m_projection = glm::mat4(f,    0.0f, 0.0f, 0.0f,
-                             0.0f, f   , 0.0f, 0.0f,
-                             0.0f, 0.0f, 1.0f, 0.0f,
-                             0.0f, 0.0f, 1.0f, 0.0f);
+                              0.0f, 0.0f, 1.0f, 0.0f,
+                              0.0f, 0.0f, 2.0f, 1.0f);
 
     m_identity = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
                            0.0f, 1.0f, 0.0f, 0.0f,
                            0.0f, 0.0f, 1.0f, 0.0f,
                            0.0f, 0.0f, 0.0f, 1.0f);
 
-    Pagoda::Mirage::VertexBuffer* buff = Pagoda::Mirage::MirageFactory::CreateVertexBuffer(squareArray, sizeof(squareArray), 4, layout);
-    Pagoda::Mirage::IndexBuffer* indexBuff = Pagoda::Mirage::MirageFactory::CreateIndexBuffer(indicies, sizeof(indicies));
-    Pagoda::Mirage::Shader* vShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("C:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_VERTEX);
-    Pagoda::Mirage::Shader* pShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("C:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_FRAGMENT);
+    Pagoda::Mirage::VertexBuffer* buff = Pagoda::Mirage::MirageFactory::CreateVertexBuffer(cubeArray, sizeof(cubeArray), 8, layout);
+    Pagoda::Mirage::IndexBuffer* indexBuff = Pagoda::Mirage::MirageFactory::CreateIndexBuffer(Indices, sizeof(Indices));
+    Pagoda::Mirage::Shader* vShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_VERTEX);
+    Pagoda::Mirage::Shader* pShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_FRAGMENT);
 
-    m_constantBuffer = Pagoda::Mirage::MirageFactory::CreateConstantBuffer<float>(&m_identity[0][0], sizeof(m_identity));
+    m_constantBuffer = Pagoda::Mirage::MirageFactory::CreateTransformConstantBuffer<float>(sizeof(m_identity));
 
     this->m_Model = Pagoda::Mirage::Model({buff}, indexBuff);
     this->m_pipelineState = Pagoda::Mirage::MirageFactory::CreatePipelineState(vShader, pShader, layout);
@@ -62,17 +73,19 @@ TestLayer::~TestLayer() {
 void TestLayer::OnEvent(Pagoda::Base::Event& e) const {
 }
 
-void TestLayer::OnUpdate() const {
-    glm::mat4 rot(glm::cos(m_scale), 0.0f, -glm::cos(m_scale), 0.0f,
+void TestLayer::OnUpdate() {
+    this->m_scale = m_scale + 0.005f;
+    glm::mat4 rot(glm::cos(m_scale), 0.0f, -glm::sin(m_scale), 0.0f,
                   0.0f, 1.0f, 0.0f, 0.0f,
                   glm::sin(m_scale), 0.0f, glm::cos(m_scale), 0.0f,
                   0.0f, 0.0f, 0.0f, 1.0f);
 
-    glm::mat4 fin = m_projection * m_translation * m_rotation;
+    glm::mat4 fin = m_translation * rot * m_identity;
+
+    
 
     this->m_constantBuffer->Write(&fin[0][0]);
-    this->m_Renderer->SetConstantBuffer(this->m_constantBuffer);
-    this->m_Renderer->Draw(this->m_Model, this->m_pipelineState);
+    this->m_Renderer->Draw(this->m_Model, this->m_pipelineState, this->m_constantBuffer, true);
 }
 
 void TestLayer::OnAttach() {

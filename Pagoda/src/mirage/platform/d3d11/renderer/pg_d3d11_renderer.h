@@ -2,6 +2,7 @@
 #include "pgpch.h"
 
 #include "mirage/core/renderer/pg_renderer.h"
+#include "mirage/core/window/pg_window.h"
 #include "mirage/core/pipeline/pg_pipeline_state.h"
 
 #include "mirage/platform/d3d11/context/pg_d3d11_context.h"
@@ -9,10 +10,11 @@
 namespace Pagoda::Mirage {
     class D3D11Renderer : public Renderer {
     public:
-        D3D11Renderer();
+        D3D11Renderer(WindowData* wd);
         virtual ~D3D11Renderer();
 
-        virtual void Draw(const Model& model, const PipelineState* pipelineState) const override;
+        virtual void Draw(const Model& model, const PipelineState* pipelineState, const ConstantBuffer<float>* transform, bool project) override;
+        virtual ConstantBuffer<float>* CreateMVP() override;
 
     private:
         ID3D11DeviceContext* m_DeviceContext;
