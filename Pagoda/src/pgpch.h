@@ -11,6 +11,7 @@
 #include <locale>
 #include <codecvt>
 #include <iterator>
+#include <filesystem>
 
 // Windows
 

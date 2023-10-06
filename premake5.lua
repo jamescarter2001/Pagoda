@@ -121,15 +121,11 @@ project "TestApp"
 		"SPDLOG_COMPILED_LIB"
 	}
 
-	incDirs = {
+	includedirs {
 		"Pagoda/src",
 		"Pagoda/vendor/spdlog/include",
 		"Pagoda/vendor/DirectX-Headers/include",
 		"Pagoda/vendor/glm"
-	}
-
-	includedirs {
-		table.unpack(incDirs)
 	}
 
 	libdirs {
@@ -137,6 +133,10 @@ project "TestApp"
 		"Pagoda/vendor/spdlog/build",
 		"Pagoda/vendor/HedgeLib/lib"
 	}
+	
+	--[[postbuildcommands {
+		"{COPY} ../Pagoda/res/mirage/platform/d3d11/shader ../bin/%{outputdir}/%{prj.name}"
+	}]]--
 
 	filter "configurations:Debug"
 		defines {

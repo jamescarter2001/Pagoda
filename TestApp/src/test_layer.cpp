@@ -55,8 +55,8 @@ TestLayer::TestLayer(const std::string& name) : Layer(name) {
 
     Pagoda::Mirage::VertexBuffer* buff = Pagoda::Mirage::MirageFactory::CreateVertexBuffer(cubeArray, sizeof(cubeArray), 8, layout);
     Pagoda::Mirage::IndexBuffer* indexBuff = Pagoda::Mirage::MirageFactory::CreateIndexBuffer(Indices, sizeof(Indices));
-    Pagoda::Mirage::Shader* vShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_VERTEX);
-    Pagoda::Mirage::Shader* pShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_FRAGMENT);
+    Pagoda::Mirage::Shader* vShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("../Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_VERTEX);
+    Pagoda::Mirage::Shader* pShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("../Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_FRAGMENT);
 
     m_constantBuffer = Pagoda::Mirage::MirageFactory::CreateTransformConstantBuffer<float>(sizeof(m_identity));
 
