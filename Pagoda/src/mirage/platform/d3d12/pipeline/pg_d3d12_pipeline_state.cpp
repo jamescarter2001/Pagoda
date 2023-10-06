@@ -42,7 +42,7 @@ namespace Pagoda::Mirage {
     }
 
     void D3D12PipelineState::Bind() const {
-        D3D12Context().GetCommandList()->SetPipelineState(this->m_pipelineState.Get());
+        this->m_context.GetCommandList()->SetPipelineState(this->m_pipelineState.Get());
     }
 
     void D3D12PipelineState::Unbind() const {

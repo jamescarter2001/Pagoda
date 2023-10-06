@@ -3,37 +3,24 @@
 
 namespace Pagoda::Mirage {
     #ifdef PG_PLATFORM_WINDOWS
-    D3D12Context MirageFactory::s_context;
-    WindowData* MirageFactory::s_windowData = nullptr;
-
-    void MirageFactory::Init() {
-        s_context = D3D12Context();
+    VertexBuffer* D3D12MirageFactory::CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const {
+        return new D3D12VertexBuffer(this->m_context, buffer, bufferCount, vertexCount, layout);
     }
 
-    Window* MirageFactory::CreateContext(WindowProps& wp) {
-        Window* w = new D3D12Window(wp);
-        s_windowData = w->GetWindowData();
-        return w;
+    IndexBuffer* D3D12MirageFactory::CreateIndexBuffer(unsigned int buffer[], int bufferCount) const {
+        return new D3D12IndexBuffer(this->m_context, buffer, bufferCount);
     }
 
-    VertexBuffer* MirageFactory::CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) {
-        return new D3D12VertexBuffer(s_context, buffer, bufferCount, vertexCount, layout);
-    }
-
-    IndexBuffer* MirageFactory::CreateIndexBuffer(unsigned int buffer[], int bufferCount) {
-        return new D3D12IndexBuffer(s_context, buffer, bufferCount);
-    }
-
-    Shader* MirageFactory::CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) {
+    Shader* D3D12MirageFactory::CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) const {
         return new D3D12Shader(filePath, vertexBufferLayout, shaderType);
     }
 
-    Renderer* MirageFactory::CreateRenderer() {
-        return new D3D12Renderer(s_context, s_windowData);
+    Renderer* D3D12MirageFactory::CreateRenderer() const {
+        return new D3D12Renderer(this->m_context, this->m_windowData);
     }
 
-    PipelineState* MirageFactory::CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) {
-        return new D3D12PipelineState(s_context, vertexShader, fragmentShader, vertexBufferLayout);
+    PipelineState* D3D12MirageFactory::CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) const {
+        return new D3D12PipelineState(this->m_context, vertexShader, fragmentShader, vertexBufferLayout);
     }
     #endif
 }

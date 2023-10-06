@@ -12,6 +12,8 @@
 #include "mirage/core/window/pg_window.h"
 #include "mirage/pg_mirage_factory.h"
 
+#include "mirage/platform/d3d12/window/pg_d3d12_window.h"
+
 namespace Pagoda {
     class PAGODA_API Application {
     public:
@@ -34,6 +36,9 @@ namespace Pagoda {
         inline std::string GetName() {
             return this->m_Name;
         }
+
+    protected:
+        Mirage::MirageFactory* m_mirageFactory;
 
     private:
         static Application* s_Instance;

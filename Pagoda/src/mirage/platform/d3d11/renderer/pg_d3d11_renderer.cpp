@@ -2,8 +2,8 @@
 #include "pg_d3d11_renderer.h"
 
 namespace Pagoda::Mirage {
-    D3D11Renderer::D3D11Renderer(WindowData* wd) : Renderer(wd) {
-        this->m_DeviceContext = D3D11Context().GetDeviceContextPtr();
+    D3D11Renderer::D3D11Renderer(D3D11Context context, WindowData* wd) : Renderer(wd) {
+        this->m_DeviceContext = context.GetDeviceContextPtr();
     }
 
     D3D11Renderer::~D3D11Renderer() {

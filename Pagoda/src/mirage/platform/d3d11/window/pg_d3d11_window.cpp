@@ -37,7 +37,7 @@ namespace Pagoda::Mirage {
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 
-    void D3D11Window::Init() {
+    MirageFactory* D3D11Window::Init() {
         PG_CORE_DEBUG("Using graphics API: Direct3D11");
 
         HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -77,10 +77,10 @@ namespace Pagoda::Mirage {
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);
 
-        this->Direct3D11Init();
+        return this->Direct3D11Init();
     }
 
-    void D3D11Window::Direct3D11Init() {
+    MirageFactory* D3D11Window::Direct3D11Init() {
         // Numerator and denominator for drawing as fast as possible.
 
         m_SwapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
@@ -140,7 +140,9 @@ namespace Pagoda::Mirage {
 
         // Init context
 
-        D3D11Context::Init(m_devicePtr, m_deviceContextPtr, m_swapChainPtr, m_renderTargetViewPtr);
+        D3D11Context context(m_devicePtr, m_deviceContextPtr, m_swapChainPtr, m_renderTargetViewPtr);
+
+        return new D3D11MirageFactory(&m_WindowData, context);
     }
 
     void D3D11Window::BeforeUpdate() {

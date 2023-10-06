@@ -14,7 +14,7 @@
 namespace Pagoda::Mirage {
     class D3D11Shader : public Shader {
     public:
-        D3D11Shader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType);
+        D3D11Shader(D3D11Context context, std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType);
         virtual ~D3D11Shader();
 
         inline ID3D11VertexShader* GetD3D11VertexShader() const& {

@@ -12,9 +12,9 @@ namespace Pagoda {
 
         // Mirage
         PG_CORE_TRACE("Initialising Mirage subsystem...");
-        this->m_Window = Mirage::MirageFactory::CreateContext(Mirage::WindowProps(name));
+        this->m_Window = new Mirage::D3D12Window(Mirage::WindowProps(name));
         this->m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
-        Mirage::MirageFactory::Init();
+        this->m_mirageFactory = this->m_Window->Init();
         PG_CORE_INFO("Mirage initialisation successful");
 
         this->s_Instance = this;
@@ -64,7 +64,7 @@ namespace Pagoda {
     }
 
     void Application::Run() {
-        PG_CORE_ASSERT_CRITICAL(this->Setup(), "System failed to initialize.");
+        PG_CORE_ASSERT_CRITICAL(this->Setup(), "System failed to initialise.");
         PG_CORE_INFO("System initialisation success");
         this->m_IsRunning = true;
 

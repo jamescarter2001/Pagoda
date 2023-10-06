@@ -4,7 +4,7 @@
 
 class TestLayer : public  Pagoda::Base::Layer {
 	public:
-        TestLayer(const std::string& name);
+        TestLayer(const std::string& name, Pagoda::Mirage::MirageFactory* mf);
         ~TestLayer();
 
         virtual void OnEvent(Pagoda::Base::Event& e) const override;
@@ -12,6 +12,8 @@ class TestLayer : public  Pagoda::Base::Layer {
         virtual void OnAttach() override;
 
     private:
+        Pagoda::Mirage::MirageFactory* m_mirageFactory;
+
         Pagoda::Mirage::Model m_Model;
         Pagoda::Mirage::PipelineState* m_pipelineState;
 

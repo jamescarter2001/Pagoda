@@ -2,9 +2,9 @@
 #include "pg_d3d11_pipeline_state.h"
 
 namespace Pagoda::Mirage {
-    D3D11PipelineState::D3D11PipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) : PipelineState(vertexShader, fragmentShader, vertexBufferLayout) {
-        this->m_device = D3D11Context().GetDevicePtr();
-        this->m_deviceContext = D3D11Context().GetDeviceContextPtr();
+    D3D11PipelineState::D3D11PipelineState(D3D11Context context, Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) : PipelineState(vertexShader, fragmentShader, vertexBufferLayout) {
+        this->m_device = context.GetDevicePtr();
+        this->m_deviceContext = context.GetDeviceContextPtr();
 
         this->m_inputLayout = NULL;
 

@@ -8,7 +8,7 @@
 namespace Pagoda::Mirage {
     class D3D12ResourceAllocator {
     public:
-        D3D12ResourceAllocator();
+        D3D12ResourceAllocator(D3D12Context context);
         virtual ~D3D12ResourceAllocator();
 
         void AllocateDefault(ID3D12Resource** res, void* buff, int size);
@@ -17,8 +17,8 @@ namespace Pagoda::Mirage {
     private:
         void CopyAndTransition(ID3D12Resource* dest, ID3D12Resource* src);
 
-        ComPtr<ID3D12Device> m_device;
-        ComPtr<ID3D12CommandQueue> m_commandQueue;
+        D3D12Context m_context;
+
         ComPtr<ID3D12CommandAllocator> m_commandAllocator;
         ComPtr<ID3D12GraphicsCommandList> m_commandList;
 

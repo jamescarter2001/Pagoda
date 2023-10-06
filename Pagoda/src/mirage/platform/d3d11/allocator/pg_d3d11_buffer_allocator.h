@@ -7,10 +7,8 @@ namespace Pagoda::Mirage {
     class PAGODA_API D3D11BufferAllocator {
     public:
         template <typename T>
-        static void Allocate(ID3D11Buffer*& ptr, T buffer[], int size, D3D11_BIND_FLAG bufferType) {
+        static void Allocate(D3D11Context context, ID3D11Buffer*& ptr, T buffer[], int size, D3D11_BIND_FLAG bufferType) {
             ptr = NULL;
-
-            D3D11Context context = D3D11Context();
 
             D3D11_BUFFER_DESC vertexBufferDescriptor = {};
             vertexBufferDescriptor.ByteWidth = size;

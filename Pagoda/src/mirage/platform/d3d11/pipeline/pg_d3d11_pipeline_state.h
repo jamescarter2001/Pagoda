@@ -10,7 +10,7 @@
 namespace Pagoda::Mirage {
     class D3D11PipelineState : public PipelineState {
     public:
-        D3D11PipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout);
+        D3D11PipelineState(D3D11Context context, Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout);
         virtual ~D3D11PipelineState();
 
         virtual void Bind() const override;

@@ -2,7 +2,7 @@
 #include "pgpch.h"
 
 #include "mirage/core/renderer/pg_renderer.h"
-#include "mirage/core/window/pg_window.h"
+#include "mirage/core/window/pg_window_data.h"
 
 #include "mirage/platform/d3d12/context/pg_d3d12_context.h"
 #include "mirage/platform/d3d12/buffer/pg_d3d12_constant_buffer.h"
