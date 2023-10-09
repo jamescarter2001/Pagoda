@@ -59,7 +59,9 @@ project "Pagoda"
 
 	incDirs = {
 		"%{prj.name}/src",
-		"%{prj.name}/vendor/spdlog/include"
+		"%{prj.name}/vendor/spdlog/include",
+		"%{prj.name}/vendor/DirectX-Headers/include",
+		"%{prj.name}/vendor/glm"
 	}
 
 	includedirs {
@@ -119,19 +121,21 @@ project "TestApp"
 		"SPDLOG_COMPILED_LIB"
 	}
 
-	incDirs = {
+	includedirs {
 		"Pagoda/src",
 		"Pagoda/vendor/spdlog/include",
-	}
-
-	includedirs {
-		table.unpack(incDirs)
+		"Pagoda/vendor/DirectX-Headers/include",
+		"Pagoda/vendor/glm"
 	}
 
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
 		"Pagoda/vendor/spdlog/build"
 	}
+	
+	--[[postbuildcommands {
+		"{COPY} ../Pagoda/res/mirage/platform/d3d11/shader ../bin/%{outputdir}/%{prj.name}"
+	}]]--
 
 	filter "configurations:Debug"
 		defines {
@@ -163,6 +167,7 @@ project "TestApp"
 			"pagoda",
 			"spdlogd",
 			"d3d11",
+			"d3d12",
 			"dxgi",
 			"d3dcompiler"
 		}
@@ -177,6 +182,7 @@ project "TestApp"
 			"pagoda",
 			"spdlog",
 			"d3d11",
+			"d3d12",
 			"dxgi",
 			"d3dcompiler"
 		}

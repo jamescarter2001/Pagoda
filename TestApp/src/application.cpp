@@ -7,7 +7,7 @@ class TestApp : public Pagoda::Application {
 public:
     TestApp(std::string& name) : Pagoda::Application(name) {
         PG_TRACE("Created new engine application");
-        PushLayer(new TestLayer("TestLayer"));
+        PushLayer(new TestLayer("TestLayer", this->m_mirageFactory));
         // PushOverlay(new GameEngine::ReddogLayer());
     }
 };

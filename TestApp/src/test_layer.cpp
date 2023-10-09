@@ -1,36 +1,70 @@
 #include "test_layer.h"
 
-TestLayer::TestLayer(const std::string& name) : Layer(name) {
+TestLayer::TestLayer(const std::string& name, Pagoda::Mirage::MirageFactory* mf) : Layer(name), m_mirageFactory(mf) {
+
     Pagoda::Mirage::VertexBufferLayout layout = Pagoda::Mirage::VertexBufferLayout();
     layout.PushVector3f("POS");
+    layout.PushVector4f("COL");
 
     float triangleArray[] = {
-        -0.5f, 0.5f, 0.0f,    // point at top
-        0.5f, -0.5f, 0.0f,   // point at bottom-right
+         0.0f,  0.5f, 0.0f,  // point at top
+         0.5f, -0.5f, 0.0f,  // point at bottom-right
         -0.5f, -0.5f, 0.0f,  // point at bottom-left
     };
 
     float squareArray[] = {
-       -0.5f, 0.5f, 0.0f,    // point at top-left        0
-        0.5f, 0.5f, 0.0f,    // point at top-right       1
-        0.5f, -0.5f, 0.0f,   // point at bottom-right    2
-       -0.5f, -0.5f, 0.0f,  // point at bottom-left      3
+       -0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,   // point at top-left        0
+        0.5f,  0.5f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,    // point at top-right       1
+        0.5f, -0.5f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f,   // point at bottom-right    2
+       -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f  // point at bottom-left     3
     };
 
-    int indicies[] = {
+    float cubeArray[] = {
+        0.5f,  0.5f,  0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+       -0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+       -0.5f,  0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f, -0.5f, 0.0f, 1.0f, 1.0f, 1.0f,
+       -0.5f, -0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+        0.5f,  0.5f, -0.5f, 1.0f, 0.0f, 1.0f, 1.0f,
+        0.5f, -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f,
+       -0.5f, -0.5f,  0.5f, 0.0f, 1.0f, 1.0f, 1.0f
+    };
+
+    unsigned int Indices[] = {
         0, 1, 2,
-        3, 0, 2,
-    };
+        1, 3, 4,
+        5, 6, 3,
+        7, 3, 6,
+        2, 4, 7,
+        0, 7, 6,
+        0, 5, 1,
+        1, 5, 3,
+        5, 0, 6,
+        7, 4, 3,
+        2, 1, 4,
+        0, 2, 7};
 
-    Pagoda::Mirage::VertexBuffer* buff = Pagoda::Mirage::MirageFactory::CreateVertexBuffer(squareArray, 12, 4, layout);
-    Pagoda::Mirage::IndexBuffer* indexBuff = Pagoda::Mirage::MirageFactory::CreateIndexBuffer(indicies, 6);
-    Pagoda::Mirage::Shader* vShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_VERTEX);
-    Pagoda::Mirage::Shader* pShader = Pagoda::Mirage::MirageFactory::CreateShader(std::string("E:/Dev/Pagoda/Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_PIXEL);
+    m_translation = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                              0.0f, 1.0f, 0.0f, 0.0f,
+                              0.0f, 0.0f, 1.0f, 0.0f,
+                              0.0f, 0.0f, 2.0f, 1.0f);
+
+    m_identity = glm::mat4(1.0f, 0.0f, 0.0f, 0.0f,
+                           0.0f, 1.0f, 0.0f, 0.0f,
+                           0.0f, 0.0f, 1.0f, 0.0f,
+                           0.0f, 0.0f, 0.0f, 1.0f);
+
+    Pagoda::Mirage::VertexBuffer* buff = this->m_mirageFactory->CreateVertexBuffer(cubeArray, sizeof(cubeArray), 8, layout);
+    Pagoda::Mirage::IndexBuffer* indexBuff = this->m_mirageFactory->CreateIndexBuffer(Indices, sizeof(Indices));
+    Pagoda::Mirage::Shader* vShader = this->m_mirageFactory->CreateShader(std::string("../Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_VERTEX);
+    Pagoda::Mirage::Shader* pShader = this->m_mirageFactory->CreateShader(std::string("../Pagoda/res/mirage/platform/d3d11/shader/dummy.hlsl"), layout, Pagoda::Mirage::ShaderType::SHADER_TYPE_FRAGMENT);
+
+    m_constantBuffer = this->m_mirageFactory->CreateTransformConstantBuffer(sizeof(m_identity));
 
     this->m_Model = Pagoda::Mirage::Model({buff}, indexBuff);
-    this->m_ShaderData = Pagoda::Mirage::ShaderData({vShader, pShader});
+    this->m_pipelineState = this->m_mirageFactory->CreatePipelineState(vShader, pShader, layout);
 
-    this->m_Renderer = Pagoda::Mirage::MirageFactory::CreateRenderer();
+    this->m_Renderer = this->m_mirageFactory->CreateRenderer();
 }
 
 TestLayer::~TestLayer() {
@@ -40,8 +74,19 @@ TestLayer::~TestLayer() {
 void TestLayer::OnEvent(Pagoda::Base::Event& e) const {
 }
 
-void TestLayer::OnUpdate() const {
-    this->m_Renderer->Draw(this->m_Model, this->m_ShaderData);
+void TestLayer::OnUpdate() {
+    this->m_scale = m_scale + 0.005f;
+    glm::mat4 rot(glm::cos(m_scale), 0.0f, -glm::sin(m_scale), 0.0f,
+                  0.0f, 1.0f, 0.0f, 0.0f,
+                  glm::sin(m_scale), 0.0f, glm::cos(m_scale), 0.0f,
+                  0.0f, 0.0f, 0.0f, 1.0f);
+
+    glm::mat4 fin = m_translation * rot * m_identity;
+
+    
+
+    this->m_constantBuffer->Write(&fin[0][0]);
+    this->m_Renderer->Draw(this->m_Model, this->m_pipelineState, this->m_constantBuffer, true);
 }
 
 void TestLayer::OnAttach() {

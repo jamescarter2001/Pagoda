@@ -6,34 +6,10 @@
 #include "base/event/pg_event.h"
 #include "base/event/pg_application_event.h"
 
+#include "mirage/core/window/pg_window_data.h"
+#include "mirage/pg_mirage_factory.h"
+
 namespace Pagoda::Mirage {
-    struct WindowProps {
-        std::string Title = "Pagoda";
-        int Width = 1280;
-        int Height = 720;
-
-        WindowProps() {}
-
-        WindowProps(std::string Title) {
-            this->Title = Title;
-        }
-
-        WindowProps(std::string Title, int Width, int Height) {
-            this->Title = Title;
-            this->Width = Width;
-            this->Height = Height;
-        }
-    };
-
-    struct WindowData {
-        std::string Title = "";
-        int Width = 0, Height = 0;
-        bool VSync = false;
-        std::function<void(Base::Event& m)> EventCallback = [](Base::Event& m) {
-            PG_CORE_WARNING("Application event callback not set!");
-        };
-    };
-
     class PAGODA_API Window {
     public:
         Window(const WindowProps& props) {
@@ -44,7 +20,7 @@ namespace Pagoda::Mirage {
 
         virtual ~Window() {}
 
-        virtual void Init() = 0;
+        virtual MirageFactory* Init() = 0;
         virtual void BeforeUpdate() = 0;
         virtual void OnUpdate() = 0;
 
@@ -60,11 +36,13 @@ namespace Pagoda::Mirage {
             return m_WindowData.Title;
         }
 
+        inline WindowData* GetWindowData() {
+            return &m_WindowData;
+        }
+
         void SetEventCallback(const std::function<void(Base::Event& m)>& callback) {
             this->m_WindowData.EventCallback = callback;
         }
-
-        static Window* Create(const WindowProps& props = WindowProps());
 
     protected:
         WindowData m_WindowData;

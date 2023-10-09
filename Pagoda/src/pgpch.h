@@ -11,6 +11,7 @@
 #include <locale>
 #include <codecvt>
 #include <iterator>
+#include <filesystem>
 
 // Windows
 
@@ -18,10 +19,25 @@
 
 #include <windows.h>
 #include <windowsx.h>
-#include <d3d11.h>        // D3D interface
-#include <dxgi.h>         // DirectX driver interface
+
+// Direct3D11
+
+// #include <d3d11.h>        // D3D interface
+// #include <dxgi.h>         // DirectX driver interface
+// #include <d3dcompiler.h>  // shader compiler
+
+// Direct3D12
+
+#include <wrl/client.h>
+
+using namespace Microsoft::WRL;
+
+#include <directx/d3dx12.h>        // D3D interface
+#include <d3d11.h> 
+#include <dxgi1_4.h>         // DirectX driver interface
 #include <d3dcompiler.h>  // shader compiler
 
 // Pagoda
 
 #include "pg_core.h"
+#include "math/pg_math.h"

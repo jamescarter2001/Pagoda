@@ -7,31 +7,33 @@
 
 #include "mirage/core/shader/pg_shader.h"
 
+#include "mirage/platform/d3d/util/pg_d3d_util.h"
+
 #include "mirage/platform/d3d11/context/pg_d3d11_context.h"
 
 namespace Pagoda::Mirage {
     class D3D11Shader : public Shader {
     public:
-        D3D11Shader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType);
+        D3D11Shader(D3D11Context context, std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType);
         virtual ~D3D11Shader();
 
-        virtual void Bind() override;
-        virtual void Unbind() override;
+        inline ID3D11VertexShader* GetD3D11VertexShader() const& {
+            return this->m_VertexShader;
+        }
 
-        DXGI_FORMAT GetDXGIFormat(unsigned int format);
+        inline ID3D11PixelShader* GetD3D11PixelShader() const& {
+            return this->m_PixelShader;
+        }
+
+        inline ID3DBlob* GetBlob() const& {
+            return this->m_BlobPtr;
+        }
+
     private:
         void CreateVertexShader(UINT flags);
         void CreatePixelShader(UINT flags);
 
         void CompileShader(UINT flags, ID3DBlob*& errPtr);
-
-        inline std::string GetShaderType() {
-            return this->m_ShaderType == ShaderType::SHADER_TYPE_VERTEX ? "VERTEX" : "PIXEL";
-        }
-
-        inline bool IsVertexShader() {
-            return this->m_ShaderType == ShaderType::SHADER_TYPE_VERTEX;
-        }
 
         ID3D11Device* m_Device;
         ID3D11DeviceContext* m_DeviceContext;

@@ -5,25 +5,19 @@ namespace Pagoda::Mirage {
     D3D11Window::D3D11Window(const WindowProps& props) : Window(props) {
         this->m_Window = nullptr;
 
-        this->m_DevicePtr = nullptr;
-        this->m_DeviceContextPtr = nullptr;
-        this->m_SwapChainPtr = nullptr;
-        this->m_RenderTargetViewPtr = nullptr;
+        this->m_devicePtr = nullptr;
+        this->m_deviceContextPtr = nullptr;
+        this->m_swapChainPtr = nullptr;
+        this->m_renderTargetViewPtr = nullptr;
 
         this->m_SwapChainDesc = {0};
-
-        Init();
     }
 
     D3D11Window::~D3D11Window() {
-        this->m_DevicePtr->Release();
-        this->m_DeviceContextPtr->Release();
-        this->m_SwapChainPtr->Release();
-        this->m_RenderTargetViewPtr->Release();
-    }
-
-    Window* Window::Create(const WindowProps& props) {
-        return new D3D11Window(props);
+        this->m_devicePtr->Release();
+        this->m_deviceContextPtr->Release();
+        this->m_swapChainPtr->Release();
+        this->m_renderTargetViewPtr->Release();
     }
 
     LRESULT CALLBACK D3D11Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
@@ -41,7 +35,7 @@ namespace Pagoda::Mirage {
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 
-    void D3D11Window::Init() {
+    MirageFactory* D3D11Window::Init() {
         PG_CORE_DEBUG("Using graphics API: Direct3D11");
 
         HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -81,10 +75,10 @@ namespace Pagoda::Mirage {
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);
 
-        this->Direct3D11Init();
+        return this->Direct3D11Init();
     }
 
-    void D3D11Window::Direct3D11Init() {
+    MirageFactory* D3D11Window::Direct3D11Init() {
         // Numerator and denominator for drawing as fast as possible.
 
         m_SwapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
@@ -118,10 +112,10 @@ namespace Pagoda::Mirage {
             0,                          // The number of elements in the feature level array supplied above
             D3D11_SDK_VERSION,          // The SDK version to use
             &m_SwapChainDesc,             // Populate the pointers
-            &m_SwapChainPtr,
-            &m_DevicePtr,
+            &m_swapChainPtr,
+            &m_devicePtr,
             &featureLevel,
-            &m_DeviceContextPtr
+            &m_deviceContextPtr
         );
 
         PG_CORE_DEBUG("D3D11CreateDeviceAndSwapChain HRESULT: {}", hr == S_OK ? "S_OK" : std::to_string(hr));
@@ -129,14 +123,14 @@ namespace Pagoda::Mirage {
         PG_CORE_ASSERT_CRITICAL(hr == S_OK, "Direct3D11 failed to initialize");
 
         ID3D11Texture2D* framebuffer = NULL;
-        hr = m_SwapChainPtr->GetBuffer(
+        hr = m_swapChainPtr->GetBuffer(
             0,
             __uuidof(ID3D11Texture2D),
             (void**)&framebuffer);
 
         if (framebuffer != NULL) {
-            hr = m_DevicePtr->CreateRenderTargetView(
-                framebuffer, 0, &m_RenderTargetViewPtr);
+            hr = m_devicePtr->CreateRenderTargetView(
+                framebuffer, 0, &m_renderTargetViewPtr);
             framebuffer->Release();
         } else {
             PG_CORE_WARNING("Unable to fetch framebuffer from swap chain pointer");
@@ -144,7 +138,9 @@ namespace Pagoda::Mirage {
 
         // Init context
 
-        D3D11Context::Init(m_DevicePtr, m_DeviceContextPtr, m_SwapChainPtr, m_RenderTargetViewPtr);
+        D3D11Context context(m_devicePtr, m_deviceContextPtr, m_swapChainPtr, m_renderTargetViewPtr);
+
+        return new D3D11MirageFactory(&m_WindowData, context);
     }
 
     void D3D11Window::BeforeUpdate() {
@@ -152,8 +148,8 @@ namespace Pagoda::Mirage {
             // 60.0f / 255.0f, 60.0f / 255.0f, 60.0f / 255.0f, 1.0f
             0.0f, 0.0f, 0.0f, 1.0f
         };
-        this->m_DeviceContextPtr->ClearRenderTargetView(
-            this->m_RenderTargetViewPtr, backgroundColour);
+        this->m_deviceContextPtr->ClearRenderTargetView(
+            this->m_renderTargetViewPtr, backgroundColour);
 
         RECT winRect;
         GetClientRect(this->m_Window, &winRect);
@@ -165,9 +161,9 @@ namespace Pagoda::Mirage {
             (FLOAT)(winRect.bottom - winRect.top),
             0.0f,
             1.0f};
-        this->m_DeviceContextPtr->RSSetViewports(1, &viewport);
+        this->m_deviceContextPtr->RSSetViewports(1, &viewport);
 
-        this->m_DeviceContextPtr->OMSetRenderTargets(1, &this->m_RenderTargetViewPtr, NULL);
+        this->m_deviceContextPtr->OMSetRenderTargets(1, &this->m_renderTargetViewPtr, NULL);
     }
 
     void D3D11Window::OnUpdate() {
@@ -188,6 +184,6 @@ namespace Pagoda::Mirage {
             }
         }
 
-        this->m_SwapChainPtr->Present(1, 0);
+        this->m_swapChainPtr->Present(1, 0);
     }
 }

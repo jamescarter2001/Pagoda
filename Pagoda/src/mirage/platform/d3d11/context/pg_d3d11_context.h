@@ -6,27 +6,28 @@
 namespace Pagoda::Mirage {
     class D3D11Context {
     public:
-        static void Init(ID3D11Device* devicePtr, ID3D11DeviceContext* deviceContextPtr, IDXGISwapChain* swapChainPtr, ID3D11RenderTargetView* renderTargetViewPtr);
+        D3D11Context(ID3D11Device* devicePtr, ID3D11DeviceContext* deviceContextPtr, IDXGISwapChain* swapChainPtr, ID3D11RenderTargetView* renderTargetViewPtr);
+        virtual ~D3D11Context();
 
         inline ID3D11Device* GetDevicePtr() const& {
-            return ms_DevicePtr;
+            return this->m_device;
         }
 
         inline ID3D11DeviceContext* GetDeviceContextPtr() const& {
-            return ms_DeviceContextPtr;
+            return this->m_deviceContext;
         }
 
         inline IDXGISwapChain* GetSwapChainPtr() const& {
-            return ms_SwapChainPtr;
+            return this->m_swapChain;
         }
 
         inline ID3D11RenderTargetView* GetRenderTargetViewPtr() const& {
-            return ms_RenderTargetViewPtr;
+            return this->m_renderTargetView;
         }
     private:
-        static ID3D11Device* ms_DevicePtr;
-        static ID3D11DeviceContext* ms_DeviceContextPtr;
-        static IDXGISwapChain* ms_SwapChainPtr;
-        static ID3D11RenderTargetView* ms_RenderTargetViewPtr;
+        ID3D11Device* m_device;
+        ID3D11DeviceContext* m_deviceContext;
+        IDXGISwapChain* m_swapChain;
+        ID3D11RenderTargetView* m_renderTargetView;
     };
 }
