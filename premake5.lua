@@ -130,8 +130,7 @@ project "TestApp"
 
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
-		"Pagoda/vendor/spdlog/build",
-		"Pagoda/vendor/HedgeLib/lib"
+		"Pagoda/vendor/spdlog/build"
 	}
 	
 	--[[postbuildcommands {

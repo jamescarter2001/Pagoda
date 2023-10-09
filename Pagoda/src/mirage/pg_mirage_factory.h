@@ -13,6 +13,7 @@
 
 #include "mirage/platform/d3d11/buffer/pg_d3d11_vertex_buffer.h"
 #include "mirage/platform/d3d11/buffer/pg_d3d11_index_buffer.h"
+#include "mirage/platform/d3d11/buffer/pg_d3d11_constant_buffer.h"
 #include "mirage/platform/d3d11/shader/pg_d3d11_shader.h"
 #include "mirage/platform/d3d11/renderer/pg_d3d11_renderer.h"
 #include "mirage/platform/d3d11/pipeline/pg_d3d11_pipeline_state.h"
@@ -46,6 +47,8 @@ namespace Pagoda::Mirage {
     };
 
     #ifdef PG_PLATFORM_WINDOWS
+
+    // Direct3D11
     class PAGODA_API D3D11MirageFactory : public MirageFactory {
     public:
         D3D11MirageFactory(WindowData* wd, D3D11Context c) : MirageFactory(wd), m_context(c) {}
@@ -61,6 +64,7 @@ namespace Pagoda::Mirage {
         D3D11Context m_context;
     };
 
+    // Direct3D12
     class PAGODA_API D3D12MirageFactory : public MirageFactory {
     public:
         D3D12MirageFactory(WindowData* wd, D3D12Context c) : MirageFactory(wd), m_context(c) {}
@@ -71,13 +75,8 @@ namespace Pagoda::Mirage {
         virtual Renderer* CreateRenderer() const override;
         virtual PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) const override;
 
-        ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const override {
-            return new D3D12ConstantBuffer<float>(m_context, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
-        }
-
-        ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const override {
-            return new D3D12ConstantBuffer<float>(m_context, buffer, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
-        }
+        ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const override;
+        ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const override;
     private:
         D3D12Context m_context;
     };

@@ -6,7 +6,7 @@
 #include "mirage/core/buffer/pg_index_buffer.h"
 
 #include "mirage/platform/d3d11/context/pg_d3d11_context.h"
-#include "mirage/platform/d3d11/allocator/pg_d3d11_buffer_allocator.h"
+#include "mirage/platform/d3d11/resource/pg_d3d11_resource_allocator.h"
 
 namespace Pagoda::Mirage {
     class PAGODA_API D3D11IndexBuffer : public IndexBuffer {

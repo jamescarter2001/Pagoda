@@ -6,7 +6,7 @@ namespace Pagoda::Mirage {
         this->m_Device = context.GetDevicePtr();
         this->m_DeviceContext = context.GetDeviceContextPtr();
 
-        D3D11BufferAllocator::Allocate<float>(context, this->m_VertexBufferPtr, buffer, size, D3D11_BIND_VERTEX_BUFFER);
+        D3D11ResourceAllocator(context).AllocateDefault(&this->m_VertexBufferPtr, buffer, size, D3D11_BIND_VERTEX_BUFFER);
         PG_CORE_ASSERT(this->m_VertexBufferPtr != NULL, "Vertex buffer pointer should not be null!");
     }
 

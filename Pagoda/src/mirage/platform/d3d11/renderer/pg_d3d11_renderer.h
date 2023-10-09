@@ -6,6 +6,7 @@
 #include "mirage/core/pipeline/pg_pipeline_state.h"
 
 #include "mirage/platform/d3d11/context/pg_d3d11_context.h"
+#include "mirage/platform/d3d11/buffer/pg_d3d11_constant_buffer.h"
 
 namespace Pagoda::Mirage {
     class D3D11Renderer : public Renderer {
@@ -17,6 +18,6 @@ namespace Pagoda::Mirage {
         virtual ConstantBuffer<float>* CreateMVP() override;
 
     private:
-        ID3D11DeviceContext* m_DeviceContext;
+        D3D11Context m_context;
     };
 }

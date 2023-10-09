@@ -11,8 +11,6 @@ namespace Pagoda::Mirage {
         this->m_renderTargetViewPtr = nullptr;
 
         this->m_SwapChainDesc = {0};
-
-        Init();
     }
 
     D3D11Window::~D3D11Window() {

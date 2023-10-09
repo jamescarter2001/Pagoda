@@ -12,6 +12,7 @@
 #include "mirage/core/window/pg_window.h"
 #include "mirage/pg_mirage_factory.h"
 
+#include "mirage/platform/d3d11/window/pg_d3d11_window.h"
 #include "mirage/platform/d3d12/window/pg_d3d12_window.h"
 
 namespace Pagoda {
