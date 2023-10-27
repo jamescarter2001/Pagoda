@@ -7,3 +7,4 @@ bin-int/
 **/.DS_Store
 *.sln
 **/*vcxproj*
+premake5.lua.bak

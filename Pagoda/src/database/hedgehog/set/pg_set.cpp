@@ -14,7 +14,7 @@ namespace Pagoda::Database {
 
  
  SetData SetData::SetDataFromNodeData(data_t* data) {
-    GEditHeader* header = (GEditHeader*) data;
+    GEditHeader* header = (GEditHeader*)data;
 
     std::vector<ObjectEntry*> objectEntries;
     for (int i = 0; i < header->ObjectCount; i++) {
@@ -31,6 +31,7 @@ namespace Pagoda::Database {
  }
 
  void SetData::Print() const {
+    std::cout << "SET DATA" << std::endl;
     std::cout << "----------" << std::endl;
     for (ObjectEntry* oe : this->m_ObjectEntries) {
         std::cout << "Name: " << oe->ObjectName << std::endl;
