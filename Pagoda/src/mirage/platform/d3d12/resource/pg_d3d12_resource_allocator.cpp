@@ -62,7 +62,7 @@ namespace Pagoda::Mirage {
 
         // Copy the triangle data to the vertex buffer.
         UINT8* pVertexDataBegin;
-        CD3DX12_RANGE readRange(0, 0);  // We do not intend to read from this resource on the CPU.
+        CD3DX12_RANGE readRange(0, 0);  // No intention to read from this resource on the CPU.
         uploadBuffer->Map(0, &readRange, reinterpret_cast<void**>(&pVertexDataBegin));
         memcpy(pVertexDataBegin, buff, size);
         uploadBuffer->Unmap(0, nullptr);

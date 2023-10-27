@@ -12,6 +12,7 @@
 #include <codecvt>
 #include <iterator>
 #include <filesystem>
+#include <map>
 
 // Windows
 
