@@ -23,7 +23,7 @@ namespace Pagoda::Database {
         Vector4 rotation;
     };
 
-    struct LightFieldAABBNode {
+    struct LightFieldAABBTreeNode {
         int leftIndex;
         int rightIndex;
         Vector3 bBoxMin;
@@ -37,13 +37,13 @@ namespace Pagoda::Database {
         unsigned int objectCount;
         LightFieldObject* objectEntries;
         unsigned int nodeCount;
-        LightFieldAABBNode* nodeEntries;
+        LightFieldAABBTreeNode* nodeEntries;
     };
 
     class LightFieldData : public NodeData {
     public:
         LightFieldData();
-        LightFieldData(std::vector<LightFieldObject*> objectEntries, std::vector<LightFieldAABBNode*> nodeEntries);
+        LightFieldData(std::vector<LightFieldObject*> objectEntries, std::vector<LightFieldAABBTreeNode*> nodeEntries);
         virtual ~LightFieldData();
         static LightFieldData LightFieldDataFromNodeData(data_t* data);
         virtual void Print() const override;
@@ -52,6 +52,6 @@ namespace Pagoda::Database {
         std::string FormatObjectType(std::string name, LightFieldObjectType t) const;
 
         std::vector<LightFieldObject*> m_objectEntries;
-        std::vector<LightFieldAABBNode*> m_nodeEntries;
+        std::vector<LightFieldAABBTreeNode*> m_nodeEntries;
     };
 }

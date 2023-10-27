@@ -4,7 +4,7 @@
 namespace Pagoda::Database {
     LightFieldData::LightFieldData() {}
 
-    LightFieldData::LightFieldData(std::vector<LightFieldObject*> objectEntries, std::vector<LightFieldAABBNode*> nodeEntries) : m_objectEntries(objectEntries), m_nodeEntries(nodeEntries) {}
+    LightFieldData::LightFieldData(std::vector<LightFieldObject*> objectEntries, std::vector<LightFieldAABBTreeNode*> nodeEntries) : m_objectEntries(objectEntries), m_nodeEntries(nodeEntries) {}
 
     LightFieldData::~LightFieldData() {
 
@@ -25,6 +25,7 @@ namespace Pagoda::Database {
                 break;
             case LightFieldObjectType::E_OMNIBOX:
                 type = "OmniBox";
+                break;
         }
 
         return std::string(this->FormatName(name) + type);
@@ -39,9 +40,9 @@ namespace Pagoda::Database {
             objectEntries.push_back(e);
         }
 
-        std::vector<LightFieldAABBNode*> nodeEntries;
+        std::vector<LightFieldAABBTreeNode*> nodeEntries;
         for (unsigned int i = 0; i < header->nodeCount; i++) {
-            LightFieldAABBNode* e = header->nodeEntries + i;
+            LightFieldAABBTreeNode* e = header->nodeEntries + i;
             nodeEntries.push_back(e);
         }
 
@@ -75,7 +76,7 @@ namespace Pagoda::Database {
 
         std::cout << "LIGHTFIELD DATA [NODE]" << std::endl;
         std::cout << "----------" << std::endl;
-        for (LightFieldAABBNode* e : this->m_nodeEntries) {
+        for (LightFieldAABBTreeNode* e : this->m_nodeEntries) {
             std::cout << this->FormatInt("Unknown Signed Integer (1)", e->leftIndex) << std::endl;
             std::cout << this->FormatInt("Unknown Signed Integer (2)", e->rightIndex) << std::endl;
             std::cout << this->FormatVector3("Unknown Vector 3 (1)", e->bBoxMin) << std::endl;
