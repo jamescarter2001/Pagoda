@@ -72,15 +72,15 @@ namespace Pagoda::Database {
         char* pNodeBody = pCurrentOffset;
 
         // Write data and string table.
-        WriteData(&pCurrentOffset, this->m_structs);
-        WriteData(&pCurrentOffset, this->m_strings);
+        this->WriteData(&pCurrentOffset, this->m_structs);
+        this->WriteData(&pCurrentOffset, this->m_strings);
 
         // Set string table information.
         nodeHeader->stringTableOffset = (unsigned int)this->m_structSize;
         nodeHeader->stringTableLength = (unsigned int)this->m_stringTableSize + stringAlignment;
 
         // Map pointers to the correct structs in the file.
-        FixPointers(pNodeBody);
+        this->FixPointers(pNodeBody);
 
         std::stringstream offsetTableStream = DatabaseUtils::GenerateBINAOffsetTable(this->m_offsets);
         DatabaseUtils::Align(offsetTableStream);
@@ -96,15 +96,6 @@ namespace Pagoda::Database {
         outFile.close();
 
         delete[] pBinaNode;
-    }
-
-    unsigned int BinaWriter::GetAlignment(size_t count) {
-        size_t val = 4 - (count % 4);
-        if (val == 4) {
-            return 0;
-        } else {
-            return (unsigned int)val;
-        }
     }
 
     void BinaWriter::FixPointers(char* nodeBody) {

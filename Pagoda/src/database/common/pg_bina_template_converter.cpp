@@ -198,6 +198,8 @@ namespace Pagoda::Database {
                     std::string entry = line.substr(1, line.size() - 1);
 
                     std::vector<std::string> fragments = DatabaseUtils::SplitString(entry, " ");
+
+                    // Skip if invalid line.
                     if (fragments.size() < 2) {
                         continue;
                     }
