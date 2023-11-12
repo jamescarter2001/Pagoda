@@ -6,18 +6,19 @@ workspace "Pagoda"
 	}
 
 	platforms {
-		"WinARM64",
-		"Win64",
+		"ARM64",
+		"x64",
 		"Linux",
 		"MacOS",
 	}
 	
-	filter { "platforms:WinARM64" }
+	filter { "platforms:ARM64" }
 		system "windows"
 		architecture "arm64"
 		defines "PG_PLATFORM_WINDOWS"
+		defines "PG_ARM64"
 
-	filter { "platforms:Win64" }
+	filter { "platforms:x64" }
 		system "windows"
 		architecture "x64"
 		defines "PG_PLATFORM_WINDOWS"
@@ -31,6 +32,7 @@ workspace "Pagoda"
 		system "macosx"
 		architecture "arm64"
 		defines "PG_PLATFORM_MACOS"
+		defines "PG_ARM64"
 		buildoptions {
 			"-mmacosx-version-min=11.0"
 		}
