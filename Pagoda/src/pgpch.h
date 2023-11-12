@@ -2,17 +2,20 @@
 
 // C++
 
-#include <iostream>
-#include <string>
-#include <sstream>
+#include <algorithm>
+#include <atomic>
+#include <codecvt>
 #include <fstream>
 #include <functional>
-#include <algorithm>
-#include <locale>
-#include <codecvt>
-#include <iterator>
 #include <filesystem>
+#include <iostream>
+#include <iterator>
+#include <locale>
 #include <map>
+#include <string>
+#include <sstream>
+#include <thread>
+#include <unordered_map>
 
 // Windows
 
@@ -21,13 +24,7 @@
 #include <windows.h>
 #include <windowsx.h>
 
-// Direct3D11
-
-// #include <d3d11.h>        // D3D interface
-// #include <dxgi.h>         // DirectX driver interface
-// #include <d3dcompiler.h>  // shader compiler
-
-// Direct3D12
+// Direct3D
 
 #include <wrl/client.h>
 
