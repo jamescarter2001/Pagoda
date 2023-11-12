@@ -13,38 +13,45 @@ namespace Pagoda::Mirage {
     class PAGODA_API Window {
     public:
         Window(const WindowProps& props) {
-            m_WindowData.Title = props.Title;
-            m_WindowData.Width = props.Width;
-            m_WindowData.Height = props.Height;
+            m_windowData.Title = props.Title;
+            m_windowData.Width = props.Width;
+            m_windowData.Height = props.Height;
         }
 
-        virtual ~Window() {}
+        virtual ~Window() {
+        }
 
         virtual MirageFactory* Init() = 0;
         virtual void BeforeUpdate() = 0;
         virtual void OnUpdate() = 0;
 
-        inline int GetWidth() {
-            return m_WindowData.Width;
+        inline int GetWidth() const {
+            return m_windowData.Width;
         }
 
-        inline int GetHeight() {
-            return m_WindowData.Height;
+        inline int GetHeight() const {
+            return m_windowData.Height;
         }
 
         inline std::string GetTitle() {
-            return m_WindowData.Title;
+            return m_windowData.Title;
         }
 
         inline WindowData* GetWindowData() {
-            return &m_WindowData;
+            return &m_windowData;
         }
 
-        void SetEventCallback(const std::function<void(Base::Event& m)>& callback) {
-            this->m_WindowData.EventCallback = callback;
+        inline MirageFactory* GetMirageFactory() const {
+            return m_mirageFactory;
+        }
+
+        void SetEventCallback(const std::function<void(Base::Event&)>& callback) {
+            this->m_windowData.EventCallback = callback;
         }
 
     protected:
-        WindowData m_WindowData;
+        WindowData m_windowData;
+
+        MirageFactory* m_mirageFactory;
     };
 }

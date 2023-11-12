@@ -6,16 +6,16 @@
 namespace Pagoda::Base {
     class ScopedLock {
     public:
-        explicit ScopedLock(SpinLock& l)
-            : m_p_lock(&l) {
-            this->m_p_lock->acquire();
+        ScopedLock(SpinLock& l)
+            : m_pLock(&l) {
+            this->m_pLock->Acquire();
         }
 
         virtual ~ScopedLock() {
-            this->m_p_lock->release();
+            this->m_pLock->Release();
         }
 
     private:
-        SpinLock* m_p_lock;
+        SpinLock* m_pLock;
     };
 }

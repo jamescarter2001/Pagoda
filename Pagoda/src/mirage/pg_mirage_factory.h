@@ -31,27 +31,35 @@
 namespace Pagoda::Mirage {
     class PAGODA_API MirageFactory {
     public:
-        MirageFactory(WindowData* wd) : m_windowData(wd) {}
-        virtual ~MirageFactory() {}
+        MirageFactory(WindowData* wd)
+            : m_windowData(wd) {
+        }
+
+        virtual ~MirageFactory() {
+        }
 
         virtual VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const = 0;
         virtual IndexBuffer* CreateIndexBuffer(unsigned int buffer[], int bufferCount) const = 0;
         virtual Shader* CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) const = 0;
         virtual Renderer* CreateRenderer() const = 0;
-        virtual PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) const = 0; 
+        virtual PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) const = 0;
 
         virtual ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const = 0;
         virtual ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const = 0;
+
     protected:
         WindowData* m_windowData;
     };
 
-    #ifdef PG_PLATFORM_WINDOWS
+#ifdef PG_PLATFORM_WINDOWS
 
     // Direct3D11
     class PAGODA_API D3D11MirageFactory : public MirageFactory {
     public:
-        D3D11MirageFactory(WindowData* wd, D3D11Context c) : MirageFactory(wd), m_context(c) {}
+        D3D11MirageFactory(WindowData* wd, D3D11Context c)
+            : MirageFactory(wd), m_context(c) {
+        }
+
         virtual VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const override;
         virtual IndexBuffer* CreateIndexBuffer(unsigned int buffer[], int bufferCount) const override;
         virtual Shader* CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) const override;
@@ -60,6 +68,7 @@ namespace Pagoda::Mirage {
 
         ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const override;
         ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const override;
+
     private:
         D3D11Context m_context;
     };
@@ -67,8 +76,13 @@ namespace Pagoda::Mirage {
     // Direct3D12
     class PAGODA_API D3D12MirageFactory : public MirageFactory {
     public:
-        D3D12MirageFactory(WindowData* wd, D3D12Context c) : MirageFactory(wd), m_context(c) {}
-        virtual ~D3D12MirageFactory() {}
+        D3D12MirageFactory(WindowData* wd, D3D12Context c)
+            : MirageFactory(wd), m_context(c) {
+        }
+
+        virtual ~D3D12MirageFactory() {
+        }
+
         virtual VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const override;
         virtual IndexBuffer* CreateIndexBuffer(unsigned int buffer[], int bufferCount) const override;
         virtual Shader* CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) const override;
@@ -77,8 +91,9 @@ namespace Pagoda::Mirage {
 
         ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const override;
         ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const override;
+
     private:
         D3D12Context m_context;
     };
-    #endif
+#endif
 }

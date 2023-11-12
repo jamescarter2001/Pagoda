@@ -18,7 +18,7 @@
 namespace Pagoda {
     class PAGODA_API Application {
     public:
-        Application(std::string& name);
+        Application(const std::string& name);
         virtual ~Application();
 
         // Inline functions must be fully declared in header.
@@ -35,19 +35,19 @@ namespace Pagoda {
         void Run();
 
         inline std::string GetName() {
-            return this->m_Name;
+            return this->m_name;
         }
 
     protected:
         Mirage::MirageFactory* m_mirageFactory;
 
     private:
-        static Application* s_Instance;
+        static Application* s_instance;
 
-        std::string m_Name;
-        bool m_IsRunning;
-        Base::LayerStack m_LayerStack;
+        std::string m_name;
+        bool m_isRunning;
+        Base::LayerStack m_layerStack;
 
-        Mirage::Window* m_Window;
+        Mirage::Window* m_window;
     };
 }

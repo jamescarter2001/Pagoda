@@ -2,36 +2,37 @@
 #include "pg_d3d11_shader.h"
 
 namespace Pagoda::Mirage {
-    D3D11Shader::D3D11Shader(D3D11Context context, std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) : Shader(filePath, vertexBufferLayout, shaderType) {
-        this->m_Device = context.GetDevicePtr();
-        this->m_DeviceContext = context.GetDeviceContextPtr();
+    D3D11Shader::D3D11Shader(D3D11Context context, std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType)
+        : Shader(filePath, vertexBufferLayout, shaderType) {
+        this->m_device = context.GetDevicePtr();
+        this->m_deviceContext = context.GetDeviceContextPtr();
 
-        this->m_VertexShader = NULL;
-        this->m_PixelShader = NULL;
-        this->m_BlobPtr = NULL;
-        this->m_InputLayout = NULL;
+        this->m_vertexShader = NULL;
+        this->m_pixelShader = NULL;
+        this->m_blobPtr = NULL;
+        this->m_inputLayout = NULL;
 
         UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
-        #ifdef PG_DEBUG
-        flags |= D3DCOMPILE_DEBUG;  // add more debug output
-        #endif
+#ifdef PG_DEBUG
+        flags |= D3DCOMPILE_DEBUG; // add more debug output
+#endif
 
         if (this->IsVertexShader()) {
             this->CreateVertexShader(flags);
-            PG_CORE_ASSERT(this->m_PixelShader == NULL, "Pixel shader should be null!");
+            PG_CORE_ASSERT(this->m_pixelShader == NULL, "Pixel shader should be null!");
         } else {
             this->CreatePixelShader(flags);
-            PG_CORE_ASSERT(this->m_VertexShader == NULL, "Vertex shader should be null!");
+            PG_CORE_ASSERT(this->m_vertexShader == NULL, "Vertex shader should be null!");
         }
     }
 
     D3D11Shader::~D3D11Shader() {
-        this->m_BlobPtr->Release();
+        this->m_blobPtr->Release();
 
         if (this->IsVertexShader()) {
-            this->m_VertexShader->Release();
+            this->m_vertexShader->Release();
         } else {
-            this->m_PixelShader->Release();
+            this->m_pixelShader->Release();
         }
     }
 
@@ -40,11 +41,11 @@ namespace Pagoda::Mirage {
 
         this->CompileShader(flags, errPtr);
 
-        HRESULT vshr = m_Device->CreateVertexShader(
-            this->m_BlobPtr->GetBufferPointer(),
-            this->m_BlobPtr->GetBufferSize(),
+        HRESULT vshr = m_device->CreateVertexShader(
+            this->m_blobPtr->GetBufferPointer(),
+            this->m_blobPtr->GetBufferSize(),
             NULL,
-            &m_VertexShader);
+            &m_vertexShader);
 
         PG_CORE_ASSERT(vshr == S_OK, "Failed to create vertex shader");
 
@@ -57,12 +58,12 @@ namespace Pagoda::Mirage {
             index++;
         }
 
-        HRESULT ilhr = this->m_Device->CreateInputLayout(
+        HRESULT ilhr = this->m_device->CreateInputLayout(
             &desc[0],
             (UINT)elements.size(),
-            this->m_BlobPtr->GetBufferPointer(),
-            this->m_BlobPtr->GetBufferSize(),
-            &this->m_InputLayout);
+            this->m_blobPtr->GetBufferPointer(),
+            this->m_blobPtr->GetBufferSize(),
+            &this->m_inputLayout);
 
         PG_CORE_ASSERT(ilhr == S_OK, "Error creating input layout");
     }
@@ -72,11 +73,11 @@ namespace Pagoda::Mirage {
 
         this->CompileShader(flags, errPtr);
 
-        HRESULT pshr = m_Device->CreatePixelShader(
-            this->m_BlobPtr->GetBufferPointer(),
-            this->m_BlobPtr->GetBufferSize(),
+        HRESULT pshr = m_device->CreatePixelShader(
+            this->m_blobPtr->GetBufferPointer(),
+            this->m_blobPtr->GetBufferSize(),
             NULL,
-            &m_PixelShader);
+            &m_pixelShader);
     }
 
     void D3D11Shader::CompileShader(UINT flags, ID3DBlob*& errPtr) {
@@ -88,7 +89,7 @@ namespace Pagoda::Mirage {
             (this->m_ShaderType == ShaderType::SHADER_TYPE_VERTEX ? "vs_5_0" : "ps_5_0"),
             flags,
             0,
-            &this->m_BlobPtr,
+            &this->m_blobPtr,
             &errPtr);
         if (hr != S_OK) {
             if (errPtr) {
@@ -97,8 +98,8 @@ namespace Pagoda::Mirage {
                 PG_CORE_WARNING((char*)errPtr->GetBufferPointer());
                 errPtr->Release();
             }
-            if (this->m_BlobPtr) {
-                this->m_BlobPtr->Release();
+            if (this->m_blobPtr) {
+                this->m_blobPtr->Release();
             }
         }
     }

@@ -22,7 +22,7 @@ namespace Pagoda::Mirage {
 
         ID3D11InputLayout* m_inputLayout;
 
-        ID3D11VertexShader* m_vs = NULL;
-        ID3D11PixelShader* m_ps = NULL;
+        ID3D11VertexShader* m_vs = nullptr;
+        ID3D11PixelShader* m_ps = nullptr;
     };
 }

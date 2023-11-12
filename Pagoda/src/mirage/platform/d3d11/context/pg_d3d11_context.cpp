@@ -2,16 +2,15 @@
 #include "pg_d3d11_context.h"
 
 namespace Pagoda::Mirage {
-    D3D11Context::D3D11Context(ID3D11Device* device, ID3D11DeviceContext* deviceContext, IDXGISwapChain* swapChain, ID3D11RenderTargetView* renderTargetView) {
-        this->m_device = device;
-        this->m_deviceContext = deviceContext;
-        this->m_swapChain = swapChain;
-        this->m_renderTargetView = renderTargetView;
+    D3D11Context::D3D11Context(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, IDXGISwapChain* pSwapChain, ID3D11RenderTargetView* pRenderTargetView) {
+        this->m_device = pDevice;
+        this->m_deviceContext = pDeviceContext;
+        this->m_swapChain = pSwapChain;
+        this->m_renderTargetView = pRenderTargetView;
 
         PG_CORE_INFO("Direct3D11 context ready");
     }
 
     D3D11Context::~D3D11Context() {
-
     }
 }

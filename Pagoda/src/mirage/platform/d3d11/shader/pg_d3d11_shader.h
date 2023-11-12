@@ -17,16 +17,16 @@ namespace Pagoda::Mirage {
         D3D11Shader(D3D11Context context, std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType);
         virtual ~D3D11Shader();
 
-        inline ID3D11VertexShader* GetD3D11VertexShader() const& {
-            return this->m_VertexShader;
+        inline ID3D11VertexShader* GetD3D11VertexShader() const & {
+            return this->m_vertexShader;
         }
 
-        inline ID3D11PixelShader* GetD3D11PixelShader() const& {
-            return this->m_PixelShader;
+        inline ID3D11PixelShader* GetD3D11PixelShader() const & {
+            return this->m_pixelShader;
         }
 
-        inline ID3DBlob* GetBlob() const& {
-            return this->m_BlobPtr;
+        inline ID3DBlob* GetBlob() const & {
+            return this->m_blobPtr;
         }
 
     private:
@@ -35,14 +35,14 @@ namespace Pagoda::Mirage {
 
         void CompileShader(UINT flags, ID3DBlob*& errPtr);
 
-        ID3D11Device* m_Device;
-        ID3D11DeviceContext* m_DeviceContext;
+        ID3D11Device* m_device;
+        ID3D11DeviceContext* m_deviceContext;
 
-        ID3DBlob* m_BlobPtr;
+        ID3DBlob* m_blobPtr;
 
-        ID3D11VertexShader* m_VertexShader;
-        ID3D11PixelShader* m_PixelShader;
+        ID3D11VertexShader* m_vertexShader;
+        ID3D11PixelShader* m_pixelShader;
 
-        ID3D11InputLayout* m_InputLayout;
+        ID3D11InputLayout* m_inputLayout;
     };
 }

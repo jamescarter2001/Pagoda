@@ -2,7 +2,8 @@
 #include "pg_d3d11_window.h"
 
 namespace Pagoda::Mirage {
-    D3D11Window::D3D11Window(const WindowProps& props) : Window(props) {
+    D3D11Window::D3D11Window(const WindowProps& props)
+        : Window(props) {
         this->m_Window = nullptr;
 
         this->m_devicePtr = nullptr;
@@ -11,6 +12,8 @@ namespace Pagoda::Mirage {
         this->m_renderTargetViewPtr = nullptr;
 
         this->m_SwapChainDesc = {0};
+
+        this->m_mirageFactory = this->D3D11Window::Init();
     }
 
     D3D11Window::~D3D11Window() {
@@ -23,12 +26,13 @@ namespace Pagoda::Mirage {
     LRESULT CALLBACK D3D11Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         // sort through and find what code to run for the message given
         switch (message) {
-                // this message is read when the window is closed
+            // this message is read when the window is closed
             case WM_DESTROY: {
                 // close the application entirely
                 PostQuitMessage(0);
                 return 0;
-            } break;
+            }
+            default: PG_CORE_WARNING("Unhandled Windows Message: {}", message);
         }
 
         // Handle any messages the switch statement didn't
@@ -38,7 +42,7 @@ namespace Pagoda::Mirage {
     MirageFactory* D3D11Window::Init() {
         PG_CORE_DEBUG("Using graphics API: Direct3D11");
 
-        HINSTANCE hInstance = GetModuleHandle(NULL);
+        const HINSTANCE hInstance = GetModuleHandle(nullptr);
 
         // this struct holds information for the window class
         WNDCLASSEX wc;
@@ -51,7 +55,7 @@ namespace Pagoda::Mirage {
         wc.style = CS_HREDRAW | CS_VREDRAW;
         wc.lpfnWndProc = Pagoda::Mirage::D3D11Window::WindowProc;
         wc.hInstance = hInstance;
-        wc.hCursor = LoadCursor(NULL, IDC_ARROW);
+        wc.hCursor = LoadCursor(nullptr, IDC_ARROW);
         wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
         wc.lpszClassName = L"WindowClass1";
 
@@ -60,17 +64,17 @@ namespace Pagoda::Mirage {
 
         // create the window and use the result as the handle
         this->m_Window = CreateWindowEx(NULL,
-                              L"WindowClass1",                        // name of the window class
-                              STR_TO_WSTR(this->GetTitle()).c_str(),  // title of the window
-                              WS_OVERLAPPEDWINDOW,                    // window style
-                              300,                                    // x-position of the window
-                              300,                                    // y-position of the window
-                              this->GetWidth(),                       // width of the window
-                              this->GetHeight(),                      // height of the window
-                              NULL,                                   // we have no parent window, NULL
-                              NULL,                                   // we aren't using menus, NULL
-                              hInstance,                              // application handle
-                              NULL);                                  // used with multiple windows, NULL
+                                        L"WindowClass1",                       // name of the window class
+                                        STR_TO_WSTR(this->GetTitle()).c_str(), // title of the window
+                                        WS_OVERLAPPEDWINDOW,                   // window style
+                                        300,                                   // x-position of the window
+                                        300,                                   // y-position of the window
+                                        this->GetWidth(),                      // width of the window
+                                        this->GetHeight(),                     // height of the window
+                                        NULL,                                  // we have no parent window, NULL
+                                        NULL,                                  // we aren't using menus, NULL
+                                        hInstance,                             // application handle
+                                        NULL);                                 // used with multiple windows, NULL
 
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);
@@ -99,24 +103,24 @@ namespace Pagoda::Mirage {
         D3D_FEATURE_LEVEL featureLevel;
         UINT flags = D3D11_CREATE_DEVICE_SINGLETHREADED;
 
-        #ifdef PG_DEBUG
+#ifdef PG_DEBUG
         flags |= D3D11_CREATE_DEVICE_DEBUG;
-        #endif
+#endif
 
         HRESULT hr = D3D11CreateDeviceAndSwapChain(
-            NULL,                       // Pointer to the video adapter to use, passing null selects the default
-            D3D_DRIVER_TYPE_HARDWARE,   // Represents the driver type to create
-            NULL,                       // Handle to a DLL that implements a software rasteriser, must not be NULL if previous arg is D3D_DRIVER_TYPE_SOFTWARE
-            flags,                      // Runtime layers to enable, values can be OR'd together
-            NULL,                       // Determines the order of feature levels to create
-            0,                          // The number of elements in the feature level array supplied above
-            D3D11_SDK_VERSION,          // The SDK version to use
-            &m_SwapChainDesc,             // Populate the pointers
+            NULL,                     // Pointer to the video adapter to use, passing null selects the default
+            D3D_DRIVER_TYPE_HARDWARE, // Represents the driver type to create
+            NULL,                     // Handle to a DLL that implements a software rasteriser, must not be NULL if previous arg is D3D_DRIVER_TYPE_SOFTWARE
+            flags,                    // Runtime layers to enable, values can be OR'd together
+            NULL,                     // Determines the order of feature levels to create
+            0,                        // The number of elements in the feature level array supplied above
+            D3D11_SDK_VERSION,        // The SDK version to use
+            &m_SwapChainDesc,         // Populate the pointers
             &m_swapChainPtr,
             &m_devicePtr,
             &featureLevel,
             &m_deviceContextPtr
-        );
+            );
 
         PG_CORE_DEBUG("D3D11CreateDeviceAndSwapChain HRESULT: {}", hr == S_OK ? "S_OK" : std::to_string(hr));
 
@@ -140,7 +144,7 @@ namespace Pagoda::Mirage {
 
         D3D11Context context(m_devicePtr, m_deviceContextPtr, m_swapChainPtr, m_renderTargetViewPtr);
 
-        return new D3D11MirageFactory(&m_WindowData, context);
+        return new D3D11MirageFactory(&m_windowData, context);
     }
 
     void D3D11Window::BeforeUpdate() {
@@ -180,7 +184,7 @@ namespace Pagoda::Mirage {
             // check to see if it's time to quit
             if (msg.message == WM_QUIT) {
                 Base::WindowCloseEvent e = Base::WindowCloseEvent();
-                this->m_WindowData.EventCallback(e);
+                this->m_windowData.EventCallback(e);
             }
         }
 

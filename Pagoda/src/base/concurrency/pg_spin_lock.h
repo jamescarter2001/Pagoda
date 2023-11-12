@@ -12,19 +12,19 @@ namespace Pagoda::Base {
         virtual ~SpinLock() {
         }
 
-        inline bool try_acquire() {
+        inline bool TryAcquire() {
             const bool alreadyLocked = this->m_lock.test_and_set(std::memory_order_acquire);
 
             return !alreadyLocked;
         }
 
-        inline void acquire() {
-            while (!this->try_acquire()) {
+        inline void Acquire() {
+            while (!this->TryAcquire()) {
                 THREAD_PAUSE();
             }
         }
 
-        inline void release() {
+        inline void Release() {
             this->m_lock.clear(std::memory_order_release);
         }
 

@@ -2,7 +2,9 @@
 #include "pg_d3d12_window.h"
 
 namespace Pagoda::Mirage {
-    D3D12Window::D3D12Window(const WindowProps& props) : Window(props) {
+    D3D12Window::D3D12Window(const WindowProps& props)
+        : Window(props) {
+        this->m_mirageFactory = this->D3D12Window::Init();
     }
 
     D3D12Window::~D3D12Window() {
@@ -11,12 +13,13 @@ namespace Pagoda::Mirage {
     LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
         // sort through and find what code to run for the message given
         switch (message) {
-                // this message is read when the window is closed
+            // this message is read when the window is closed
             case WM_DESTROY: {
                 // close the application entirely
                 PostQuitMessage(0);
                 return 0;
-            } break;
+            }
+            break;
         }
 
         // Handle any messages the switch statement didn't
@@ -48,17 +51,17 @@ namespace Pagoda::Mirage {
 
         // create the window and use the result as the handle
         this->m_Window = CreateWindowEx(NULL,
-                                        L"WindowClass1",                        // name of the window class
-                                        STR_TO_WSTR(this->GetTitle()).c_str(),  // title of the window
-                                        WS_OVERLAPPEDWINDOW,                    // window style
-                                        300,                                    // x-position of the window
-                                        300,                                    // y-position of the window
-                                        this->GetWidth(),                       // width of the window
-                                        this->GetHeight(),                      // height of the window
-                                        NULL,                                   // we have no parent window, NULL
-                                        NULL,                                   // we aren't using menus, NULL
-                                        hInstance,                              // application handle
-                                        NULL);                                  // used with multiple windows, NULL
+                                        L"WindowClass1",                       // name of the window class
+                                        STR_TO_WSTR(this->GetTitle()).c_str(), // title of the window
+                                        WS_OVERLAPPEDWINDOW,                   // window style
+                                        300,                                   // x-position of the window
+                                        300,                                   // y-position of the window
+                                        this->GetWidth(),                      // width of the window
+                                        this->GetHeight(),                     // height of the window
+                                        NULL,                                  // we have no parent window, NULL
+                                        NULL,                                  // we aren't using menus, NULL
+                                        hInstance,                             // application handle
+                                        NULL);                                 // used with multiple windows, NULL
 
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);
@@ -67,14 +70,14 @@ namespace Pagoda::Mirage {
     }
 
     MirageFactory* D3D12Window::Direct3D12Init() {
-        #ifdef PG_DEBUG
+#ifdef PG_DEBUG
 
         ComPtr<ID3D12Debug> debugController;
         if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
             debugController->EnableDebugLayer();
         }
 
-        #endif
+#endif
 
         ComPtr<IDXGIFactory4> factory;
         LogOnError(CreateDXGIFactory1(IID_PPV_ARGS(&factory)), "Failed to create IDXGIFactory4");
@@ -105,10 +108,10 @@ namespace Pagoda::Mirage {
 
         ComPtr<IDXGISwapChain> swapChain;
         LogOnError(factory->CreateSwapChain(
-            this->m_commandQueue.Get(),  // Swap chain needs the queue so that it can force a flush on it.
-            &swapChainDesc,
-            &swapChain),
-            "Failed to create Swap Chain");
+                       this->m_commandQueue.Get(), // Swap chain needs the queue so that it can force a flush on it.
+                       &swapChainDesc,
+                       &swapChain),
+                   "Failed to create Swap Chain");
 
         LogOnError(swapChain.As(&this->m_swapChain), "Failed to assign Swap Chain");
 
@@ -187,7 +190,7 @@ namespace Pagoda::Mirage {
 
         D3D12Context context(this->m_swapChain, this->m_device, this->m_renderTargets, this->m_commandAllocator, this->m_commandQueue, this->m_rootSignature, this->m_rtvHeap, this->m_commandList);
 
-        return new D3D12MirageFactory(&this->m_WindowData, context);
+        return new D3D12MirageFactory(&this->m_windowData, context);
     }
 
     void D3D12Window::WaitForPreviousFrame() {
@@ -282,7 +285,7 @@ namespace Pagoda::Mirage {
             // check to see if it's time to quit
             if (msg.message == WM_QUIT) {
                 Base::WindowCloseEvent e = Base::WindowCloseEvent();
-                this->m_WindowData.EventCallback(e);
+                this->m_windowData.EventCallback(e);
             }
         }
 

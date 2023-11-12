@@ -13,25 +13,26 @@ namespace Pagoda::Mirage {
                      ComPtr<ID3D12DescriptorHeap> rtvHeap,
                      ComPtr<ID3D12GraphicsCommandList> commandList);
 
-        ~D3D12Context() {}
+        ~D3D12Context() {
+        }
 
-        void SetActiveCommandList(ComPtr<ID3D12GraphicsCommandList> commandList) {
+        void SetActiveCommandList(const ComPtr<ID3D12GraphicsCommandList>& commandList) {
             this->m_commandList = commandList;
         }
 
-        inline ComPtr<ID3D12Device> GetDevice() const& {
+        inline ComPtr<ID3D12Device> GetDevice() const & {
             return m_device;
         }
 
-        inline ComPtr<ID3D12CommandQueue> GetCommandQueue() const& {
+        inline ComPtr<ID3D12CommandQueue> GetCommandQueue() const & {
             return m_commandQueue;
         }
 
-        inline ComPtr<ID3D12GraphicsCommandList> GetCommandList() const& {
+        inline ComPtr<ID3D12GraphicsCommandList> GetCommandList() const & {
             return m_commandList;
         }
 
-        inline ComPtr<ID3D12RootSignature> GetRootSignature() const& {
+        inline ComPtr<ID3D12RootSignature> GetRootSignature() const & {
             return m_rootSignature;
         }
 
