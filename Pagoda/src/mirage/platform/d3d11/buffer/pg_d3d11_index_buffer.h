@@ -11,7 +11,7 @@
 namespace Pagoda::Mirage {
     class PAGODA_API D3D11IndexBuffer : public IndexBuffer {
     public:
-        D3D11IndexBuffer(const D3D11Context& context, unsigned int buffer[], int size);
+        D3D11IndexBuffer(D3D11Context* ctx, unsigned int buffer[], int size);
         virtual ~D3D11IndexBuffer();
 
         virtual void Bind() const override;
@@ -20,6 +20,6 @@ namespace Pagoda::Mirage {
     private:
         ID3D11Device* m_device = nullptr;
         ID3D11DeviceContext* m_deviceContext = nullptr;
-        ID3D11Buffer* m_indexBufferPtr = nullptr;
+        ID3D11Buffer* m_pIndexBuffer = nullptr;
     };
 }

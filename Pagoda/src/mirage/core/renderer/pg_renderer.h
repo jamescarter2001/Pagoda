@@ -7,10 +7,18 @@
 #include "mirage/core/buffer/pg_constant_buffer.h"
 
 namespace Pagoda::Mirage {
+    enum RendererAPI {
+        NONE = 0,
+        Direct3D11 = 1,
+        Direct3D12 = 2
+    };
+
     class Renderer {
     public:
-        Renderer(WindowData* wd);
+        Renderer();
         virtual ~Renderer();
+
+        static RendererAPI GetRendererAPI();
 
         virtual void Draw(const Model& model, const PipelineState* pipelineState, bool project);
         virtual void Draw(const Model& model, const PipelineState* pipelineState, const ConstantBuffer<float>* transform, bool project);
@@ -25,7 +33,6 @@ namespace Pagoda::Mirage {
         glm::mat4 m_mvpMatrix;
 
     private:
-        WindowData* m_windowData;
         ConstantBuffer<float>* m_mvpMatrixBuffer;
     };
 }

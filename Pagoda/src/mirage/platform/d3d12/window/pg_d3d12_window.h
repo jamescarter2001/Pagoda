@@ -15,7 +15,7 @@ namespace Pagoda::Mirage {
     public:
         D3D12Window(const WindowProps& props);
         virtual ~D3D12Window();
-        virtual MirageFactory* Init() override;
+        virtual void Init() override;
         virtual void BeforeUpdate() override;
         virtual void OnUpdate() override;
 
@@ -51,7 +51,7 @@ namespace Pagoda::Mirage {
        
         static void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter);
 
-        MirageFactory* Direct3D12Init();
+        void Direct3D12Init();
         void LogOnError(HRESULT hr, char err[] = "Failed to initialise Direct3D12 context");
     };
 }

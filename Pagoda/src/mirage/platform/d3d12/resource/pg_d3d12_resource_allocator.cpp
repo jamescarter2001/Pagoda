@@ -2,7 +2,7 @@
 #include "pg_d3d12_resource_allocator.h"
 
 namespace Pagoda::Mirage {
-    D3D12ResourceAllocator::D3D12ResourceAllocator(D3D12Context context) : m_context(context) {
+    D3D12ResourceAllocator::D3D12ResourceAllocator(D3D12Context* context) : m_context(context) {
         this->m_fenceValue = 1;
 
         this->m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
@@ -10,10 +10,10 @@ namespace Pagoda::Mirage {
             HRESULT_FROM_WIN32(GetLastError());
         }
 
-        HRESULT fr = this->m_context.GetDevice()->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&this->m_fence));
+        HRESULT fr = this->m_context->GetDevice()->CreateFence(0, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&this->m_fence));
 
-        HRESULT cmr = this->m_context.GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->m_commandAllocator));
-        HRESULT clr = this->m_context.GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, this->m_commandAllocator.Get(), nullptr, IID_PPV_ARGS(&this->m_commandList));
+        HRESULT cmr = this->m_context->GetDevice()->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->m_commandAllocator));
+        HRESULT clr = this->m_context->GetDevice()->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, this->m_commandAllocator.Get(), nullptr, IID_PPV_ARGS(&this->m_commandList));
 
         long res = fr & cmr & clr;
 
@@ -29,7 +29,7 @@ namespace Pagoda::Mirage {
         CD3DX12_HEAP_PROPERTIES uploadProps(D3D12_HEAP_TYPE_UPLOAD);
         auto desc = CD3DX12_RESOURCE_DESC::Buffer(size);
 
-        HRESULT ur = this->m_context.GetDevice()->CreateCommittedResource(
+        HRESULT ur = this->m_context->GetDevice()->CreateCommittedResource(
             &uploadProps,                       // a default heap
             D3D12_HEAP_FLAG_NONE,               // no flags
             &desc,                              // resource description for a buffer
@@ -45,7 +45,7 @@ namespace Pagoda::Mirage {
 
         ComPtr<ID3D12Resource> uploadBuffer;
 
-        HRESULT ur = this->m_context.GetDevice()->CreateCommittedResource(
+        HRESULT ur = this->m_context->GetDevice()->CreateCommittedResource(
             &uploadProps,                       // a default heap
             D3D12_HEAP_FLAG_NONE,               // no flags
             &desc,                              // resource description for a buffer
@@ -53,7 +53,7 @@ namespace Pagoda::Mirage {
             nullptr,                            // optimized clear value must be null for this type of resource
             IID_PPV_ARGS(&uploadBuffer));
 
-        HRESULT hr = this->m_context.GetDevice()->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(res));
+        HRESULT hr = this->m_context->GetDevice()->CreateCommittedResource(&heapProps, D3D12_HEAP_FLAG_NONE, &desc, D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(res));
 
         if (hr != S_OK || ur != S_OK) {
             PG_CORE_ERROR("Failed to allocate Committed Resources");
@@ -82,11 +82,11 @@ namespace Pagoda::Mirage {
 
         this->m_commandList->Close();
         ID3D12CommandList* ppCommandLists[] = {this->m_commandList.Get()};
-        this->m_context.GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
+        this->m_context->GetCommandQueue()->ExecuteCommandLists(_countof(ppCommandLists), ppCommandLists);
 
         const UINT64 fence = this->m_fenceValue;
         this->m_fenceValue++;
-        HRESULT sr = this->m_context.GetCommandQueue()->Signal(this->m_fence.Get(), fence);
+        HRESULT sr = this->m_context->GetCommandQueue()->Signal(this->m_fence.Get(), fence);
         PG_CORE_ASSERT(sr == S_OK, "Failed to request signal");
 
         if (this->m_fence->GetCompletedValue() < fence) {
