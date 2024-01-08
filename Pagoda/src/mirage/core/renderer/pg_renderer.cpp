@@ -2,15 +2,16 @@
 #include "pg_renderer.h"
 
 namespace Pagoda::Mirage {
-    Renderer::Renderer(WindowData* wd) {
-        this->m_windowData = wd;
+    Renderer::Renderer() {
+        // TODO: Extract to Camera class.
         this->m_mvpMatrixBuffer = nullptr;
 
         float fov = 90.0f;
         float tanHalfFov = glm::tan(glm::radians(fov / 2.0f));
         float f = 1 / tanHalfFov;
 
-        float aspectRatio = (float) this->m_windowData->Width / (float) this->m_windowData->Height;
+        // TODO: Read active window data.
+        float aspectRatio = 1280.0f / 720.0f;
 
         this->m_mvpMatrix = glm::mat4(f / aspectRatio, 0.0f, 0.0f, 0.0f,
                                       0.0f, f, 0.0f, 0.0f,
@@ -19,6 +20,10 @@ namespace Pagoda::Mirage {
     }
 
     Renderer::~Renderer() {}
+
+    RendererAPI Renderer::GetRendererAPI() {
+        return RendererAPI::Direct3D12;
+    }
 
     void Renderer::Draw(const Model& model, const PipelineState* pipelineState, bool project) {
         this->Draw(model, pipelineState, nullptr, project);

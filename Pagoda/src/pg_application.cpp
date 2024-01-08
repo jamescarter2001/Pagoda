@@ -11,11 +11,19 @@ namespace Pagoda {
 
         // Mirage
         PG_CORE_TRACE("Initialising Mirage subsystem...");
-        this->m_window = new Mirage::D3D12Window(Mirage::WindowProps(name));
+        // TODO: extract to applicationsetting.lua script.
+        switch (Mirage::Renderer::GetRendererAPI()) {
+            case Mirage::RendererAPI::Direct3D11:
+                this->m_window = new Mirage::D3D11Window(Mirage::WindowProps(name));
+                break;
+            case Mirage::RendererAPI::Direct3D12:
+                this->m_window = new Mirage::D3D12Window(Mirage::WindowProps(name));
+                break;
+        }
+        PG_CORE_ASSERT_CRITICAL(this->m_window, "Mirage failed to initialise!");
         this->m_window->SetEventCallback([this](Base::Event& e) {
             this->OnEvent(e);
         });
-        this->m_mirageFactory = this->m_window->GetMirageFactory();
         PG_CORE_INFO("Mirage initialisation successful");
 
         this->s_instance = this;

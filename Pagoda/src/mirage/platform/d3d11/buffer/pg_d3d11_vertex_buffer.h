@@ -12,7 +12,7 @@
 namespace Pagoda::Mirage {
     class PAGODA_API D3D11VertexBuffer : public VertexBuffer {
     public:
-        D3D11VertexBuffer(D3D11Context context, float buffer[], int size, int vertexCount, VertexBufferLayout vertexBufferLayout);
+        D3D11VertexBuffer(D3D11Context* ctx, float buffer[], int size, int vertexCount, VertexBufferLayout vertexBufferLayout);
         virtual ~D3D11VertexBuffer();
 
         virtual void Bind() const override;

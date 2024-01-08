@@ -10,11 +10,11 @@ namespace Pagoda::Mirage {
     template<typename T>
     class D3D12ConstantBuffer : public ConstantBuffer<T> {
     public:
-        D3D12ConstantBuffer(D3D12Context context, T buffer[], int size, ConstantBufferType type) : D3D12ConstantBuffer(context, size, type) {
+        D3D12ConstantBuffer(D3D12Context* context, T buffer[], int size, ConstantBufferType type) : D3D12ConstantBuffer(context, size, type) {
             this->Write(buffer);
         }
 
-        D3D12ConstantBuffer(D3D12Context context, int size, ConstantBufferType type) : ConstantBuffer(size, type), m_context(context) {
+        D3D12ConstantBuffer(D3D12Context* context, int size, ConstantBufferType type) : ConstantBuffer(size, type), m_context(context) {
             std::unique_ptr<D3D12ResourceAllocator> ra = std::make_unique<D3D12ResourceAllocator>(context);
             unsigned int alignMultiplier = (size / (1024 * 64)) + 1;
 
@@ -37,7 +37,7 @@ namespace Pagoda::Mirage {
         virtual ~D3D12ConstantBuffer() {}
 
         virtual void Bind() const override {
-            this->m_context.GetCommandList()->SetGraphicsRootConstantBufferView(this->m_slot, this->m_constantBuffer->GetGPUVirtualAddress());
+            this->m_context->GetCommandList()->SetGraphicsRootConstantBufferView(this->m_slot, this->m_constantBuffer->GetGPUVirtualAddress());
         }
         virtual void Unbind() const override {
 
@@ -53,7 +53,7 @@ namespace Pagoda::Mirage {
         }
 
     private:
-        D3D12Context m_context;
+        D3D12Context* m_context;
         ID3D12Resource* m_constantBuffer;
 
         int m_slot;

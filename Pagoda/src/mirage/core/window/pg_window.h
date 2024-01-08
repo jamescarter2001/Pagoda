@@ -7,7 +7,6 @@
 #include "base/event/pg_application_event.h"
 
 #include "mirage/core/window/pg_window_data.h"
-#include "mirage/pg_mirage_factory.h"
 
 namespace Pagoda::Mirage {
     class PAGODA_API Window {
@@ -21,7 +20,7 @@ namespace Pagoda::Mirage {
         virtual ~Window() {
         }
 
-        virtual MirageFactory* Init() = 0;
+        virtual void Init() = 0;
         virtual void BeforeUpdate() = 0;
         virtual void OnUpdate() = 0;
 
@@ -41,17 +40,11 @@ namespace Pagoda::Mirage {
             return &m_windowData;
         }
 
-        inline MirageFactory* GetMirageFactory() const {
-            return m_mirageFactory;
-        }
-
         void SetEventCallback(const std::function<void(Base::Event&)>& callback) {
             this->m_windowData.EventCallback = callback;
         }
 
     protected:
         WindowData m_windowData;
-
-        MirageFactory* m_mirageFactory;
     };
 }

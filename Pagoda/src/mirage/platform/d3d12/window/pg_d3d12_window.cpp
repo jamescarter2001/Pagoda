@@ -4,7 +4,7 @@
 namespace Pagoda::Mirage {
     D3D12Window::D3D12Window(const WindowProps& props)
         : Window(props) {
-        this->m_mirageFactory = this->D3D12Window::Init();
+        this->D3D12Window::Init();
     }
 
     D3D12Window::~D3D12Window() {
@@ -19,14 +19,14 @@ namespace Pagoda::Mirage {
                 PostQuitMessage(0);
                 return 0;
             }
-            break;
+            default: PG_CORE_WARNING("Unhandled Windows message code: {}", message);
         }
 
         // Handle any messages the switch statement didn't
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 
-    MirageFactory* D3D12Window::Init() {
+    void D3D12Window::Init() {
         PG_CORE_DEBUG("Using graphics API: Direct3D12");
 
         HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -66,18 +66,18 @@ namespace Pagoda::Mirage {
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);
 
-        return this->Direct3D12Init();
+        this->Direct3D12Init();
     }
 
-    MirageFactory* D3D12Window::Direct3D12Init() {
-#ifdef PG_DEBUG
+    void D3D12Window::Direct3D12Init() {
+        #ifdef PG_DEBUG
 
         ComPtr<ID3D12Debug> debugController;
         if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
             debugController->EnableDebugLayer();
         }
 
-#endif
+        #endif
 
         ComPtr<IDXGIFactory4> factory;
         LogOnError(CreateDXGIFactory1(IID_PPV_ARGS(&factory)), "Failed to create IDXGIFactory4");
@@ -188,9 +188,8 @@ namespace Pagoda::Mirage {
 
         // Init context
 
-        D3D12Context context(this->m_swapChain, this->m_device, this->m_renderTargets, this->m_commandAllocator, this->m_commandQueue, this->m_rootSignature, this->m_rtvHeap, this->m_commandList);
-
-        return new D3D12MirageFactory(&this->m_windowData, context);
+        D3D12Context* ctx = new D3D12Context(this->m_swapChain, this->m_device, this->m_renderTargets, this->m_commandAllocator, this->m_commandQueue, this->m_rootSignature, this->m_rtvHeap, this->m_commandList);
+        MirageFactory::SetD3D12Context(ctx);
     }
 
     void D3D12Window::WaitForPreviousFrame() {

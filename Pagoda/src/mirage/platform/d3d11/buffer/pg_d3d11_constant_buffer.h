@@ -10,12 +10,12 @@ namespace Pagoda::Mirage {
     template <typename T>
     class D3D11ConstantBuffer : public ConstantBuffer<T> {
     public:
-        D3D11ConstantBuffer(D3D11Context context, T buffer[], int size, ConstantBufferType type) : D3D11ConstantBuffer(context, size, type) {
+        D3D11ConstantBuffer(D3D11Context* ctx, T buffer[], int size, ConstantBufferType type) : D3D11ConstantBuffer(ctx, size, type) {
             this->Write(buffer);
         }
 
-        D3D11ConstantBuffer(D3D11Context context, int size, ConstantBufferType type) : ConstantBuffer(size, type), m_context(context) {
-            D3D11ResourceAllocator(context).AllocateReadWrite(&this->m_constantBuffer, size, D3D11_BIND_CONSTANT_BUFFER);
+        D3D11ConstantBuffer(D3D11Context* ctx, int size, ConstantBufferType type) : ConstantBuffer(size, type), m_context(ctx) {
+            D3D11ResourceAllocator(m_context).AllocateReadWrite(&this->m_constantBuffer, size, D3D11_BIND_CONSTANT_BUFFER);
             PG_CORE_ASSERT(this->m_constantBuffer != NULL, "Constant buffer pointer should not be null!");
 
             switch (type) {
@@ -34,7 +34,7 @@ namespace Pagoda::Mirage {
         virtual ~D3D11ConstantBuffer() {}
 
         virtual void Bind() const override {
-            this->m_context.GetDeviceContextPtr()->VSSetConstantBuffers(this->m_slot, 1, &this->m_constantBuffer);
+            m_context->GetDeviceContext()->VSSetConstantBuffers(this->m_slot, 1, &this->m_constantBuffer);
         }
 
         virtual void Unbind() const override {
@@ -44,13 +44,13 @@ namespace Pagoda::Mirage {
             Buffer::Write(buffer);
 
             D3D11_MAPPED_SUBRESOURCE resource;
-            this->m_context.GetDeviceContextPtr()->Map(this->m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+            m_context->GetDeviceContext()->Map(this->m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
             memcpy(resource.pData, buffer, this->m_BufferSize);
-            this->m_context.GetDeviceContextPtr()->Unmap(this->m_constantBuffer, 0);
+            m_context->GetDeviceContext()->Unmap(this->m_constantBuffer, 0);
         }
 
     private:
-        D3D11Context m_context;
+        D3D11Context* m_context;
         ID3D11Buffer* m_constantBuffer;
 
         int m_slot;
