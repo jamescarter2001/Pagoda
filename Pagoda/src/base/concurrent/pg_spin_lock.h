@@ -1,7 +1,7 @@
 #pragma once
 #include "pgpch.h"
 
-#include "pg_concurrency.h"
+#include "pg_concurrent.h"
 
 namespace Pagoda::Base {
     class SpinLock {

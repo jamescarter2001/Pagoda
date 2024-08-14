@@ -4,7 +4,7 @@
 namespace Pagoda::Database {
     LightFieldData::LightFieldData() {}
 
-    LightFieldData::LightFieldData(std::vector<LightFieldObject*> objectEntries, std::vector<LightFieldAABBTreeNode*> nodeEntries) : m_objectEntries(objectEntries), m_nodeEntries(nodeEntries) {}
+    LightFieldData::LightFieldData(std::vector<LightFieldObject*> objectEntries, std::vector<LightFieldAABBNode*> nodeEntries) : m_objectEntries(objectEntries), m_nodeEntries(nodeEntries) {}
 
     LightFieldData::~LightFieldData() {
 
@@ -25,7 +25,6 @@ namespace Pagoda::Database {
                 break;
             case LightFieldObjectType::E_OMNIBOX:
                 type = "OmniBox";
-                break;
         }
 
         return std::string(this->FormatName(name) + type);
@@ -40,9 +39,9 @@ namespace Pagoda::Database {
             objectEntries.push_back(e);
         }
 
-        std::vector<LightFieldAABBTreeNode*> nodeEntries;
+        std::vector<LightFieldAABBNode*> nodeEntries;
         for (unsigned int i = 0; i < header->nodeCount; i++) {
-            LightFieldAABBTreeNode* e = header->nodeEntries + i;
+            LightFieldAABBNode* e = header->nodeEntries + i;
             nodeEntries.push_back(e);
         }
 
@@ -76,7 +75,7 @@ namespace Pagoda::Database {
 
         std::cout << "LIGHTFIELD DATA [NODE]" << std::endl;
         std::cout << "----------" << std::endl;
-        for (LightFieldAABBTreeNode* e : this->m_nodeEntries) {
+        for (LightFieldAABBNode* e : this->m_nodeEntries) {
             std::cout << this->FormatInt("Unknown Signed Integer (1)", e->leftIndex) << std::endl;
             std::cout << this->FormatInt("Unknown Signed Integer (2)", e->rightIndex) << std::endl;
             std::cout << this->FormatVector3("Unknown Vector 3 (1)", e->bBoxMin) << std::endl;
@@ -92,8 +91,8 @@ namespace Pagoda::Database {
             }
         }
 
-        std::cout << this->FormatUnsignedInt("Object Count", (unsigned int)this->m_objectEntries.size()) << std::endl;
-        std::cout << this->FormatUnsignedInt("Node Count", (unsigned int)this->m_nodeEntries.size()) << std::endl;
+        std::cout << this->FormatUnsignedInt("Object Count", this->m_objectEntries.size()) << std::endl;
+        std::cout << this->FormatUnsignedInt("Node Count", this->m_nodeEntries.size()) << std::endl;
         std::cout << this->FormatInt("Highest Signed Integer 1", highestInt1) << std::endl;
         std::cout << this->FormatInt("Highest Signed Integer 2", highestInt2) << std::endl;
         std::cout << "----------" << std::endl;

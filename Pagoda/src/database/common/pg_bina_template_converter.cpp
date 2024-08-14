@@ -2,67 +2,32 @@
 #include "pg_bina_template_converter.h"
 
 namespace Pagoda::Database {
-    BINATemplateConverter::BINATemplateConverter() {}
-    BINATemplateConverter::BINATemplateConverter(unsigned int ptrSize) : m_ptrSize(ptrSize) {}
+    BINATemplateConverter::BINATemplateConverter(unsigned int ptrSize) : m_ptrSize(ptrSize) {
+        this->m_symbolSizeMap = {
+            { BINA_SYM_U8,  sizeof(uint8_t)  },
+            { BINA_SYM_U16, sizeof(uint16_t) },
+            { BINA_SYM_U32, sizeof(uint32_t) },
+            { BINA_SYM_U64, sizeof(uint64_t) },
+            { BINA_SYM_S8,  sizeof(int8_t)   },
+            { BINA_SYM_S16, sizeof(int16_t)  },
+            { BINA_SYM_S32, sizeof(int32_t)  },
+            { BINA_SYM_S64, sizeof(int64_t)  },
+            { BINA_SYM_F32, sizeof(float)    },
+            { BINA_SYM_F64, sizeof(double)   },
+            { BINA_SYM_STR, ptrSize          },
+            { BINA_SYM_REF, ptrSize          }
+        };
+    }
     BINATemplateConverter::~BINATemplateConverter() {}
 
     size_t BINATemplateConverter::GetSizeOfType(std::string type) {
-        size_t s = 0;
-        if (type == BINA_SYM_U8) {
-            s = sizeof(uint8_t);
-        }
-
-        if (type == BINA_SYM_U16) {
-            s = sizeof(uint16_t);
-        }
-
-        if (type == BINA_SYM_U32) {
-            s = sizeof(uint32_t);
-        }
-
-        if (type == BINA_SYM_U64) {
-            s = sizeof(uint64_t);
-        }
-
-        if (type == BINA_SYM_S8) {
-            s = sizeof(int8_t);
-        }
-
-        if (type == BINA_SYM_S16) {
-            s = sizeof(int16_t);
-        }
-
-        if (type == BINA_SYM_S32) {
-            s = sizeof(int32_t);
-        }
-
-        if (type == BINA_SYM_S64) {
-            s = sizeof(int64_t);
-        }
-
-        if (type == BINA_SYM_F32) {
-            s = sizeof(float);
-        }
-
-        if (type == BINA_SYM_F64) {
-            s = sizeof(double);
-        }
-
-        if (type == BINA_SYM_STR) {
-            s = this->m_ptrSize;
-        }
-
-        if (type == BINA_SYM_REF) {
-            s = this->m_ptrSize;
-        }
-
-        return s;
+        return m_symbolSizeMap.at(type);
     }
 
     void BINATemplateConverter::Write(char** dst, void* data, std::string type) {
-        size_t s = GetSizeOfType(type);
-        memcpy(*dst, data, s);
-        *dst += s;
+        size_t typeSize = GetSizeOfType(type);
+        memcpy(*dst, data, typeSize);
+        *dst += typeSize;
     }
 
     void BINATemplateConverter::WriteData(char** ppCurrentOffset, std::string type, std::string data, bool bigEndian) {
@@ -127,16 +92,16 @@ namespace Pagoda::Database {
         }
 
         if (type == BINA_SYM_STR) {
-            auto str = this->m_stringTablePositionMap.find(data);
+            auto str = this->m_stringTablePositionMap.at(data);
 
             if (this->m_ptrSize == PTR_SIZE_32) {
-                uint32_t offset = (uint32_t)(this->m_dataBlockSize + str->second);
+                uint32_t offset = (uint32_t)(this->m_dataBlockSize + str);
                 if (bigEndian) { offset = _byteswap_ulong(offset); }
                 this->Write(ppCurrentOffset, &offset, BINA_SYM_U32);
             }
 
             if (this->m_ptrSize == PTR_SIZE_64) {
-                uint64_t offset = this->m_dataBlockSize + str->second;
+                uint64_t offset = this->m_dataBlockSize + str;
                 if (bigEndian) { offset = _byteswap_uint64(offset); }
                 this->Write(ppCurrentOffset, &offset, BINA_SYM_U64);
             }
@@ -144,21 +109,20 @@ namespace Pagoda::Database {
 
         if (type == BINA_SYM_REF) {
             if (this->m_ptrSize == 4) {
-                uint32_t offset = this->m_offsetMap.find(data)->second;
+                uint32_t offset = this->m_offsetMap.at(data);
                 if (bigEndian) { offset = _byteswap_ulong(offset); }
                 this->Write(ppCurrentOffset, &offset, BINA_SYM_U32);
             }
 
             if (this->m_ptrSize == 8) {
-                uint64_t offset = this->m_offsetMap.find(data)->second;
+                uint64_t offset = this->m_offsetMap.at(data);
                 if (bigEndian) { offset = _byteswap_uint64(offset); }
                 this->Write(ppCurrentOffset, &offset, BINA_SYM_U64);
             }
         }
     }
 
-    void BINATemplateConverter::ConvertTemplateAndSave(const char src[], const char dest[], unsigned int ptrSize, bool bigEndian) {
-        this->m_ptrSize = ptrSize;
+    void BINATemplateConverter::ConvertTemplateAndSave(const char src[], const char dest[], bool bigEndian) {
         this->InspectTemplate(src);
 
         std::ifstream srcFile(src, std::ios::in);
@@ -197,9 +161,7 @@ namespace Pagoda::Database {
                 if (line.at(0) == '\t') {
                     std::string entry = line.substr(1, line.size() - 1);
 
-                    std::vector<std::string> fragments = DatabaseUtils::SplitString(entry, " ");
-
-                    // Skip if invalid line.
+                    std::vector<std::string> fragments = Base::Strings::Split(entry, " ");
                     if (fragments.size() < 2) {
                         continue;
                     }
@@ -239,7 +201,7 @@ namespace Pagoda::Database {
             if (line.at(0) == '\t') {
                 std::string entry = line.substr(1, line.size() - 1);
 
-                std::vector<std::string> fragments = DatabaseUtils::SplitString(entry, " ");
+                std::vector<std::string> fragments = Base::Strings::Split(entry, " ");
 
                 // Ignore blank lines.
                 if (fragments.size() < 2) { continue; }
@@ -249,7 +211,7 @@ namespace Pagoda::Database {
                     if (fragments[0] == BINA_SYM_STR) {
                         auto stringEntry = this->m_stringTablePositionMap.find(fragments[i]);
 
-                        // If string is already in the table, reuse and don't write again.
+                        // Is this the first time seeing this string?
                         if (stringEntry == this->m_stringTablePositionMap.end()) {
                             this->m_stringTablePositionMap.insert({fragments[i], (unsigned int)this->m_stringTable.str().size()});
 
@@ -268,7 +230,7 @@ namespace Pagoda::Database {
                 }
             }
 
-            std::vector<std::string> fragments = DatabaseUtils::SplitString(line, ":");
+            std::vector<std::string> fragments = Base::Strings::Split(line, ":");
             if (fragments.size() == 2) {
                 this->m_offsetMap.insert({fragments[0], (unsigned int)this->m_dataBlockSize});
             }

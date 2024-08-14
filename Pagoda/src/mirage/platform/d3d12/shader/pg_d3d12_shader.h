@@ -2,7 +2,7 @@
 #include "pgpch.h"
 
 #include "base/log/pg_log.h"
-#include "base/util/pg_util.h"
+#include "base/util/pg_strings.h"
 
 #include "mirage/core/shader/pg_shader.h"
 

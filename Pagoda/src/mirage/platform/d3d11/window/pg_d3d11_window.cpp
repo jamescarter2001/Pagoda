@@ -64,17 +64,17 @@ namespace Pagoda::Mirage {
 
         // create the window and use the result as the handle
         this->m_Window = CreateWindowEx(NULL,
-                                        L"WindowClass1",                       // name of the window class
-                                        STR_TO_WSTR(this->GetTitle()).c_str(), // title of the window
-                                        WS_OVERLAPPEDWINDOW,                   // window style
-                                        300,                                   // x-position of the window
-                                        300,                                   // y-position of the window
-                                        this->GetWidth(),                      // width of the window
-                                        this->GetHeight(),                     // height of the window
-                                        NULL,                                  // we have no parent window, NULL
-                                        NULL,                                  // we aren't using menus, NULL
-                                        hInstance,                             // application handle
-                                        NULL);                                 // used with multiple windows, NULL
+                                        L"WindowClass1",                                       // name of the window class
+                                        Base::Strings::STR_TO_WSTR(this->GetTitle()).c_str(),  // title of the window
+                                        WS_OVERLAPPEDWINDOW,                                   // window style
+                                        300,                                                   // x-position of the window
+                                        300,                                                   // y-position of the window
+                                        this->GetWidth(),                                      // width of the window
+                                        this->GetHeight(),                                     // height of the window
+                                        NULL,                                                  // we have no parent window, NULL
+                                        NULL,                                                  // we aren't using menus, NULL
+                                        hInstance,                                             // application handle
+                                        NULL);                                                 // used with multiple windows, NULL
 
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);

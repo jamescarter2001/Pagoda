@@ -2,32 +2,15 @@
 #include "pg_database_util.h"
 
 namespace Pagoda::Database {
-    std::vector<std::string> DatabaseUtils::SplitString(std::string str, std::string delim) {
-        size_t strSize = str.size();
-        std::vector<std::string> fragments;
-
-        size_t pos = 0;
-        std::string token;
-        while ((pos = str.find(delim)) != std::string::npos) {
-            token = str.substr(0, pos);
-            fragments.push_back(token);
-            str.erase(0, pos + delim.length());
-        }
-
-        if (str.substr(0, strSize - pos).find(" ") == std::string::npos) {
-            fragments.push_back(str.substr(0, strSize - pos));
-        }
-
-        return fragments;
-    }
-
     unsigned int DatabaseUtils::GetAlignment(size_t count, unsigned int factor) {
         size_t val = factor - (count % factor);
+
+        // Is the string already aligned?
         if (val == factor) {
             return 0;
-        } else {
-            return (unsigned int)val;
         }
+
+        return (unsigned int)val;
     }
 
     std::stringstream DatabaseUtils::GenerateBINAOffsetTable(std::vector<unsigned long long> offsets) {

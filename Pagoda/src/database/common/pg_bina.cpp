@@ -69,10 +69,10 @@ namespace Pagoda::Database {
     }
 
     std::vector<unsigned long long> Node::SeekOffsets(node_t* node) {
-        const NodeHeader nh = *(NodeHeader*)node;
+        NodeHeader nh = *(NodeHeader*)node;
 
         char* offsetTable = node + sizeof(nh) + nh.stringTableOffset + nh.stringTableLength;
-        const unsigned long long start = (unsigned long long) node + sizeof(nh);
+        unsigned long long start = (unsigned long long) node + sizeof(nh);
 
         return Node::SeekOffsets(start, offsetTable, nh.offsetTableLength);
     }

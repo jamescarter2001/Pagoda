@@ -11,7 +11,7 @@
 
 namespace Pagoda::Database {
     struct RangersUUID {
-        unsigned int X, Y, Z, W;
+        unsigned int X, Y, Z, W; // 256 bit UUID
     };
 
     struct ForcesObjectReference {

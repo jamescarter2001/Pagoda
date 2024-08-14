@@ -82,7 +82,7 @@ namespace Pagoda::Mirage {
 
     void D3D11Shader::CompileShader(UINT flags, ID3DBlob*& errPtr) {
         HRESULT hr = D3DCompileFromFile(
-            STR_TO_WSTR(this->m_FilePath).c_str(),
+            Base::Strings::STR_TO_WSTR(this->m_FilePath).c_str(),
             nullptr,
             D3D_COMPILE_STANDARD_FILE_INCLUDE,
             (this->m_ShaderType == ShaderType::SHADER_TYPE_VERTEX ? "vs_main" : "ps_main"),
