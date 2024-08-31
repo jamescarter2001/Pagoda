@@ -1,8 +1,6 @@
 #pragma once
 #include "pgpch.h"
 
-#include "base/log/pg_log.h"
-
 #include "mirage/core/window/pg_window_data.h"
 
 #include "mirage/core/buffer/pg_buffer.h"
@@ -31,25 +29,71 @@
 #endif
 
 namespace Pagoda::Mirage {
-    class MirageFactory {
+    class PAGODA_API MirageFactory {
     public:
-        static VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout);
-        static IndexBuffer* CreateIndexBuffer(unsigned int buffer[], int bufferCount);
-        static Shader* CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType);
-        static PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout);
-        static Renderer* CreateRenderer();
-        static ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size);
-        static ConstantBuffer<float>* CreateTransformConstantBuffer(int size);
+        MirageFactory(WindowData* wd)
+            : m_windowData(wd) {
+        }
 
-        #ifdef PG_PLATFORM_WINDOWS
-        static void SetD3D11Context(D3D11Context* ctx);
-        static void SetD3D12Context(D3D12Context* ctx);
-        #endif
-    private:
-        // TODO: Is there a better way of accessing these from the factory methods?
-        #ifdef PG_PLATFORM_WINDOWS
-        static D3D11Context* s_d3d11Context;
-        static D3D12Context* s_d3d12Context;
-        #endif
+        virtual ~MirageFactory() {
+        }
+
+        virtual VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const = 0;
+        virtual IndexBuffer* CreateIndexBuffer(unsigned int buffer[], int bufferCount) const = 0;
+        virtual Shader* CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) const = 0;
+        virtual Renderer* CreateRenderer() const = 0;
+        virtual PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) const = 0;
+
+        virtual ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const = 0;
+        virtual ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const = 0;
+
+    protected:
+        WindowData* m_windowData;
     };
+
+#ifdef PG_PLATFORM_WINDOWS
+
+    // Direct3D11
+    class PAGODA_API D3D11MirageFactory : public MirageFactory {
+    public:
+        D3D11MirageFactory(WindowData* wd, std::shared_ptr<D3D11Context> c)
+            : MirageFactory(wd), m_context(c) {
+        }
+
+        virtual VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const override;
+        virtual IndexBuffer* CreateIndexBuffer(unsigned int buffer[], int bufferCount) const override;
+        virtual Shader* CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) const override;
+        virtual Renderer* CreateRenderer() const override;
+        virtual PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) const override;
+
+        ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const override;
+        ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const override;
+
+    private:
+        std::shared_ptr<D3D11Context> m_context;
+    };
+
+    // Direct3D12
+    class PAGODA_API D3D12MirageFactory : public MirageFactory {
+    public:
+        D3D12MirageFactory(WindowData* wd, std::shared_ptr<D3D12Context> c)
+            : MirageFactory(wd), m_context(c) {
+        }
+
+        virtual ~D3D12MirageFactory() {
+        }
+
+        virtual VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const override;
+        virtual IndexBuffer* CreateIndexBuffer(unsigned int buffer[], int bufferCount) const override;
+        virtual Shader* CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) const override;
+        virtual Renderer* CreateRenderer() const override;
+        virtual PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) const override;
+
+        ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const override;
+        ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const override;
+
+    private:
+        std::shared_ptr<D3D12Context> m_context;
+    };
+#endif
 }

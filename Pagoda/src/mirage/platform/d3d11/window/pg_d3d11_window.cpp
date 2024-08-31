@@ -13,7 +13,7 @@ namespace Pagoda::Mirage {
 
         this->m_SwapChainDesc = {0};
 
-        this->D3D11Window::Init();
+        m_mirageFactory = this->D3D11Window::Init();
     }
 
     D3D11Window::~D3D11Window() {
@@ -39,7 +39,7 @@ namespace Pagoda::Mirage {
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 
-    void D3D11Window::Init() {
+    std::shared_ptr<MirageFactory> D3D11Window::Init() {
         PG_CORE_DEBUG("Using graphics API: Direct3D11");
 
         const HINSTANCE hInstance = GetModuleHandle(nullptr);
@@ -79,10 +79,10 @@ namespace Pagoda::Mirage {
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);
 
-        this->Direct3D11Init();
+        return this->Direct3D11Init();
     }
 
-    void D3D11Window::Direct3D11Init() {
+    std::shared_ptr<MirageFactory> D3D11Window::Direct3D11Init() {
         // Numerator and denominator for drawing as fast as possible.
 
         m_SwapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
@@ -142,8 +142,9 @@ namespace Pagoda::Mirage {
 
         // Init context
 
-        D3D11Context* ctx = new D3D11Context(m_devicePtr, m_deviceContextPtr, m_swapChainPtr, m_renderTargetViewPtr);
-        MirageFactory::SetD3D11Context(ctx);
+        std::shared_ptr<D3D11Context> ctx = std::make_shared<D3D11Context>(m_devicePtr, m_deviceContextPtr, m_swapChainPtr, m_renderTargetViewPtr);
+        
+        return std::make_shared<D3D11MirageFactory>(&m_windowData, ctx);
     }
 
     void D3D11Window::BeforeUpdate() {

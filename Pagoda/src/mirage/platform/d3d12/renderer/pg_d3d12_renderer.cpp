@@ -2,7 +2,7 @@
 #include "pg_d3d12_renderer.h"
 
 namespace Pagoda::Mirage {
-    D3D12Renderer::D3D12Renderer(D3D12Context* context) : Renderer(), m_context(context) {
+    D3D12Renderer::D3D12Renderer(std::shared_ptr<D3D12Context> context) : Renderer(), m_context(context) {
 
     }
 

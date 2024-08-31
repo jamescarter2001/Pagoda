@@ -16,7 +16,7 @@ namespace Pagoda::Mirage {
     public:
         D3D11Window(const WindowProps& props);
         virtual ~D3D11Window();
-        virtual void Init() override;
+        virtual std::shared_ptr<MirageFactory> Init() override;
         virtual void BeforeUpdate() override;
         virtual void OnUpdate() override;
     private:
@@ -32,6 +32,6 @@ namespace Pagoda::Mirage {
         // this is the main message handler for the program
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-        void Direct3D11Init();
+        std::shared_ptr<MirageFactory> Direct3D11Init();
     };
 }

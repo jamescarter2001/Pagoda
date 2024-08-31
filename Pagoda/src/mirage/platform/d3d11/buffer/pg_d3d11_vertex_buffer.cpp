@@ -2,7 +2,7 @@
 #include "pg_d3d11_vertex_buffer.h"
 
 namespace Pagoda::Mirage {
-    D3D11VertexBuffer::D3D11VertexBuffer(D3D11Context* ctx, float buffer[], int size, int vertexCount, VertexBufferLayout vertexBufferLayout) : VertexBuffer(buffer, size, vertexCount, vertexBufferLayout) {
+    D3D11VertexBuffer::D3D11VertexBuffer(std::shared_ptr<D3D11Context> ctx, float buffer[], int size, int vertexCount, VertexBufferLayout vertexBufferLayout) : VertexBuffer(buffer, size, vertexCount, vertexBufferLayout) {
         this->m_Device = ctx->GetDevice();
         this->m_DeviceContext = ctx->GetDeviceContext();
 

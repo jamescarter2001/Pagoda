@@ -30,7 +30,7 @@ namespace Pagoda::Database {
     
     void BinaWriter::WriteData(char** offset, std::vector<void*> structs) {
         for (void* structData : structs) {
-            unsigned long long structSize = this->m_structSizeMap.find(structData)->second;
+            unsigned long long structSize = this->m_structSizeMap.at(structData);
             memcpy(*offset, structData, structSize);
             this->m_offsetMap.insert({structData, *offset});
             *offset += structSize;
@@ -100,11 +100,7 @@ namespace Pagoda::Database {
 
     unsigned int BinaWriter::GetAlignment(size_t count) {
         size_t val = 4 - (count % 4);
-        if (val == 4) {
-            return 0;
-        } else {
-            return (unsigned int)val;
-        }
+        return val == 4 ? 0 : val;
     }
 
     void BinaWriter::FixPointers(char* nodeBody) {
@@ -113,9 +109,9 @@ namespace Pagoda::Database {
 
         unsigned long long lastOffset = 0;
         for (unsigned int i = 0; i < count; i++) {
-            auto relativeOffset = this->m_offsetMap.find(*(ptr + i));
-            if (relativeOffset != this->m_offsetMap.end()) {
-                *(ptr + i) = (char*)(relativeOffset->second - nodeBody);
+            auto relativeOffset = this->m_offsetMap.at(*(ptr + i));
+            if (relativeOffset != nullptr) {
+                *(ptr + i) = (char*)(relativeOffset - nodeBody);
 
                 unsigned long long offset = (unsigned long long)(ptr + i) - (unsigned long long)nodeBody;
                 this->m_offsets.push_back(offset - lastOffset);

@@ -10,11 +10,11 @@ namespace Pagoda::Mirage {
     template <typename T>
     class D3D11ConstantBuffer : public ConstantBuffer<T> {
     public:
-        D3D11ConstantBuffer(D3D11Context* ctx, T buffer[], int size, ConstantBufferType type) : D3D11ConstantBuffer(ctx, size, type) {
+        D3D11ConstantBuffer(std::shared_ptr<D3D11Context> ctx, T buffer[], int size, ConstantBufferType type) : D3D11ConstantBuffer(ctx, size, type) {
             this->Write(buffer);
         }
 
-        D3D11ConstantBuffer(D3D11Context* ctx, int size, ConstantBufferType type) : ConstantBuffer(size, type), m_context(ctx) {
+        D3D11ConstantBuffer(std::shared_ptr<D3D11Context> ctx, int size, ConstantBufferType type) : ConstantBuffer(size, type), m_context(ctx) {
             D3D11ResourceAllocator(m_context).AllocateReadWrite(&this->m_constantBuffer, size, D3D11_BIND_CONSTANT_BUFFER);
             PG_CORE_ASSERT(this->m_constantBuffer != NULL, "Constant buffer pointer should not be null!");
 
@@ -50,7 +50,8 @@ namespace Pagoda::Mirage {
         }
 
     private:
-        D3D11Context* m_context;
+        std::shared_ptr<D3D11Context> m_context;
+
         ID3D11Buffer* m_constantBuffer;
 
         int m_slot;

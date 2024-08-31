@@ -2,7 +2,7 @@
 #include "pg_d3d11_shader.h"
 
 namespace Pagoda::Mirage {
-    D3D11Shader::D3D11Shader(D3D11Context* ctx, std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType)
+    D3D11Shader::D3D11Shader(std::shared_ptr<D3D11Context> ctx, std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType)
         : Shader(filePath, vertexBufferLayout, shaderType) {
         this->m_device = ctx->GetDevice();
         this->m_deviceContext = ctx->GetDeviceContext();

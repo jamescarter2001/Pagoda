@@ -4,7 +4,7 @@
 namespace Pagoda::Mirage {
     D3D12Window::D3D12Window(const WindowProps& props)
         : Window(props) {
-        this->D3D12Window::Init();
+        m_mirageFactory = this->D3D12Window::Init();
     }
 
     D3D12Window::~D3D12Window() {
@@ -26,7 +26,7 @@ namespace Pagoda::Mirage {
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
 
-    void D3D12Window::Init() {
+    std::shared_ptr<MirageFactory> D3D12Window::Init() {
         PG_CORE_DEBUG("Using graphics API: Direct3D12");
 
         HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -66,10 +66,10 @@ namespace Pagoda::Mirage {
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);
 
-        this->Direct3D12Init();
+        return this->Direct3D12Init();
     }
 
-    void D3D12Window::Direct3D12Init() {
+    std::shared_ptr<MirageFactory> D3D12Window::Direct3D12Init() {
         #ifdef PG_DEBUG
 
         ComPtr<ID3D12Debug> debugController;
@@ -188,8 +188,8 @@ namespace Pagoda::Mirage {
 
         // Init context
 
-        D3D12Context* ctx = new D3D12Context(this->m_swapChain, this->m_device, this->m_renderTargets, this->m_commandAllocator, this->m_commandQueue, this->m_rootSignature, this->m_rtvHeap, this->m_commandList);
-        MirageFactory::SetD3D12Context(ctx);
+        std::shared_ptr<D3D12Context> ctx = std::make_shared<D3D12Context>(this->m_swapChain, this->m_device, this->m_renderTargets, this->m_commandAllocator, this->m_commandQueue, this->m_rootSignature, this->m_rtvHeap, this->m_commandList);
+        return std::make_shared<D3D12MirageFactory>(&m_windowData, ctx);
     }
 
     void D3D12Window::WaitForPreviousFrame() {

@@ -10,13 +10,13 @@
 namespace Pagoda::Mirage {
     class D3D12Renderer : public Renderer {
     public:
-        D3D12Renderer(D3D12Context* context);
+        D3D12Renderer(std::shared_ptr<D3D12Context> context);
         virtual ~D3D12Renderer();
 
         virtual void Draw(const Model& model, const PipelineState* pipelineState, const ConstantBuffer<float>* transform, bool project) override;
         virtual ConstantBuffer<float>* CreateMVP() override;
 
     private:
-        D3D12Context* m_context;
+        std::shared_ptr<D3D12Context> m_context;
     };
 }
