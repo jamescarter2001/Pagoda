@@ -2,7 +2,7 @@
 #include "pg_d3d11_resource_allocator.h"
 
 namespace Pagoda::Mirage {
-    D3D11ResourceAllocator::D3D11ResourceAllocator(D3D11Context* ctx) : m_context(ctx) {
+    D3D11ResourceAllocator::D3D11ResourceAllocator(std::shared_ptr<D3D11Context> ctx) : m_context(ctx) {
     }
 
     D3D11ResourceAllocator::~D3D11ResourceAllocator() {

@@ -8,11 +8,10 @@ public:
     TestApp(const std::string& name)
         : Pagoda::Application(name) {
         PG_TRACE("Created new engine application");
-        PushLayer(new TestLayer("TestLayer"));
-        // PushOverlay(new GameEngine::ReddogLayer());
+        this->GetApplicationManager()->PushLayer(new TestLayer("TestLayer"));
     }
 };
 
 Pagoda::Application* Pagoda::CreateApplication() {
-    return new TestApp(std::string("TestApp"));
+    return new TestApp("TestApp");
 }

@@ -62,7 +62,8 @@ project "Pagoda"
 	}
 
 	defines {
-		"SPDLOG_COMPILED_LIB"
+		"SPDLOG_COMPILED_LIB",
+		"_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS"
 	}
 
 	incDirs = {
@@ -126,7 +127,8 @@ project "DatabaseTestApp"
 	}
 
 	defines {
-		"SPDLOG_COMPILED_LIB"
+		"SPDLOG_COMPILED_LIB",
+		"_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS"
 	}
 
 	includedirs {
@@ -234,7 +236,8 @@ project "TestApp"
 	}
 
 	defines {
-		"SPDLOG_COMPILED_LIB"
+		"SPDLOG_COMPILED_LIB",
+		"_SILENCE_ALL_MS_EXT_DEPRECATION_WARNINGS"
 	}
 
 	includedirs {

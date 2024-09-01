@@ -4,10 +4,8 @@
 #include "base/log/pg_log.h"
 #include "base/util/pg_strings.h"
 
-#include "mirage/pg_mirage_factory.h"
 #include "mirage/core/window/pg_window.h"
 
-#include "mirage/pg_mirage_factory.h"
 #include "mirage/platform/d3d11/context/pg_d3d11_context.h"
 
 namespace Pagoda::Mirage {
@@ -16,7 +14,7 @@ namespace Pagoda::Mirage {
     public:
         D3D11Window(const WindowProps& props);
         virtual ~D3D11Window();
-        virtual void Init() override;
+        virtual std::shared_ptr<MirageFactory> Init() override;
         virtual void BeforeUpdate() override;
         virtual void OnUpdate() override;
     private:
@@ -32,6 +30,6 @@ namespace Pagoda::Mirage {
         // this is the main message handler for the program
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-        void Direct3D11Init();
+        std::shared_ptr<MirageFactory> Direct3D11Init();
     };
 }

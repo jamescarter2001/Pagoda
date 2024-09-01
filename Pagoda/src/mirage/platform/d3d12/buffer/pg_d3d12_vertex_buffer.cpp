@@ -2,7 +2,7 @@
 #include "pg_d3d12_vertex_buffer.h"
 
 namespace Pagoda::Mirage {
-    D3D12VertexBuffer::D3D12VertexBuffer(D3D12Context* context, float buffer[], int size, int vertexCount, VertexBufferLayout vertexBufferLayout) : VertexBuffer(buffer, size, vertexCount, vertexBufferLayout), m_context(context) {
+    D3D12VertexBuffer::D3D12VertexBuffer(std::shared_ptr<D3D12Context> context, float buffer[], int size, int vertexCount, VertexBufferLayout vertexBufferLayout) : VertexBuffer(buffer, size, vertexCount, vertexBufferLayout), m_context(context) {
         std::unique_ptr<D3D12ResourceAllocator> ra = std::make_unique<D3D12ResourceAllocator>(context);
         ra->AllocateDefault(&m_vertexBuffer, buffer, size);
 

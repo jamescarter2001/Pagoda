@@ -1,9 +1,9 @@
 #include "pgpch.h"
 #include "pg_layer_stack.h"
 
-namespace Pagoda::Base {
+namespace Pagoda::Universe {
 
-    LayerStack::LayerStack() {
+    LayerStack::LayerStack(ApplicationContext& ctx) : m_ctx(ctx) {
         this->m_LayerInsert = this->m_Layers.begin();
     }
 
@@ -15,7 +15,7 @@ namespace Pagoda::Base {
 
     void LayerStack::PushLayer(Layer* layer) {
         this->m_LayerInsert = this->m_Layers.emplace(m_LayerInsert, layer);
-        layer->OnAttach();
+        layer->OnAttach(m_ctx);
     }
 
     void LayerStack::PopLayer(Layer* layer) {

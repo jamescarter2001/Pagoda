@@ -2,7 +2,7 @@
 #include "pg_d3d11_index_buffer.h"
 
 namespace Pagoda::Mirage {
-    D3D11IndexBuffer::D3D11IndexBuffer(D3D11Context* ctx, unsigned int buffer[], const int size)
+    D3D11IndexBuffer::D3D11IndexBuffer(std::shared_ptr<D3D11Context> ctx, unsigned int buffer[], const int size)
         : IndexBuffer(buffer, size) {
         this->m_device = ctx->GetDevice();
         this->m_deviceContext = ctx->GetDeviceContext();

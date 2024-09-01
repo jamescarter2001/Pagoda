@@ -8,6 +8,8 @@
 
 #include "mirage/core/window/pg_window_data.h"
 
+#include "mirage/core/factory/pg_mirage_factory.h"
+
 namespace Pagoda::Mirage {
     class PAGODA_API Window {
     public:
@@ -20,7 +22,7 @@ namespace Pagoda::Mirage {
         virtual ~Window() {
         }
 
-        virtual void Init() = 0;
+        virtual std::shared_ptr<MirageFactory> Init() = 0;
         virtual void BeforeUpdate() = 0;
         virtual void OnUpdate() = 0;
 
@@ -40,11 +42,16 @@ namespace Pagoda::Mirage {
             return &m_windowData;
         }
 
+        inline std::shared_ptr<MirageFactory> GetMirageFactory() const {
+            return m_mirageFactory;
+        }
+
         void SetEventCallback(const std::function<void(Base::Event&)>& callback) {
             this->m_windowData.EventCallback = callback;
         }
 
     protected:
         WindowData m_windowData;
+        std::shared_ptr<MirageFactory> m_mirageFactory;
     };
 }

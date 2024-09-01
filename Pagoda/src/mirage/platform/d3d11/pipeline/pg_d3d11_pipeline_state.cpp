@@ -2,7 +2,7 @@
 #include "pg_d3d11_pipeline_state.h"
 
 namespace Pagoda::Mirage {
-    D3D11PipelineState::D3D11PipelineState(D3D11Context* ctx, Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) : PipelineState(vertexShader, fragmentShader, vertexBufferLayout) {
+    D3D11PipelineState::D3D11PipelineState(std::shared_ptr<D3D11Context> ctx, Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) : PipelineState(vertexShader, fragmentShader, vertexBufferLayout) {
         this->m_device = ctx->GetDevice();
         this->m_deviceContext = ctx->GetDeviceContext();
 

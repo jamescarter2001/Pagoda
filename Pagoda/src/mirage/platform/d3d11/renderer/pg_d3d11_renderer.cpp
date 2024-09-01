@@ -2,7 +2,7 @@
 #include "pg_d3d11_renderer.h"
 
 namespace Pagoda::Mirage {
-    D3D11Renderer::D3D11Renderer(D3D11Context* ctx) : Renderer(), m_context(ctx) {
+    D3D11Renderer::D3D11Renderer(std::shared_ptr<D3D11Context> ctx) : Renderer(), m_context(ctx) {
     }
 
     D3D11Renderer::~D3D11Renderer() {

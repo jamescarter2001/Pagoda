@@ -2,7 +2,7 @@
 #include "pg_d3d12_resource_allocator.h"
 
 namespace Pagoda::Mirage {
-    D3D12ResourceAllocator::D3D12ResourceAllocator(D3D12Context* context) : m_context(context) {
+    D3D12ResourceAllocator::D3D12ResourceAllocator(std::shared_ptr<D3D12Context> context) : m_context(context) {
         this->m_fenceValue = 1;
 
         this->m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);

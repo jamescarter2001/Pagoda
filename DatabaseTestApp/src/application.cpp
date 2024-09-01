@@ -33,7 +33,6 @@ int main() {
         Pagoda::Database::Node::PrintOffsets(sizeof(orcHeader), data + sizeof(orcHeader) + orcHeader.offsetTableOffset, orcHeader.offsetTableLength);
 
         delete[] data;
-        return 0;
     }
 
     float cubeArray[] = {

@@ -2,7 +2,6 @@
 #include "pgpch.h"
 
 #include "base/log/pg_log.h"
-#include "base/util/pg_util.h"
 
 #include "pg_concurrent.h"
 

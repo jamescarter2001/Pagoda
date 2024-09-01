@@ -2,12 +2,13 @@
 #include "pgpch.h"
 
 #include "base/log/pg_log.h"
-#include "base/layer/pg_layer.h"
 
-namespace Pagoda::Base {
+#include "universe/layer/pg_layer.h"
+
+namespace Pagoda::Universe {
     class PAGODA_API LayerStack {
     public:
-        LayerStack();
+        LayerStack(ApplicationContext& ctx);
         virtual ~LayerStack();
 
         void PushLayer(Layer* layer);
@@ -24,6 +25,8 @@ namespace Pagoda::Base {
         }
 
     private:
+        ApplicationContext& m_ctx;
+
         std::vector<Layer*> m_Layers;
         std::vector<Layer*>::iterator m_LayerInsert;
     };

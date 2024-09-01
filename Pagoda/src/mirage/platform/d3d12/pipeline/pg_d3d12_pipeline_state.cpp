@@ -2,7 +2,7 @@
 #include "pg_d3d12_pipeline_state.h"
 
 namespace Pagoda::Mirage {
-    D3D12PipelineState::D3D12PipelineState(D3D12Context* context, Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) : PipelineState(vertexShader, fragmentShader, vertexBufferLayout), m_context(context) {
+    D3D12PipelineState::D3D12PipelineState(std::shared_ptr<D3D12Context> context, Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) : PipelineState(vertexShader, fragmentShader, vertexBufferLayout), m_context(context) {
         auto elements = this->m_vertexBufferLayout.GetElements();
 
         std::vector<D3D12_INPUT_ELEMENT_DESC> elementDesc;
