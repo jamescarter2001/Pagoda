@@ -9,7 +9,7 @@ namespace Pagoda::Universe {
     ApplicationManager::ApplicationManager(std::string& appName) : m_appName(appName) {}
     ApplicationManager::~ApplicationManager() {}
 
-    bool ApplicationManager::Start() {
+    void ApplicationManager::Init() {
         PG_CORE_INFO("Starting engine application: {}", m_appName);
 
         // --- Mirage ---
@@ -31,12 +31,11 @@ namespace Pagoda::Universe {
         m_layerStack = std::make_unique<LayerStack>(m_pAppCtx);
 
         PG_CORE_INFO("Started engine application: {}", m_appName);
-
-        return true;
     }
 
     bool ApplicationManager::OnWindowCloseEvent(Base::Event& e) {
-        return ShutDown();
+        ShutDown();
+        return true;
     }
 
     void ApplicationManager::OnEvent(Base::Event& e) {
@@ -83,8 +82,7 @@ namespace Pagoda::Universe {
         PG_CORE_INFO("Shutting down...");
     }
 
-    bool ApplicationManager::ShutDown() {
+    void ApplicationManager::ShutDown() {
         m_isRunning = false;
-        return true;
     }
 }

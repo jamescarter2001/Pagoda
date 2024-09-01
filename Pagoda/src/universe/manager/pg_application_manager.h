@@ -1,24 +1,25 @@
 #pragma once
 #include "pgpch.h"
 
-#include "universe/layer/pg_layer.h"
-#include "universe/layer/pg_layer_stack.h"
+#include "base/manager/pg_abstract_manager.h"
 
 #include "mirage/core/window/pg_window.h"
-#include "mirage/pg_mirage_factory.h"
 #include "mirage/core/manager/pg_mirage_manager.h"
+#include "mirage/core/factory/pg_mirage_factory.h"
 
+#include "universe/layer/pg_layer.h"
+#include "universe/layer/pg_layer_stack.h"
 #include "universe/context/pg_application_context.h"
 
 namespace Pagoda::Universe {
-    class PAGODA_API ApplicationManager {
+    class PAGODA_API ApplicationManager : public Base::AbstractManager {
     public:
         ApplicationManager(std::string& appName);
         ~ApplicationManager();
 
-        bool Start();
+        void Init() override;
         void Run();
-        bool ShutDown();
+        void ShutDown() override;
 
         void OnEvent(Base::Event& e);
         bool OnWindowCloseEvent(Base::Event& e);

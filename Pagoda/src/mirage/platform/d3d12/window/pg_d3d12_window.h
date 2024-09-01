@@ -4,8 +4,8 @@
 #include "base/log/pg_log.h"
 #include "base/util/pg_strings.h"
 
-#include "mirage/pg_mirage_factory.h"
 #include "mirage/core/window/pg_window.h"
+#include "mirage/core/factory/pg_mirage_factory.h"
 
 #include "mirage/platform/d3d12/context/pg_d3d12_context.h"
 

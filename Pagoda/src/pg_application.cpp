@@ -9,7 +9,7 @@ namespace Pagoda {
         this->m_name = name;
         
         m_applicatonManager = std::make_unique<Universe::ApplicationManager>(m_name);
-        m_applicatonManager->Start();
+        m_applicatonManager->Init();
 
         this->s_instance = this;
     }

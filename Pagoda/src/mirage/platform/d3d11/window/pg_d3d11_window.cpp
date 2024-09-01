@@ -1,6 +1,8 @@
 #include "pgpch.h"
 #include "pg_d3d11_window.h"
 
+#include "mirage/platform/d3d11/factory/pg_d3d11_mirage_factory.h"
+
 namespace Pagoda::Mirage {
     D3D11Window::D3D11Window(const WindowProps& props)
         : Window(props) {

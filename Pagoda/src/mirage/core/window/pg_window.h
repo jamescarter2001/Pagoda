@@ -8,7 +8,7 @@
 
 #include "mirage/core/window/pg_window_data.h"
 
-#include "mirage/pg_mirage_factory.h"
+#include "mirage/core/factory/pg_mirage_factory.h"
 
 namespace Pagoda::Mirage {
     class PAGODA_API Window {
