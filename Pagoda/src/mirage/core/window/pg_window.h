@@ -7,6 +7,7 @@
 #include "base/event/pg_application_event.h"
 
 #include "mirage/core/window/pg_window_data.h"
+#include "mirage/core/extension/pg_extension.h"
 
 #include "mirage/core/factory/pg_mirage_factory.h"
 
@@ -21,6 +22,8 @@ namespace Pagoda::Mirage {
 
         virtual ~Window() {
         }
+
+        virtual inline std::string GetApiName() = 0;
 
         virtual std::shared_ptr<MirageFactory> Init() = 0;
         virtual void BeforeUpdate() = 0;
@@ -46,7 +49,7 @@ namespace Pagoda::Mirage {
             return m_mirageFactory;
         }
 
-        void SetEventCallback(const std::function<void(Base::Event&)>& callback) {
+        inline void SetEventCallback(const std::function<void(Base::Event&)>& callback) {
             this->m_windowData.EventCallback = callback;
         }
 

@@ -1,7 +1,11 @@
 #include "pgpch.h"
 #include "pg_d3d12_window.h"
 
+#include "imgui.h"
+
 #include "mirage/platform/d3d12/factory/pg_d3d12_mirage_factory.h"
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 namespace Pagoda::Mirage {
     D3D12Window::D3D12Window(const WindowProps& props)
@@ -13,6 +17,11 @@ namespace Pagoda::Mirage {
     }
 
     LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+
+        // TODO: here because WindowProc is static - move to chisel mirage extension.
+        if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+            return true;
+
         // sort through and find what code to run for the message given
         switch (message) {
             // this message is read when the window is closed
@@ -29,8 +38,6 @@ namespace Pagoda::Mirage {
     }
 
     std::shared_ptr<MirageFactory> D3D12Window::Init() {
-        PG_CORE_DEBUG("Using graphics API: Direct3D12");
-
         HINSTANCE hInstance = GetModuleHandle(NULL);
 
         // this struct holds information for the window class
@@ -129,9 +136,15 @@ namespace Pagoda::Mirage {
             rtvHeapDesc.NumDescriptors = FrameCount;
             rtvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
             rtvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-            LogOnError(this->m_device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&this->m_rtvHeap)), "Failed to create Descriptor Heap");
+            LogOnError(this->m_device->CreateDescriptorHeap(&rtvHeapDesc, IID_PPV_ARGS(&this->m_rtvHeap)), "Failed to create RTV Descriptor Heap");
 
             this->m_rtvDescriptorSize = this->m_device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+
+            D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
+            srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
+            srvHeapDesc.NumDescriptors = 1;
+            srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
+            LogOnError(this->m_device->CreateDescriptorHeap(&srvHeapDesc, IID_PPV_ARGS(&this->m_srvHeap)), "Failed to create SRV Descriptor Heap");
         }
 
         // Create frame resources.
@@ -190,7 +203,7 @@ namespace Pagoda::Mirage {
 
         // Init context
 
-        std::shared_ptr<D3D12Context> ctx = std::make_shared<D3D12Context>(this->m_swapChain, this->m_device, this->m_renderTargets, this->m_commandAllocator, this->m_commandQueue, this->m_rootSignature, this->m_rtvHeap, this->m_commandList);
+        std::shared_ptr<D3D12Context> ctx = std::make_shared<D3D12Context>(m_Window, this->m_swapChain, this->m_device, this->m_renderTargets, this->m_commandAllocator, this->m_commandQueue, this->m_rootSignature, this->m_rtvHeap, this->m_srvHeap, this->m_commandList);
         return std::make_shared<D3D12MirageFactory>(&m_windowData, ctx);
     }
 
@@ -253,15 +266,13 @@ namespace Pagoda::Mirage {
 
         LogOnError(this->m_commandAllocator->Reset(), "Failed to reset Command Allocator");
         LogOnError(this->m_commandList->Reset(this->m_commandAllocator.Get(), NULL), "Failed to reset Command List");
+        this->m_barrier = CD3DX12_RESOURCE_BARRIER::Transition(this->m_renderTargets[this->m_frameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
+        this->m_commandList->ResourceBarrier(1, &this->m_barrier);
 
         // Set necessary state.
         this->m_commandList->SetGraphicsRootSignature(this->m_rootSignature.Get());
         this->m_commandList->RSSetViewports(1, &viewport);
         this->m_commandList->RSSetScissorRects(1, &winRect);
-
-        // Indicate that the back buffer will be used as a render target.
-        this->m_barrier = CD3DX12_RESOURCE_BARRIER::Transition(this->m_renderTargets[this->m_frameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
-        this->m_commandList->ResourceBarrier(1, &this->m_barrier);
 
         CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(this->m_rtvHeap->GetCPUDescriptorHandleForHeapStart(), this->m_frameIndex, this->m_rtvDescriptorSize);
         this->m_commandList->OMSetRenderTargets(1, &rtvHandle, FALSE, nullptr);
@@ -269,6 +280,7 @@ namespace Pagoda::Mirage {
         // Record commands.
         const float clearColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
         this->m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
+        this->m_commandList->SetDescriptorHeaps(1, m_srvHeap.GetAddressOf());
         this->m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     }
 

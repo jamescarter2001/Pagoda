@@ -2,6 +2,7 @@
 #include "entry_point.h"
 
 #include "test_layer.h"
+#include "debug_layer.h"
 
 class TestApp : public Pagoda::Application {
 public:
@@ -9,6 +10,7 @@ public:
         : Pagoda::Application(name) {
         PG_TRACE("Created new engine application");
         this->GetApplicationManager()->PushLayer(new TestLayer("TestLayer"));
+        this->GetApplicationManager()->PushOverlay(new DebugLayer());
     }
 };
 

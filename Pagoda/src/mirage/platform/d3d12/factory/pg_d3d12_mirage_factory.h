@@ -19,8 +19,10 @@ namespace Pagoda::Mirage {
         virtual Renderer* CreateRenderer() const override;
         virtual PipelineState* CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) const override;
 
-        ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const override;
-        ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const override;
+        virtual ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const override;
+        virtual ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const override;
+
+        virtual Extension* CreateChiselExtension() const override;
 
     private:
         std::shared_ptr<D3D12Context> m_context;

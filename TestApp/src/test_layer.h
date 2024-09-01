@@ -5,7 +5,7 @@
 class TestLayer : public  Pagoda::Universe::Layer {
 	public:
         TestLayer(const std::string& name);
-        ~TestLayer();
+        virtual ~TestLayer();
 
         virtual void OnEvent(Pagoda::Universe::ApplicationContext& ctx, Pagoda::Base::Event& e) const override;
         virtual void OnUpdate(Pagoda::Universe::ApplicationContext& ctx) override;

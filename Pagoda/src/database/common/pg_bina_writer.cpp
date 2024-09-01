@@ -44,7 +44,7 @@ namespace Pagoda::Database {
     }
 
     void BinaWriter::Write(const char filePath[]) {
-        unsigned int stringAlignment = GetAlignment(this->m_stringTableSize);
+        unsigned int stringAlignment = GetAlignment(this->m_stringTableSize, 4);
 
         // Allocate enough bytes for bina header and node data.
         unsigned long long heapSize = sizeof(BINAHeader) + sizeof(NodeHeader) + this->m_structSize + this->m_stringTableSize + stringAlignment;
@@ -98,9 +98,9 @@ namespace Pagoda::Database {
         delete[] pBinaNode;
     }
 
-    unsigned int BinaWriter::GetAlignment(size_t count) {
-        size_t val = 4 - (count % 4);
-        return val == 4 ? 0 : val;
+    unsigned int BinaWriter::GetAlignment(size_t count, unsigned int factor) {
+        size_t val = factor - (count % factor);
+        return val == factor ? 0 : val;
     }
 
     void BinaWriter::FixPointers(char* nodeBody) {
