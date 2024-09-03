@@ -1,6 +1,8 @@
 #pragma once
 #include "pgpch.h"
 
+#include "base/util/pg_lazy.h"
+
 #include "mirage/core/window/pg_window_data.h"
 #include "mirage/core/model/pg_model.h"
 #include "mirage/core/pipeline/pg_pipeline_state.h"
@@ -33,6 +35,6 @@ namespace Pagoda::Mirage {
         glm::mat4 m_mvpMatrix;
 
     private:
-        ConstantBuffer<float>* m_mvpMatrixBuffer;
+        Base::Lazy<ConstantBuffer<float>> m_mvpMatrixBuffer;
     };
 }

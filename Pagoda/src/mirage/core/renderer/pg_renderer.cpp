@@ -4,7 +4,7 @@
 namespace Pagoda::Mirage {
     Renderer::Renderer() {
         // TODO: Extract to Camera class.
-        this->m_mvpMatrixBuffer = nullptr;
+        this->m_mvpMatrixBuffer = Base::Lazy<ConstantBuffer<float>>::val([this]() { return this->CreateMVP(); });
 
         float fov = 90.0f;
         float tanHalfFov = glm::tan(glm::radians(fov / 2.0f));
@@ -31,11 +31,6 @@ namespace Pagoda::Mirage {
 
     void Renderer::Draw(const Model& model, const PipelineState* pipelineState, const ConstantBuffer<float>* transform, bool project) {
 
-        // Lazy initialize MVP matrix buffer.
-        if (this->m_mvpMatrixBuffer == nullptr) {
-            this->m_mvpMatrixBuffer = this->CreateMVP();
-        }
-
         // Transform if specified.
         if (transform != nullptr) {
             transform->Bind();
@@ -43,7 +38,7 @@ namespace Pagoda::Mirage {
 
         // Project for 3D if required.
         if (project) {
-            this->m_mvpMatrixBuffer->Bind();
+            this->m_mvpMatrixBuffer.Get()->Bind();
         }
 
         // Bind the pipeline state.
