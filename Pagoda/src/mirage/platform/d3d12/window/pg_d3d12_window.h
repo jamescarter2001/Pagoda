@@ -57,6 +57,6 @@ namespace Pagoda::Mirage {
         static void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter);
 
         std::shared_ptr<MirageFactory> Direct3D12Init();
-        void LogOnError(HRESULT hr, char err[] = "Failed to initialise Direct3D12 context");
+        void LogOnError(HRESULT hr, char err[] = "Failed to initialize Direct3D12 context!");
     };
 }
