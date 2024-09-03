@@ -2,9 +2,10 @@
 #include "pgpch.h"
 
 #include "pg_concurrent.h"
+#include "pg_lock.h"
 
 namespace Pagoda::Base {
-    class SpinLock {
+    class SpinLock : public Lock {
     public:
         SpinLock() {
         }
@@ -12,19 +13,19 @@ namespace Pagoda::Base {
         virtual ~SpinLock() {
         }
 
-        inline bool TryAcquire() {
+        virtual inline bool TryAcquire() override {
             const bool alreadyLocked = this->m_lock.test_and_set(std::memory_order_acquire);
 
             return !alreadyLocked;
         }
 
-        inline void Acquire() {
+        virtual inline void Acquire() override {
             while (!this->TryAcquire()) {
                 THREAD_PAUSE();
             }
         }
 
-        inline void Release() {
+        virtual inline void Release() override {
             this->m_lock.clear(std::memory_order_release);
         }
 

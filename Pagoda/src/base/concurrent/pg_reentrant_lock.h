@@ -4,9 +4,10 @@
 #include "base/log/pg_log.h"
 
 #include "pg_concurrent.h"
+#include "pg_lock.h"
 
 namespace Pagoda::Base {
-    class ReentrantLock {
+    class ReentrantLock : public Lock {
     public:
 
         ReentrantLock() : m_threadId(0), m_refCount(0) {}
@@ -16,12 +17,12 @@ namespace Pagoda::Base {
             return hasher(std::this_thread::get_id());
         }
 
-        void Acquire() {
+        virtual inline void Acquire() override {
             std::size_t tid = getThreadId();
 
             if (m_threadId != tid) {
                 std::size_t unlockValue = 0;
-                while (!m_threadId.compare_exchange_weak(unlockValue, tid, std::memory_order_relaxed, std::memory_order_relaxed)) {
+                while (!m_threadId.compare_exchange_weak(unlockValue, tid, std::memory_order_acquire, std::memory_order_relaxed)) {
                     unlockValue = 0;
                     THREAD_PAUSE();
                 }
@@ -29,11 +30,9 @@ namespace Pagoda::Base {
             }
 
             ++m_refCount;
-
-            std::atomic_thread_fence(std::memory_order_acquire);
         }
 
-        bool TryAcquire() {
+        virtual inline bool TryAcquire() override {
             std::size_t tid = getThreadId();
             bool success = false;
 
@@ -41,27 +40,24 @@ namespace Pagoda::Base {
                 success = true;
             } else {
                 std::size_t unlockValue = 0;
-                success = m_threadId.compare_exchange_strong(unlockValue, tid, std::memory_order_relaxed, std::memory_order_relaxed);
+                success = m_threadId.compare_exchange_strong(unlockValue, tid, std::memory_order_acquire, std::memory_order_relaxed);
             }
 
             if (success) {
                 ++m_refCount;
-                std::atomic_thread_fence(std::memory_order_acquire);
             }
 
             return success;
         }
 
-        void Release() {
-            std::atomic_thread_fence(std::memory_order_release);
-
+        virtual inline void Release() override {
             std::size_t tid = getThreadId();
             PG_CORE_ASSERT(tid == m_threadId.load(std::memory_order_relaxed), "Thread attempting to release a lock it does not hold");
 
             --m_refCount;
 
             if (m_refCount == 0) {
-                m_threadId.store(0, std::memory_order_relaxed);
+                m_threadId.store(0, std::memory_order_release);
             }
         }
 
