@@ -266,6 +266,8 @@ namespace Pagoda::Mirage {
 
         LogOnError(this->m_commandAllocator->Reset(), "Failed to reset Command Allocator");
         LogOnError(this->m_commandList->Reset(this->m_commandAllocator.Get(), NULL), "Failed to reset Command List");
+
+        // Indicate that the back buffer will be used as a render target.
         this->m_barrier = CD3DX12_RESOURCE_BARRIER::Transition(this->m_renderTargets[this->m_frameIndex].Get(), D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
         this->m_commandList->ResourceBarrier(1, &this->m_barrier);
 

@@ -10,12 +10,6 @@
 #include "mirage/platform/d3d12/context/pg_d3d12_context.h"
 
 namespace Pagoda::Mirage {
-
-    struct FrameContext {
-        ID3D12CommandAllocator* CommandAllocator;
-        UINT64 FenceValue;
-    };
-
     class PAGODA_API D3D12Window : public Window {
     public:
         D3D12Window(const WindowProps& props);
