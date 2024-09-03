@@ -14,6 +14,11 @@ namespace Pagoda::Mirage {
     public:
         D3D11Window(const WindowProps& props);
         virtual ~D3D11Window();
+
+        virtual inline std::string GetApiName() override {
+            return "Direct3D11";
+        }
+
         virtual std::shared_ptr<MirageFactory> Init() override;
         virtual void BeforeUpdate() override;
         virtual void OnUpdate() override;

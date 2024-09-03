@@ -28,5 +28,7 @@ namespace Pagoda::Mirage {
 
         std::shared_ptr<Window> m_pWindow;
         std::shared_ptr<MirageFactory> m_pMirageFactory;
+
+        std::vector<Extension*> m_extensions;
     };
 }

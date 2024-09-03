@@ -89,8 +89,6 @@ void TestLayer::OnUpdate(Pagoda::Universe::ApplicationContext& ctx) {
 
     glm::mat4 fin = m_translation * rot * m_identity;
 
-    
-
     this->m_constantBuffer->Write(&fin[0][0]);
     this->m_Renderer->Draw(this->m_Model, this->m_pipelineState, this->m_constantBuffer, true);
 }

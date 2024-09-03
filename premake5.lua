@@ -58,7 +58,15 @@ project "Pagoda"
 
 	files {
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/imgui/*.h",
+		"%{prj.name}/vendor/imgui/*.cpp",
+		
+		"%{prj.name}/vendor/imgui/backends/imgui_impl_dx12.h",
+		"%{prj.name}/vendor/imgui/backends/imgui_impl_dx12.cpp",
+		
+		"%{prj.name}/vendor/imgui/backends/imgui_impl_win32.h",
+		"%{prj.name}/vendor/imgui/backends/imgui_impl_win32.cpp"
 	}
 
 	defines {
@@ -70,7 +78,8 @@ project "Pagoda"
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include",
 		"%{prj.name}/vendor/DirectX-Headers/include",
-		"%{prj.name}/vendor/glm"
+		"%{prj.name}/vendor/glm",
+		"%{prj.name}/vendor/imgui"
 	}
 
 	includedirs {
@@ -244,7 +253,8 @@ project "TestApp"
 		"Pagoda/src",
 		"Pagoda/vendor/spdlog/include",
 		"Pagoda/vendor/DirectX-Headers/include",
-		"Pagoda/vendor/glm"
+		"Pagoda/vendor/glm",
+		"Pagoda/vendor/imgui"
 	}
 
 	libdirs {

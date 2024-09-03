@@ -6,6 +6,7 @@
 #include "mirage/core/buffer/pg_buffer.h"
 #include "mirage/core/shader/pg_shader.h"
 #include "mirage/core/renderer/pg_renderer.h"
+#include "mirage/core/extension/pg_extension.h"
 
 namespace Pagoda::Mirage {
     class PAGODA_API MirageFactory {
@@ -25,6 +26,10 @@ namespace Pagoda::Mirage {
 
         virtual ConstantBuffer<float>* CreateTransformConstantBuffer(float buffer[], int size) const = 0;
         virtual ConstantBuffer<float>* CreateTransformConstantBuffer(int size) const = 0;
+
+        // Extensions.
+
+        virtual Extension* CreateChiselExtension() const = 0;
 
     protected:
         WindowData* m_windowData;

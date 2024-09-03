@@ -12,19 +12,37 @@ namespace Pagoda::Mirage {
     MirageManager::~MirageManager() {}
 
     void MirageManager::Init() {
-        PG_CORE_TRACE("[MirageManager] Initializing...");
+        PG_CORE_INFO("[MirageManager] Initializing...");
+
         // TODO: extract to applicationsetting.lua script.
-        switch (Mirage::Renderer::GetRendererAPI()) {
-            case Mirage::RendererAPI::Direct3D11:
+        switch (Renderer::GetRendererAPI()) {
+            case RendererAPI::Direct3D11:
                 this->m_pWindow = std::make_shared<D3D11Window>(Mirage::WindowProps(m_appName));
                 break;
-            case Mirage::RendererAPI::Direct3D12:
+            case RendererAPI::Direct3D12:
                 this->m_pWindow = std::make_shared<D3D12Window>(Mirage::WindowProps(m_appName));
                 break;
         }
         PG_CORE_ASSERT_CRITICAL(this->m_pWindow, "Mirage failed to initialize!");
 
+        PG_CORE_DEBUG("[MirageManager] Graphics API: {}", m_pWindow->GetApiName());
+
         m_pMirageFactory = m_pWindow->GetMirageFactory();
+
+        PG_CORE_TRACE("[MirageManager] Window successfully initialized");
+
+        m_extensions.push_back(m_pMirageFactory->CreateChiselExtension());
+
+        PG_CORE_TRACE("[MirageManager] Loading extensions...");
+        unsigned int i = 0;
+        for (auto ex : m_extensions) {
+            const unsigned int num = ++i;
+            PG_CORE_TRACE("[MirageManager] Loading extension: ({}/{})", num, m_extensions.size());
+            ex->Init();
+            PG_CORE_TRACE("[MirageManager] Loaded extension: ({}/{})", num, m_extensions.size());
+        }
+
+        PG_CORE_TRACE("[MirageManager] Extensions successfully initialized");
 
         PG_CORE_INFO("[MirageManager] Successfully initialized");
     }
@@ -33,9 +51,16 @@ namespace Pagoda::Mirage {
 
     void MirageManager::BeforeUpdate() {
         m_pWindow.get()->BeforeUpdate();
+
+        for (auto ex : m_extensions) {
+            ex->BeforeUpdate();
+        }
     }
 
     void MirageManager::OnUpdate() {
-        m_pWindow.get()->OnUpdate();
+        for (auto ex : m_extensions) {
+            ex->OnUpdate();
+        }
+        m_pWindow->OnUpdate();
     }
 }

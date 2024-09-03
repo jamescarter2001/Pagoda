@@ -36,4 +36,8 @@ namespace Pagoda::Mirage {
     ConstantBuffer<float>* D3D11MirageFactory::CreateTransformConstantBuffer(float buffer[], int size) const {
         return new D3D11ConstantBuffer<float>(m_context, buffer, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
     }
+
+    Pagoda::Mirage::Extension* D3D11MirageFactory::CreateChiselExtension() const {
+        return nullptr;
+    }
 }

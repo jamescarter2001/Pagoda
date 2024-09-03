@@ -30,13 +30,10 @@ namespace Pagoda::Mirage {
     }
 
     void Renderer::Draw(const Model& model, const PipelineState* pipelineState, const ConstantBuffer<float>* transform, bool project) {
+
+        // Lazy initialize MVP matrix buffer.
         if (this->m_mvpMatrixBuffer == nullptr) {
             this->m_mvpMatrixBuffer = this->CreateMVP();
-        }
-
-        // Project for 3D if required.
-        if (project) {
-            this->m_mvpMatrixBuffer->Bind();
         }
 
         // Transform if specified.
@@ -44,10 +41,18 @@ namespace Pagoda::Mirage {
             transform->Bind();
         }
 
+        // Project for 3D if required.
+        if (project) {
+            this->m_mvpMatrixBuffer->Bind();
+        }
+
+        // Bind the pipeline state.
         pipelineState->Bind();
+
+        // Bind the model data.
         model.Bind();
 
-        glm::vec4 test = this->m_mvpMatrix * *(glm::mat4*) transform->GetBuffer() * glm::vec4(-0.5f, -0.5f, -0.5f, 1.0f);
-        PG_CORE_DEBUG("{}, {}, {}, {}", test[0], test[1], test[2], test[3]);
+        // glm::vec4 test = this->m_mvpMatrix * *(glm::mat4*) transform->GetBuffer() * glm::vec4(-0.5f, -0.5f, -0.5f, 1.0f);
+        // PG_CORE_DEBUG("{}, {}, {}, {}", test[0], test[1], test[2], test[3]);
     }
 }

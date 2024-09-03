@@ -15,11 +15,11 @@ namespace Pagoda::Mirage {
         }
 
         D3D12ConstantBuffer(std::shared_ptr<D3D12Context> context, int size, ConstantBufferType type) : ConstantBuffer(size, type), m_context(context) {
-            std::unique_ptr<D3D12ResourceAllocator> ra = std::make_unique<D3D12ResourceAllocator>(context);
+            D3D12ResourceAllocator ra(context);
             unsigned int alignMultiplier = (size / (1024 * 64)) + 1;
 
             unsigned int alignedSize = (1024 * 64) * alignMultiplier;
-            ra->AllocateUpload(&m_constantBuffer, alignedSize);
+            ra.AllocateUpload(&m_constantBuffer, alignedSize);
 
             switch (type) {
                 case ConstantBufferType::CONSTANT_BUFFER_TYPE_MVP:

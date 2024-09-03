@@ -3,8 +3,8 @@
 
 namespace Pagoda::Mirage {
     D3D12IndexBuffer::D3D12IndexBuffer(std::shared_ptr<D3D12Context> context, unsigned int buffer[], int size) : IndexBuffer(buffer, size), m_context(context) {
-        std::unique_ptr<D3D12ResourceAllocator> ra = std::make_unique<D3D12ResourceAllocator>(context);
-        ra->AllocateDefault(&m_indexBuffer, buffer, size);
+        D3D12ResourceAllocator ra(context);
+        ra.AllocateDefault(&m_indexBuffer, buffer, size);
 
         // Initialize the index buffer view.
         m_indexBufferView.BufferLocation = m_indexBuffer->GetGPUVirtualAddress();

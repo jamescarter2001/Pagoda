@@ -10,11 +10,15 @@
 #include "mirage/platform/d3d12/context/pg_d3d12_context.h"
 
 namespace Pagoda::Mirage {
-
     class PAGODA_API D3D12Window : public Window {
     public:
         D3D12Window(const WindowProps& props);
         virtual ~D3D12Window();
+
+        virtual inline std::string GetApiName() override {
+            return "Direct3D12";
+        }
+
         virtual std::shared_ptr<MirageFactory> Init() override;
         virtual void BeforeUpdate() override;
         virtual void OnUpdate() override;
@@ -32,6 +36,7 @@ namespace Pagoda::Mirage {
         ComPtr<ID3D12CommandAllocator> m_commandAllocator;
         ComPtr<ID3D12CommandQueue> m_commandQueue;
         ComPtr<ID3D12RootSignature> m_rootSignature;
+        ComPtr<ID3D12DescriptorHeap> m_srvHeap;
         ComPtr<ID3D12DescriptorHeap> m_rtvHeap;
         ComPtr<ID3D12PipelineState> m_pipelineState;
         ComPtr<ID3D12GraphicsCommandList> m_commandList;

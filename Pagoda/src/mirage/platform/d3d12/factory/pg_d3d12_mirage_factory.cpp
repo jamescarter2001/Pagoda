@@ -8,6 +8,8 @@
 #include "mirage/platform/d3d12/pipeline/pg_d3d12_pipeline_state.h"
 #include "mirage/platform/d3d12/buffer/pg_d3d12_constant_buffer.h"
 
+#include "chisel/platform/d3d12/extension/pg_chisel_d3d12_mirage_extension.h"
+
 namespace Pagoda::Mirage {
     VertexBuffer* D3D12MirageFactory::CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const {
         return new D3D12VertexBuffer(m_context, buffer, bufferCount, vertexCount, layout);
@@ -36,4 +38,9 @@ namespace Pagoda::Mirage {
     ConstantBuffer<float>* D3D12MirageFactory::CreateTransformConstantBuffer(float buffer[], int size) const {
         return new D3D12ConstantBuffer<float>(m_context, buffer, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
     }
+
+    Extension* D3D12MirageFactory::CreateChiselExtension() const {
+        return new Chisel::ChiselD3D12MirageExtension(m_context);
+    }
+
 }

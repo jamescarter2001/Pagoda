@@ -71,13 +71,11 @@ namespace Pagoda::Universe {
         m_isRunning = true;
 
         while (m_isRunning) {
-            if (auto w = m_pWindow.lock()) {
-                w->BeforeUpdate();
-                for (Layer* layer : *m_layerStack) {
-                    layer->OnUpdate(m_pAppCtx);
-                }
-                w->OnUpdate();
+            m_pMirageManager->BeforeUpdate();
+            for (Layer* layer : *m_layerStack) {
+                layer->OnUpdate(m_pAppCtx);
             }
+            m_pMirageManager->OnUpdate();
         }
         PG_CORE_INFO("Shutting down...");
     }
