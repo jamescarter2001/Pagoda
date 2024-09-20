@@ -12,7 +12,7 @@
 namespace Pagoda::Mirage {
     class PAGODA_API D3D12Window : public Window {
     public:
-        D3D12Window(const WindowProps& props);
+        D3D12Window(const WindowProps& props, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> winProcCallback);
         virtual ~D3D12Window();
 
         virtual inline std::string GetApiName() override {
@@ -25,12 +25,25 @@ namespace Pagoda::Mirage {
 
         void WaitForPreviousFrame();
 
+        void CreateRenderTarget();
+        void CleanupRenderTarget();
+
+        inline void SetWinProcCallback(std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> func) {
+            this->m_winProcCallback = func;
+        }
+
     private:
         HWND m_Window;
+
+        std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> m_winProcCallback = [](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+            PG_CORE_WARNING("No WinProc callback set!");
+            return false;
+        };
 
         static const UINT FrameCount = 2;
 
         ComPtr<IDXGISwapChain3> m_swapChain;
+        HANDLE m_hSwapChainWaitableObject = nullptr;
         ComPtr<ID3D12Device> m_device;
         ComPtr<ID3D12Resource> m_renderTargets[FrameCount];
         ComPtr<ID3D12CommandAllocator> m_commandAllocator;
@@ -53,6 +66,7 @@ namespace Pagoda::Mirage {
 
         // this is the main message handler for the program
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+        LRESULT CALLBACK InternalWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
        
         static void GetHardwareAdapter(IDXGIFactory4* pFactory, IDXGIAdapter1** ppAdapter);
 

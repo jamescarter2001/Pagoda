@@ -5,11 +5,9 @@
 
 #include "mirage/platform/d3d12/factory/pg_d3d12_mirage_factory.h"
 
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 namespace Pagoda::Mirage {
-    D3D12Window::D3D12Window(const WindowProps& props)
-        : Window(props) {
+    D3D12Window::D3D12Window(const WindowProps& props, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> winProcCallback)
+        : Window(props), m_winProcCallback(winProcCallback) {
         m_mirageFactory = this->D3D12Window::Init();
     }
 
@@ -17,10 +15,31 @@ namespace Pagoda::Mirage {
     }
 
     LRESULT CALLBACK D3D12Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+        D3D12Window* pThis = nullptr;
 
-        // TODO: here because WindowProc is static - move to chisel mirage extension.
-        if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+        if (message == WM_NCCREATE) {
+            LPCREATESTRUCT pCreate = reinterpret_cast<LPCREATESTRUCT>(lParam);
+            pThis = reinterpret_cast<D3D12Window*>(pCreate->lpCreateParams);
+            SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pThis));
+        }
+        else {
+            pThis = reinterpret_cast<D3D12Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+        }
+
+        if (pThis != nullptr) {
+            return pThis->InternalWindowProc(hWnd, message, wParam, lParam);
+        }
+        else {
+            PG_CORE_WARNING("Singleton pointer is null. Forwarding to static WindowProc");
+            return DefWindowProc(hWnd, message, wParam, lParam);
+        }
+    }
+
+    LRESULT CALLBACK D3D12Window::InternalWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+
+        if (this->m_winProcCallback(hWnd, message, wParam, lParam)) {
             return true;
+        }
 
         // sort through and find what code to run for the message given
         switch (message) {
@@ -28,6 +47,16 @@ namespace Pagoda::Mirage {
             case WM_DESTROY: {
                 // close the application entirely
                 PostQuitMessage(0);
+                return 0;
+            }
+            case WM_SIZE : {
+                if (m_device != nullptr && wParam != SIZE_MINIMIZED) {
+                    WaitForPreviousFrame();
+                    CleanupRenderTarget();
+                    UINT test = (UINT)LOWORD(lParam);
+                    HRESULT result = m_swapChain->ResizeBuffers(FrameCount, (UINT)LOWORD(lParam), (UINT)HIWORD(lParam), DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+                    CreateRenderTarget();
+                }
                 return 0;
             }
             default: PG_CORE_WARNING("Unhandled Windows message code: {}", message);
@@ -70,7 +99,7 @@ namespace Pagoda::Mirage {
                                         NULL,                                                 // we have no parent window, NULL
                                         NULL,                                                 // we aren't using menus, NULL
                                         hInstance,                                            // application handle
-                                        NULL);                                                // used with multiple windows, NULL
+                                        this);                                                // used with multiple windows, NULL
 
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);
@@ -113,6 +142,7 @@ namespace Pagoda::Mirage {
         swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
         swapChainDesc.OutputWindow = this->m_Window;
         swapChainDesc.SampleDesc.Count = 1;
+        //swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
         swapChainDesc.Windowed = TRUE;
 
         ComPtr<IDXGISwapChain> swapChain;
@@ -123,6 +153,9 @@ namespace Pagoda::Mirage {
                    "Failed to create Swap Chain");
 
         LogOnError(swapChain.As(&this->m_swapChain), "Failed to assign Swap Chain");
+
+        /*m_swapChain->SetMaximumFrameLatency(FrameCount);
+        m_hSwapChainWaitableObject = m_swapChain->GetFrameLatencyWaitableObject();*/
 
         // This sample does not support fullscreen transitions.
         LogOnError(factory->MakeWindowAssociation(this->m_Window, DXGI_MWA_NO_ALT_ENTER), "Failed to make window association");
@@ -148,16 +181,7 @@ namespace Pagoda::Mirage {
         }
 
         // Create frame resources.
-        {
-            CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(this->m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
-
-            // Create a RTV for each frame.
-            for (UINT n = 0; n < FrameCount; n++) {
-                LogOnError(this->m_swapChain->GetBuffer(n, IID_PPV_ARGS(&this->m_renderTargets[n])), "Failed to create Render Target View");
-                this->m_device->CreateRenderTargetView(this->m_renderTargets[n].Get(), nullptr, rtvHandle);
-                rtvHandle.Offset(1, this->m_rtvDescriptorSize);
-            }
-        }
+        CreateRenderTarget();
 
         LogOnError(this->m_device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->m_commandAllocator)), "Failed to create Command Allocator");
 
@@ -246,6 +270,25 @@ namespace Pagoda::Mirage {
         }
     }
 
+    void D3D12Window::CreateRenderTarget() {
+        CD3DX12_CPU_DESCRIPTOR_HANDLE rtvHandle(this->m_rtvHeap->GetCPUDescriptorHandleForHeapStart());
+
+        for (UINT n = 0; n < FrameCount; n++) {
+            LogOnError(this->m_swapChain->GetBuffer(n, IID_PPV_ARGS(&this->m_renderTargets[n])), "Failed to create Render Target View");
+            this->m_device->CreateRenderTargetView(this->m_renderTargets[n].Get(), nullptr, rtvHandle);
+            rtvHandle.Offset(1, this->m_rtvDescriptorSize);
+        }
+    }
+
+    void D3D12Window::CleanupRenderTarget() {
+        for (UINT n = 0; n < FrameCount; n++) {
+            if (this->m_renderTargets[n]) {
+                this->m_renderTargets[n].Reset();
+                this->m_renderTargets[n] = nullptr;
+            }
+        }
+    }
+
     void D3D12Window::LogOnError(HRESULT hr, char err[]) {
         if (hr != S_OK) {
             PG_CORE_CRITICAL(err);
@@ -263,6 +306,23 @@ namespace Pagoda::Mirage {
             (FLOAT)(winRect.bottom - winRect.top),
             0.0f,
             1.0f};
+
+        MSG msg;
+
+        // Check to see if any messages are waiting in the queue
+        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+            // translate keystroke messages into the right format
+            TranslateMessage(&msg);
+
+            // send the message to the WindowProc function
+            DispatchMessage(&msg);
+
+            // check to see if it's time to quit
+            if (msg.message == WM_QUIT) {
+                Base::WindowCloseEvent e = Base::WindowCloseEvent();
+                this->m_windowData.EventCallback(e);
+            }
+        }
 
         LogOnError(this->m_commandAllocator->Reset(), "Failed to reset Command Allocator");
         LogOnError(this->m_commandList->Reset(this->m_commandAllocator.Get(), NULL), "Failed to reset Command List");
@@ -287,23 +347,6 @@ namespace Pagoda::Mirage {
     }
 
     void D3D12Window::OnUpdate() {
-        MSG msg;
-
-        // Check to see if any messages are waiting in the queue
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-            // translate keystroke messages into the right format
-            TranslateMessage(&msg);
-
-            // send the message to the WindowProc function
-            DispatchMessage(&msg);
-
-            // check to see if it's time to quit
-            if (msg.message == WM_QUIT) {
-                Base::WindowCloseEvent e = Base::WindowCloseEvent();
-                this->m_windowData.EventCallback(e);
-            }
-        }
-
         // Indicate that the back buffer will now be used to present.
         this->m_barrier = CD3DX12_RESOURCE_BARRIER::Transition(this->m_renderTargets[this->m_frameIndex].Get(), D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
         this->m_commandList->ResourceBarrier(1, &this->m_barrier);

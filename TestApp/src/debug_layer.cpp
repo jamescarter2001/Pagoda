@@ -16,8 +16,6 @@ void DebugLayer::OnUpdate(Pagoda::Universe::ApplicationContext& ctx) {
 
     PG_ASSERT(ImGui::GetCurrentContext() != NULL, "ImGui context not loaded!");
 
-    ImGui::NewFrame();
-
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     if (show_demo_window)
         ImGui::ShowDemoWindow(&show_demo_window);
@@ -52,9 +50,6 @@ void DebugLayer::OnUpdate(Pagoda::Universe::ApplicationContext& ctx) {
             show_another_window = false;
         ImGui::End();
     }
-
-    // Rendering
-    ImGui::Render();
 }
 
 void DebugLayer::OnAttach(Pagoda::Universe::ApplicationContext& ctx) {

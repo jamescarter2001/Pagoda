@@ -11,6 +11,8 @@
 #include "universe/layer/pg_layer_stack.h"
 #include "universe/context/pg_application_context.h"
 
+#include "chisel/core/manager/pg_chisel_manager.h"
+
 namespace Pagoda::Universe {
     class PAGODA_API ApplicationManager : public Base::AbstractManager {
     public:
@@ -18,6 +20,10 @@ namespace Pagoda::Universe {
         ~ApplicationManager();
 
         void Init() override;
+
+        void BeforeUpdate() override;
+        void OnUpdate() override;
+
         void Run();
         void ShutDown() override;
 
@@ -32,6 +38,7 @@ namespace Pagoda::Universe {
     private:
         // Managers
         std::shared_ptr<Mirage::MirageManager> m_pMirageManager;
+        std::shared_ptr<Chisel::ChiselManager> m_pChiselManager;
 
         std::weak_ptr<Mirage::Window> m_pWindow;
 

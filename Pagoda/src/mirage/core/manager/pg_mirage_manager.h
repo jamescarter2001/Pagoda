@@ -12,11 +12,11 @@ namespace Pagoda::Mirage {
         virtual void Init() override;
         virtual void ShutDown() override;
 
-        void BeforeUpdate();
-        void OnUpdate();
+        void BeforeUpdate() override;
+        void OnUpdate() override;
 
-        inline std::weak_ptr<Window> GetWindow() {
-            return std::weak_ptr<Window>(m_pWindow);
+        inline std::shared_ptr<Window> GetWindow() {
+            return m_pWindow;
         }
 
         inline std::shared_ptr<MirageFactory> GetMirageFactory() const {

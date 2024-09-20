@@ -21,8 +21,6 @@ namespace Pagoda::Base {
         }
 
         T* Get() & {
-            Base::ScopedLock l(m_lock);
-
             if (m_underlying != nullptr) {
                 return m_underlying;
             }
@@ -39,6 +37,5 @@ namespace Pagoda::Base {
 
         T* m_underlying = nullptr;
         std::function<T*(void)> m_supplier = []() { return nullptr; };
-        Base::SpinLock m_lock;
     };
 }

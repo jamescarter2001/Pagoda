@@ -1,6 +1,6 @@
 #include "test_layer.h"
 
-TestLayer::TestLayer(const std::string& name) : Layer(name) {
+TestLayer::TestLayer() : Layer("Test Layer") {
     m_Renderer = nullptr;
     m_constantBuffer = nullptr;
     m_pipelineState = nullptr;
