@@ -1,14 +1,14 @@
 #include "pgpch.h"
-#include "pg_chisel_mirage_extension.h"
+#include "pg_chisel_manager.h"
 
 #include "imgui.h"
 
 namespace Pagoda::Chisel {
-    ChiselMirageExtension::ChiselMirageExtension() {}
+    ChiselManager::ChiselManager() {}
 
-    ChiselMirageExtension::~ChiselMirageExtension() {}
+    ChiselManager::~ChiselManager() {}
 
-    void ChiselMirageExtension::Init() {
+    void ChiselManager::Init() {
         // Setup Dear ImGui context
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();
@@ -33,13 +33,23 @@ namespace Pagoda::Chisel {
         }
     }
 
-    void ChiselMirageExtension::OnUpdate() {
+    void ChiselManager::BeforeUpdate() {
+        ImGui::NewFrame();
+    }
+
+    void ChiselManager::OnUpdate() {
         ImGuiIO& io = ImGui::GetIO();
+
+        ImGui::Render();
 
         // Update and Render additional Platform Windows
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
             ImGui::UpdatePlatformWindows();
         }
+    }
+
+    void ChiselManager::ShutDown() {
+
     }
 
 }

@@ -79,7 +79,8 @@ project "Pagoda"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{prj.name}/vendor/DirectX-Headers/include",
 		"%{prj.name}/vendor/glm",
-		"%{prj.name}/vendor/imgui"
+		"%{prj.name}/vendor/imgui",
+		"%{prj.name}/vendor/opencv/build/include"
 	}
 
 	includedirs {
@@ -254,12 +255,14 @@ project "TestApp"
 		"Pagoda/vendor/spdlog/include",
 		"Pagoda/vendor/DirectX-Headers/include",
 		"Pagoda/vendor/glm",
-		"Pagoda/vendor/imgui"
+		"Pagoda/vendor/imgui",
+		"Pagoda/vendor/opencv/build/include"
 	}
 
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
-		"Pagoda/vendor/spdlog/build"
+		"Pagoda/vendor/spdlog/build",
+		"Pagoda/vendor/opencv/build/x64/vc16/lib"
 	}
 	
 	--[[postbuildcommands {
@@ -298,7 +301,8 @@ project "TestApp"
 			"d3d11",
 			"d3d12",
 			"dxgi",
-			"d3dcompiler"
+			"d3dcompiler",
+			"opencv_world4100d"
 		}
 
 	filter {"system:windows", "configurations:Release"}

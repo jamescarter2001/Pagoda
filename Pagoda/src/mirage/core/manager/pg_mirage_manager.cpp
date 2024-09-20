@@ -6,8 +6,10 @@
 #include "mirage/platform/d3d11/window/pg_d3d11_window.h"
 #include "mirage/platform/d3d12/window/pg_d3d12_window.h"
 
+#include "mirage/platform/d3d/extension/pg_windows_extension.h"
+
 namespace Pagoda::Mirage {
-    MirageManager::MirageManager(std::string& appName) : m_appName(appName) {}
+    MirageManager::MirageManager(std::string& appName) : m_appName(appName), m_pWindow(nullptr) {}
 
     MirageManager::~MirageManager() {}
 
@@ -20,9 +22,17 @@ namespace Pagoda::Mirage {
                 this->m_pWindow = std::make_shared<D3D11Window>(Mirage::WindowProps(m_appName));
                 break;
             case RendererAPI::Direct3D12:
-                this->m_pWindow = std::make_shared<D3D12Window>(Mirage::WindowProps(m_appName));
+                this->m_pWindow = std::make_shared<D3D12Window>(Mirage::WindowProps(m_appName), [this](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+                    for (auto e : m_extensions) {
+                        if (auto ext = dynamic_cast<WindowsExtension*>(e)) {
+                            return ext->WindowProc(hwnd, message, wParam, lParam);
+                        }
+                    }
+                    return 0ll;
+                });
                 break;
         }
+
         PG_CORE_ASSERT_CRITICAL(this->m_pWindow, "Mirage failed to initialize!");
 
         PG_CORE_DEBUG("[MirageManager] Graphics API: {}", m_pWindow->GetApiName());
@@ -50,7 +60,7 @@ namespace Pagoda::Mirage {
     void MirageManager::ShutDown() {}
 
     void MirageManager::BeforeUpdate() {
-        m_pWindow.get()->BeforeUpdate();
+        m_pWindow->BeforeUpdate();
 
         for (auto ex : m_extensions) {
             ex->BeforeUpdate();

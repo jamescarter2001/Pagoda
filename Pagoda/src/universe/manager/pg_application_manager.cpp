@@ -12,6 +12,11 @@ namespace Pagoda::Universe {
     void ApplicationManager::Init() {
         PG_CORE_INFO("Starting engine application: {}", m_appName);
 
+        PG_CORE_TRACE("Initialising Chisel subsystem...");
+        m_pChiselManager = std::make_unique<Chisel::ChiselManager>();
+        m_pChiselManager->Init();
+        PG_CORE_TRACE("Chisel initialisation successful");
+
         // --- Mirage ---
         PG_CORE_TRACE("Initialising Mirage subsystem...");
         m_pMirageManager = std::make_shared<Mirage::MirageManager>(m_appName);
@@ -67,15 +72,28 @@ namespace Pagoda::Universe {
         this->m_layerStack->PopOverlay(layer);
     }
 
+    void ApplicationManager::BeforeUpdate() {
+        m_pMirageManager->BeforeUpdate();
+        m_pChiselManager->BeforeUpdate();
+    }
+
+    void ApplicationManager::OnUpdate() {
+        
+        for (Layer* layer : *m_layerStack) {
+            layer->OnUpdate(m_pAppCtx);
+        }
+
+        m_pChiselManager->OnUpdate();
+        m_pMirageManager->OnUpdate();
+    }
+
     void ApplicationManager::Run() {
         m_isRunning = true;
 
         while (m_isRunning) {
-            m_pMirageManager->BeforeUpdate();
-            for (Layer* layer : *m_layerStack) {
-                layer->OnUpdate(m_pAppCtx);
-            }
-            m_pMirageManager->OnUpdate();
+            BeforeUpdate();
+            OnUpdate();
+            
         }
         PG_CORE_INFO("Shutting down...");
     }
