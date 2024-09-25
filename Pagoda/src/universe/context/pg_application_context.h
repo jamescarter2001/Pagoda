@@ -14,7 +14,7 @@ namespace Pagoda::Universe {
             return m_pMirageManager;
         }
 
-    private:
+    private: 
         std::shared_ptr<Mirage::MirageManager> m_pMirageManager;
     };
 }

@@ -13,8 +13,6 @@ namespace Pagoda::Mirage {
         this->m_swapChainPtr = nullptr;
         this->m_renderTargetViewPtr = nullptr;
 
-        this->m_SwapChainDesc = {0};
-
         m_mirageFactory = this->D3D11Window::Init();
     }
 
@@ -34,7 +32,7 @@ namespace Pagoda::Mirage {
                 PostQuitMessage(0);
                 return 0;
             }
-            default: PG_CORE_WARNING("Unhandled Windows message code: {}", message);
+            // default: PG_CORE_WARNING("Unhandled Windows message code: {}", message);
         }
 
         // Handle any messages the switch statement didn't
@@ -66,7 +64,7 @@ namespace Pagoda::Mirage {
 
         // create the window and use the result as the handle
         this->m_Window = CreateWindowEx(NULL,
-                                        L"WindowClass1",                                       // name of the window class
+                                        wc.lpszClassName,                                      // name of the window class
                                         Base::Strings::STR_TO_WSTR(this->GetTitle()).c_str(),  // title of the window
                                         WS_OVERLAPPEDWINDOW,                                   // window style
                                         300,                                                   // x-position of the window
@@ -87,20 +85,22 @@ namespace Pagoda::Mirage {
     std::shared_ptr<MirageFactory> D3D11Window::Direct3D11Init() {
         // Numerator and denominator for drawing as fast as possible.
 
-        m_SwapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
-        m_SwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+        DXGI_SWAP_CHAIN_DESC swapChainDesc = {0};
 
-        m_SwapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        swapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
+        swapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+
+        swapChainDesc.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 
         // Default values here as no multi sample anti aliasing is in use.
 
-        m_SwapChainDesc.SampleDesc.Count = 1;
-        m_SwapChainDesc.SampleDesc.Quality = 0;
+        swapChainDesc.SampleDesc.Count = 1;
+        swapChainDesc.SampleDesc.Quality = 0;
 
-        m_SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        m_SwapChainDesc.BufferCount = 1;
-        m_SwapChainDesc.OutputWindow = this->m_Window;
-        m_SwapChainDesc.Windowed = true;
+        swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        swapChainDesc.BufferCount = 1;
+        swapChainDesc.OutputWindow = this->m_Window;
+        swapChainDesc.Windowed = true;
 
         D3D_FEATURE_LEVEL featureLevel;
         UINT flags = D3D11_CREATE_DEVICE_SINGLETHREADED;
@@ -117,7 +117,7 @@ namespace Pagoda::Mirage {
             NULL,                     // Determines the order of feature levels to create
             0,                        // The number of elements in the feature level array supplied above
             D3D11_SDK_VERSION,        // The SDK version to use
-            &m_SwapChainDesc,         // Populate the pointers
+            &swapChainDesc,           // Populate the pointers
             &m_swapChainPtr,
             &m_devicePtr,
             &featureLevel,
@@ -146,7 +146,7 @@ namespace Pagoda::Mirage {
 
         std::shared_ptr<D3D11Context> ctx = std::make_shared<D3D11Context>(m_devicePtr, m_deviceContextPtr, m_swapChainPtr, m_renderTargetViewPtr);
         
-        return std::make_shared<D3D11MirageFactory>(&m_windowData, ctx);
+        return std::make_shared<D3D11MirageFactory>(m_windowData, ctx);
     }
 
     void D3D11Window::BeforeUpdate() {
@@ -176,7 +176,7 @@ namespace Pagoda::Mirage {
         MSG msg;
 
         // Check to see if any messages are waiting in the queue
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             // translate keystroke messages into the right format
             TranslateMessage(&msg);
 

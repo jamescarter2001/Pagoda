@@ -14,6 +14,13 @@ class OpenCVLayer : public Pagoda::Universe::Layer {
         virtual void OnAttach(Pagoda::Universe::ApplicationContext& ctx) override;
 
     private:
+        Pagoda::Base::ReentrantLock m_lock;
+        std::thread m_tframeUpdate;
+
+        cv::Mat m_frame;
+
+        void UpdateCameraFrame();
         std::unique_ptr<cv::VideoCapture> m_cap;
 
+        bool m_grayscale = false;
 };

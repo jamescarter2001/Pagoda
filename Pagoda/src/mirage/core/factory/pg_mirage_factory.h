@@ -11,7 +11,7 @@
 namespace Pagoda::Mirage {
     class PAGODA_API MirageFactory {
     public:
-        MirageFactory(WindowData* wd)
+        MirageFactory(WindowData& wd)
             : m_windowData(wd) {
         }
 
@@ -32,6 +32,6 @@ namespace Pagoda::Mirage {
         virtual Extension* CreateChiselExtension() const = 0;
 
     protected:
-        WindowData* m_windowData;
+        WindowData& m_windowData;
     };
 }

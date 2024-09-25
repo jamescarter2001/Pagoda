@@ -44,7 +44,7 @@ namespace Pagoda::Chisel {
         ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), m_ctx->GetCommandList().Get());
     }
 
-    LRESULT CALLBACK ChiselD3D12MirageExtension::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    LRESULT ChiselD3D12MirageExtension::WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
         return ImGui_ImplWin32_WndProcHandler(hwnd, uMsg, wParam, lParam);
     }
 

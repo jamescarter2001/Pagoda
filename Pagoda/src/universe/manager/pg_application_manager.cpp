@@ -12,10 +12,12 @@ namespace Pagoda::Universe {
     void ApplicationManager::Init() {
         PG_CORE_INFO("Starting engine application: {}", m_appName);
 
+        // --- Chisel ---
         PG_CORE_TRACE("Initialising Chisel subsystem...");
         m_pChiselManager = std::make_unique<Chisel::ChiselManager>();
         m_pChiselManager->Init();
         PG_CORE_TRACE("Chisel initialisation successful");
+        // --- Chisel ---
 
         // --- Mirage ---
         PG_CORE_TRACE("Initialising Mirage subsystem...");
