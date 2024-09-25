@@ -3,7 +3,16 @@
 #include "imgui.h"
 
 OpenCVLayer::OpenCVLayer() : Layer("OpenCVLayer") {
+    m_cap = std::make_unique<cv::VideoCapture>(0);
 
+    // Check if the camera opened successfully
+    if (!m_cap->isOpened()) {
+        std::cerr << "Error: Could not open camera." << std::endl;
+    }
+
+    cv::namedWindow("Webcam", cv::WINDOW_AUTOSIZE);
+
+    m_tframeUpdate = std::thread([this]() { while (m_cap->isOpened()) UpdateCameraFrame(); });
 }
 
 OpenCVLayer::~OpenCVLayer() {
@@ -11,18 +20,20 @@ OpenCVLayer::~OpenCVLayer() {
 
 void OpenCVLayer::OnAttach(Pagoda::Universe::ApplicationContext& ctx) {
 
-	m_cap = std::make_unique<cv::VideoCapture>(0);
-
-	// Check if the camera opened successfully
-        if (!m_cap->isOpened()) {
-            std::cerr << "Error: Could not open camera." << std::endl;
-        }
-
-        cv::namedWindow("Webcam", cv::WINDOW_AUTOSIZE);
 }
 
 void OpenCVLayer::OnEvent(Pagoda::Universe::ApplicationContext& ctx, Pagoda::Base::Event& e) const {
 
+}
+
+void OpenCVLayer::UpdateCameraFrame() {
+    cv::Mat f;
+    *m_cap >> f;
+
+    {
+        Pagoda::Base::ScopedLock l(m_lock);
+        m_frame = f;
+    }
 }
 
 void OpenCVLayer::OnUpdate(Pagoda::Universe::ApplicationContext& ctx) {
@@ -54,17 +65,19 @@ void OpenCVLayer::OnUpdate(Pagoda::Universe::ApplicationContext& ctx) {
 
     cv::Mat frame, grayFrame;
 
-    // Capture frame-by-frame
-    *m_cap >> frame;
+    {
+        Pagoda::Base::ScopedLock l(m_lock);
+        frame = m_frame;
+    }
 
     // Check if the frame is empty
     if (frame.empty()) {
         std::cerr << "Error: Blank frame grabbed" << std::endl;
+    } else {
+        cv::cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY);
+
+        // Display the frame
+        cv::imshow("Webcam", m_grayscale ? grayFrame : frame);
     }
-
-    cv::cvtColor(frame, grayFrame, cv::COLOR_BGR2GRAY);
-
-    // Display the frame
-    cv::imshow("Webcam", m_grayscale ? grayFrame : frame);
 
 }
