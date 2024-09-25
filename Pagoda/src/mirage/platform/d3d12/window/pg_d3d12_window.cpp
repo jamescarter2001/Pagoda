@@ -309,7 +309,7 @@ namespace Pagoda::Mirage {
         MSG msg;
 
         // Check to see if any messages are waiting in the queue
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             // translate keystroke messages into the right format
             TranslateMessage(&msg);
 
