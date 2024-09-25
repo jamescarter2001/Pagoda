@@ -16,4 +16,5 @@ class OpenCVLayer : public Pagoda::Universe::Layer {
     private:
         std::unique_ptr<cv::VideoCapture> m_cap;
 
+        bool m_grayscale;
 };

@@ -15,7 +15,7 @@ namespace Pagoda::Chisel {
         virtual void OnUpdate() override;
         virtual void ShutDown() override;
 
-        virtual LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
+        virtual LRESULT WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) override;
 
     private:
         std::shared_ptr<Mirage::D3D12Context> m_ctx;

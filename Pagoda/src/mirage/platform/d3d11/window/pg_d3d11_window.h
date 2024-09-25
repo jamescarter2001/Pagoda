@@ -30,8 +30,6 @@ namespace Pagoda::Mirage {
         IDXGISwapChain* m_swapChainPtr;
         ID3D11RenderTargetView* m_renderTargetViewPtr;
 
-        DXGI_SWAP_CHAIN_DESC m_SwapChainDesc = {0};
-
         // this is the main message handler for the program
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 

@@ -5,6 +5,8 @@
 
 #include "mirage/platform/d3d12/factory/pg_d3d12_mirage_factory.h"
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 namespace Pagoda::Mirage {
     D3D12Window::D3D12Window(const WindowProps& props, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> winProcCallback)
         : Window(props), m_winProcCallback(winProcCallback) {
@@ -37,7 +39,7 @@ namespace Pagoda::Mirage {
 
     LRESULT CALLBACK D3D12Window::InternalWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
 
-        if (this->m_winProcCallback(hWnd, message, wParam, lParam)) {
+        if (m_winProcCallback(hWnd, message, wParam, lParam)) {
             return true;
         }
 
@@ -49,7 +51,8 @@ namespace Pagoda::Mirage {
                 PostQuitMessage(0);
                 return 0;
             }
-            case WM_SIZE : {
+            case WM_SIZE: {
+                PG_CORE_INFO("Window Resize Event: {} {}", (UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
                 if (m_device != nullptr && wParam != SIZE_MINIMIZED) {
                     WaitForPreviousFrame();
                     CleanupRenderTarget();
@@ -59,7 +62,7 @@ namespace Pagoda::Mirage {
                 }
                 return 0;
             }
-            default: PG_CORE_WARNING("Unhandled Windows message code: {}", message);
+            // default: PG_CORE_WARNING("Unhandled Windows message code: {}", message);
         }
 
         // Handle any messages the switch statement didn't
@@ -89,7 +92,7 @@ namespace Pagoda::Mirage {
 
         // create the window and use the result as the handle
         this->m_Window = CreateWindowEx(NULL,
-                                        L"WindowClass1",                                      // name of the window class
+                                        wc.lpszClassName,                                     // name of the window class
                                         Base::Strings::STR_TO_WSTR(this->GetTitle()).c_str(), // title of the window
                                         WS_OVERLAPPEDWINDOW,                                  // window style
                                         300,                                                  // x-position of the window
@@ -102,7 +105,7 @@ namespace Pagoda::Mirage {
                                         this);                                                // used with multiple windows, NULL
 
         // display the window on the screen
-        ShowWindow(this->m_Window, SW_SHOW);
+        ShowWindow(this->m_Window, SW_SHOWDEFAULT);
 
         return this->Direct3D12Init();
     }
@@ -135,14 +138,13 @@ namespace Pagoda::Mirage {
         // Describe and create the swap chain.
         DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
         swapChainDesc.BufferCount = FrameCount;
-        swapChainDesc.BufferDesc.Width = this->GetWidth();
-        swapChainDesc.BufferDesc.Height = this->GetHeight();
+        swapChainDesc.BufferDesc.Width = 0; // Take from window.
+        swapChainDesc.BufferDesc.Height = 0; // Take from window.
         swapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
         swapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;
         swapChainDesc.OutputWindow = this->m_Window;
         swapChainDesc.SampleDesc.Count = 1;
-        //swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_FRAME_LATENCY_WAITABLE_OBJECT;
         swapChainDesc.Windowed = TRUE;
 
         ComPtr<IDXGISwapChain> swapChain;
@@ -153,9 +155,6 @@ namespace Pagoda::Mirage {
                    "Failed to create Swap Chain");
 
         LogOnError(swapChain.As(&this->m_swapChain), "Failed to assign Swap Chain");
-
-        /*m_swapChain->SetMaximumFrameLatency(FrameCount);
-        m_hSwapChainWaitableObject = m_swapChain->GetFrameLatencyWaitableObject();*/
 
         // This sample does not support fullscreen transitions.
         LogOnError(factory->MakeWindowAssociation(this->m_Window, DXGI_MWA_NO_ALT_ENTER), "Failed to make window association");
@@ -228,7 +227,7 @@ namespace Pagoda::Mirage {
         // Init context
 
         std::shared_ptr<D3D12Context> ctx = std::make_shared<D3D12Context>(m_Window, this->m_swapChain, this->m_device, this->m_renderTargets, this->m_commandAllocator, this->m_commandQueue, this->m_rootSignature, this->m_rtvHeap, this->m_srvHeap, this->m_commandList);
-        return std::make_shared<D3D12MirageFactory>(&m_windowData, ctx);
+        return std::make_shared<D3D12MirageFactory>(m_windowData, ctx);
     }
 
     void D3D12Window::WaitForPreviousFrame() {
@@ -310,12 +309,13 @@ namespace Pagoda::Mirage {
         MSG msg;
 
         // Check to see if any messages are waiting in the queue
-        if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+        while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
             // translate keystroke messages into the right format
             TranslateMessage(&msg);
 
             // send the message to the WindowProc function
-            DispatchMessage(&msg);
+            // DispatchMessage(&msg);
+            this->InternalWindowProc(msg.hwnd, msg.message, msg.wParam, msg.lParam);
 
             // check to see if it's time to quit
             if (msg.message == WM_QUIT) {

@@ -6,7 +6,7 @@
 namespace Pagoda::Mirage {
     class PAGODA_API D3D12MirageFactory : public MirageFactory {
     public:
-        D3D12MirageFactory(WindowData* wd, std::shared_ptr<D3D12Context> c)
+        D3D12MirageFactory(WindowData& wd, std::shared_ptr<D3D12Context> c)
             : MirageFactory(wd), m_context(c) {
         }
 

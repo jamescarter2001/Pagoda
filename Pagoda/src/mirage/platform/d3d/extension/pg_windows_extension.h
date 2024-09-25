@@ -5,6 +5,6 @@
 namespace Pagoda::Mirage {
     class WindowsExtension : public Extension {
     public:
-        virtual LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
+        virtual LRESULT WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) = 0;
     };
 }

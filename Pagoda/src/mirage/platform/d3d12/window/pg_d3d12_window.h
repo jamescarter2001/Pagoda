@@ -43,7 +43,6 @@ namespace Pagoda::Mirage {
         static const UINT FrameCount = 2;
 
         ComPtr<IDXGISwapChain3> m_swapChain;
-        HANDLE m_hSwapChainWaitableObject = nullptr;
         ComPtr<ID3D12Device> m_device;
         ComPtr<ID3D12Resource> m_renderTargets[FrameCount];
         ComPtr<ID3D12CommandAllocator> m_commandAllocator;
