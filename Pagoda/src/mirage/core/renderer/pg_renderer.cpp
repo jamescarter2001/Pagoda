@@ -22,7 +22,7 @@ namespace Pagoda::Mirage {
     Renderer::~Renderer() {}
 
     RendererAPI Renderer::GetRendererAPI() {
-        return RendererAPI::Direct3D12;
+        return RendererAPI::Direct3D11;
     }
 
     void Renderer::Draw(const Model& model, const PipelineState* pipelineState, bool project) {

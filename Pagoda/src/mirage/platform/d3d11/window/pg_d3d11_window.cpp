@@ -4,26 +4,49 @@
 #include "mirage/platform/d3d11/factory/pg_d3d11_mirage_factory.h"
 
 namespace Pagoda::Mirage {
-    D3D11Window::D3D11Window(const WindowProps& props)
-        : Window(props) {
+    D3D11Window::D3D11Window(const WindowProps& props, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> winProcCallback)
+        : Window(props), m_winProcCallback(winProcCallback) {
         this->m_Window = nullptr;
 
-        this->m_devicePtr = nullptr;
-        this->m_deviceContextPtr = nullptr;
-        this->m_swapChainPtr = nullptr;
-        this->m_renderTargetViewPtr = nullptr;
+        this->m_pDevice = nullptr;
+        this->m_pDeviceContext = nullptr;
+        this->m_pSwapChain = nullptr;
+        this->m_pRenderTargetView = nullptr;
 
         m_mirageFactory = this->D3D11Window::Init();
     }
 
     D3D11Window::~D3D11Window() {
-        this->m_devicePtr->Release();
-        this->m_deviceContextPtr->Release();
-        this->m_swapChainPtr->Release();
-        this->m_renderTargetViewPtr->Release();
+        this->m_pDevice->Release();
+        this->m_pDeviceContext->Release();
+        this->m_pSwapChain->Release();
+        this->m_pRenderTargetView->Release();
     }
 
     LRESULT CALLBACK D3D11Window::WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+        D3D11Window* pThis = nullptr;
+
+        if (message == WM_NCCREATE) {
+            LPCREATESTRUCT pCreate = reinterpret_cast<LPCREATESTRUCT>(lParam);
+            pThis = reinterpret_cast<D3D11Window*>(pCreate->lpCreateParams);
+            SetWindowLongPtr(hWnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(pThis));
+        } else {
+            pThis = reinterpret_cast<D3D11Window*>(GetWindowLongPtr(hWnd, GWLP_USERDATA));
+        }
+
+        if (pThis != nullptr) {
+            return pThis->InternalWindowProc(hWnd, message, wParam, lParam);
+        } else {
+            PG_CORE_WARNING("Singleton pointer is null. Forwarding to static WindowProc");
+            return DefWindowProc(hWnd, message, wParam, lParam);
+        }
+    }
+
+    LRESULT CALLBACK D3D11Window::InternalWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
+        if (m_winProcCallback(hWnd, message, wParam, lParam)) {
+            return true;
+        }
+
         // sort through and find what code to run for the message given
         switch (message) {
             // this message is read when the window is closed
@@ -32,11 +55,44 @@ namespace Pagoda::Mirage {
                 PostQuitMessage(0);
                 return 0;
             }
-            // default: PG_CORE_WARNING("Unhandled Windows message code: {}", message);
+            case WM_SIZE: {
+                PG_CORE_INFO("Window Resize Event: {} {}", (UINT)LOWORD(lParam), (UINT)HIWORD(lParam));
+                if (m_pSwapChain != nullptr && wParam != SIZE_MINIMIZED) {
+                    CleanupRenderTarget();
+                    UINT test = (UINT)LOWORD(lParam);
+                    HRESULT result = m_pSwapChain->ResizeBuffers(0, (UINT)LOWORD(lParam), (UINT)HIWORD(lParam), DXGI_FORMAT_R8G8B8A8_UNORM, 0);
+                    CreateRenderTarget();
+                }
+                return 0;
+            }
+                // default: PG_CORE_WARNING("Unhandled Windows message code: {}", message);
         }
 
         // Handle any messages the switch statement didn't
         return DefWindowProc(hWnd, message, wParam, lParam);
+    }
+
+    void D3D11Window::CreateRenderTarget() {
+        ID3D11Texture2D* framebuffer = NULL;
+        HRESULT hr = m_pSwapChain->GetBuffer(
+            0,
+            __uuidof(ID3D11Texture2D),
+            (void**)&framebuffer);
+
+        if (framebuffer != NULL) {
+            hr = m_pDevice->CreateRenderTargetView(
+                framebuffer, 0, &m_pRenderTargetView);
+            framebuffer->Release();
+        } else {
+            PG_CORE_WARNING("Unable to fetch framebuffer from swap chain pointer");
+        }
+    }
+
+    void D3D11Window::CleanupRenderTarget() {
+        if (m_pRenderTargetView) {
+            m_pRenderTargetView->Release();
+            m_pRenderTargetView = nullptr;
+        }
     }
 
     std::shared_ptr<MirageFactory> D3D11Window::Init() {
@@ -74,7 +130,7 @@ namespace Pagoda::Mirage {
                                         NULL,                                                  // we have no parent window, NULL
                                         NULL,                                                  // we aren't using menus, NULL
                                         hInstance,                                             // application handle
-                                        NULL);                                                 // used with multiple windows, NULL
+                                        this);                                                 // used with multiple windows, NULL
 
         // display the window on the screen
         ShowWindow(this->m_Window, SW_SHOW);
@@ -98,7 +154,7 @@ namespace Pagoda::Mirage {
         swapChainDesc.SampleDesc.Quality = 0;
 
         swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swapChainDesc.BufferCount = 1;
+        swapChainDesc.BufferCount = 2;
         swapChainDesc.OutputWindow = this->m_Window;
         swapChainDesc.Windowed = true;
 
@@ -118,33 +174,21 @@ namespace Pagoda::Mirage {
             0,                        // The number of elements in the feature level array supplied above
             D3D11_SDK_VERSION,        // The SDK version to use
             &swapChainDesc,           // Populate the pointers
-            &m_swapChainPtr,
-            &m_devicePtr,
+            &m_pSwapChain,
+            &m_pDevice,
             &featureLevel,
-            &m_deviceContextPtr
+            &m_pDeviceContext
             );
 
         PG_CORE_DEBUG("D3D11CreateDeviceAndSwapChain HRESULT: {}", hr == S_OK ? "S_OK" : std::to_string(hr));
 
         PG_CORE_ASSERT_CRITICAL(hr == S_OK, "Direct3D11 failed to initialize");
 
-        ID3D11Texture2D* framebuffer = NULL;
-        hr = m_swapChainPtr->GetBuffer(
-            0,
-            __uuidof(ID3D11Texture2D),
-            (void**)&framebuffer);
-
-        if (framebuffer != NULL) {
-            hr = m_devicePtr->CreateRenderTargetView(
-                framebuffer, 0, &m_renderTargetViewPtr);
-            framebuffer->Release();
-        } else {
-            PG_CORE_WARNING("Unable to fetch framebuffer from swap chain pointer");
-        }
+        CreateRenderTarget();
 
         // Init context
 
-        std::shared_ptr<D3D11Context> ctx = std::make_shared<D3D11Context>(m_devicePtr, m_deviceContextPtr, m_swapChainPtr, m_renderTargetViewPtr);
+        std::shared_ptr<D3D11Context> ctx = std::make_shared<D3D11Context>(m_Window, m_pDevice, m_pDeviceContext, m_pSwapChain, m_pRenderTargetView);
         
         return std::make_shared<D3D11MirageFactory>(m_windowData, ctx);
     }
@@ -154,8 +198,8 @@ namespace Pagoda::Mirage {
             // 60.0f / 255.0f, 60.0f / 255.0f, 60.0f / 255.0f, 1.0f
             0.0f, 0.0f, 0.0f, 1.0f
         };
-        this->m_deviceContextPtr->ClearRenderTargetView(
-            this->m_renderTargetViewPtr, backgroundColour);
+        this->m_pDeviceContext->ClearRenderTargetView(
+            this->m_pRenderTargetView, backgroundColour);
 
         RECT winRect;
         GetClientRect(this->m_Window, &winRect);
@@ -167,9 +211,9 @@ namespace Pagoda::Mirage {
             (FLOAT)(winRect.bottom - winRect.top),
             0.0f,
             1.0f};
-        this->m_deviceContextPtr->RSSetViewports(1, &viewport);
+        this->m_pDeviceContext->RSSetViewports(1, &viewport);
 
-        this->m_deviceContextPtr->OMSetRenderTargets(1, &this->m_renderTargetViewPtr, NULL);
+        this->m_pDeviceContext->OMSetRenderTargets(1, &this->m_pRenderTargetView, NULL);
     }
 
     void D3D11Window::OnUpdate() {
@@ -190,6 +234,6 @@ namespace Pagoda::Mirage {
             }
         }
 
-        this->m_swapChainPtr->Present(1, 0);
+        this->m_pSwapChain->Present(1, 0);
     }
 }

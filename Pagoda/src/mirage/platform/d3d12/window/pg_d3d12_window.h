@@ -28,10 +28,6 @@ namespace Pagoda::Mirage {
         void CreateRenderTarget();
         void CleanupRenderTarget();
 
-        inline void SetWinProcCallback(std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> func) {
-            this->m_winProcCallback = func;
-        }
-
     private:
         HWND m_Window;
 

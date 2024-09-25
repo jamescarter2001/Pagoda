@@ -19,7 +19,14 @@ namespace Pagoda::Mirage {
         // TODO: extract to applicationsetting.lua script.
         switch (Renderer::GetRendererAPI()) {
             case RendererAPI::Direct3D11:
-                this->m_pWindow = std::make_shared<D3D11Window>(Mirage::WindowProps(m_appName));
+                this->m_pWindow = std::make_shared<D3D11Window>(Mirage::WindowProps(m_appName), [this](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+                    for (auto e : m_extensions) {
+                        if (auto ext = dynamic_cast<WindowsExtension*>(e)) {
+                            return ext->WindowProc(hwnd, message, wParam, lParam);
+                        }
+                    }
+                    return 0ll;
+                });
                 break;
             case RendererAPI::Direct3D12:
                 this->m_pWindow = std::make_shared<D3D12Window>(Mirage::WindowProps(m_appName), [this](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
