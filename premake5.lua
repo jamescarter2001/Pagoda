@@ -62,6 +62,9 @@ project "Pagoda"
 		"%{prj.name}/vendor/imgui/*.h",
 		"%{prj.name}/vendor/imgui/*.cpp",
 		
+		"%{prj.name}/vendor/imgui/backends/imgui_impl_dx11.h",
+		"%{prj.name}/vendor/imgui/backends/imgui_impl_dx11.cpp",
+		
 		"%{prj.name}/vendor/imgui/backends/imgui_impl_dx12.h",
 		"%{prj.name}/vendor/imgui/backends/imgui_impl_dx12.cpp",
 		

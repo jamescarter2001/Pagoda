@@ -6,8 +6,12 @@
 namespace Pagoda::Mirage {
     class D3D11Context {
     public:
-        D3D11Context(ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, IDXGISwapChain* pSwapChain, ID3D11RenderTargetView* pRenderTargetView);
+        D3D11Context(HWND& window, ID3D11Device* pDevice, ID3D11DeviceContext* pDeviceContext, IDXGISwapChain* pSwapChain, ID3D11RenderTargetView* pRenderTargetView);
         virtual ~D3D11Context();
+
+        inline HWND GetWindow() const {
+            return m_hWnd;
+        }
 
         inline ID3D11Device* GetDevice() const & {
             return this->m_device;
@@ -26,6 +30,8 @@ namespace Pagoda::Mirage {
         }
 
     private:
+        HWND& m_hWnd;
+
         ID3D11Device* m_device;
         ID3D11DeviceContext* m_deviceContext;
         IDXGISwapChain* m_swapChain;

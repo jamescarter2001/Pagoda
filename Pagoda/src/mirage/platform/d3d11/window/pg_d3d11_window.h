@@ -12,12 +12,15 @@ namespace Pagoda::Mirage {
 
     class PAGODA_API D3D11Window : public Window {
     public:
-        D3D11Window(const WindowProps& props);
+        D3D11Window(const WindowProps& props, std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> winProcCallback);
         virtual ~D3D11Window();
 
         virtual inline std::string GetApiName() override {
             return "Direct3D11";
         }
+
+        void CreateRenderTarget();
+        void CleanupRenderTarget();
 
         virtual std::shared_ptr<MirageFactory> Init() override;
         virtual void BeforeUpdate() override;
@@ -25,13 +28,19 @@ namespace Pagoda::Mirage {
     private:
         HWND m_Window;
 
-        ID3D11Device* m_devicePtr;
-        ID3D11DeviceContext* m_deviceContextPtr;
-        IDXGISwapChain* m_swapChainPtr;
-        ID3D11RenderTargetView* m_renderTargetViewPtr;
+        std::function<LRESULT(HWND, UINT, WPARAM, LPARAM)> m_winProcCallback = [](HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam) {
+            PG_CORE_WARNING("No WinProc callback set!");
+            return false;
+        };
+
+        ID3D11Device* m_pDevice;
+        ID3D11DeviceContext* m_pDeviceContext;
+        IDXGISwapChain* m_pSwapChain;
+        ID3D11RenderTargetView* m_pRenderTargetView;
 
         // this is the main message handler for the program
         static LRESULT CALLBACK WindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+        LRESULT CALLBACK InternalWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
         std::shared_ptr<MirageFactory> Direct3D11Init();
     };
