@@ -11,13 +11,14 @@ namespace Pagoda::Mirage {
         D3D12ResourceAllocator(std::shared_ptr<D3D12Context> context);
         virtual ~D3D12ResourceAllocator();
 
-        void AllocateDefault(ID3D12Resource** res, void* buff, int size);
-        void AllocateUpload(ID3D12Resource** res, int size);
+        ComPtr<ID3D12Resource> AllocateCommittedResource(const unsigned int size, const D3D12_HEAP_TYPE heapType, const D3D12_RESOURCE_STATES initialState);
+        ComPtr<ID3D12Resource> AllocateDefault(void* buff, int size);
+        ComPtr<ID3D12Resource> AllocateUpload(int size);
 
     private:
-        void CopyAndTransition(ID3D12Resource* dest, ID3D12Resource* src);
+        void CopyAndTransition(ComPtr<ID3D12Resource> dest, ComPtr<ID3D12Resource> src);
 
-        std::shared_ptr<D3D12Context> m_context;
+        std::shared_ptr<D3D12Context> m_ctx;
 
         ComPtr<ID3D12CommandAllocator> m_commandAllocator;
         ComPtr<ID3D12GraphicsCommandList> m_commandList;

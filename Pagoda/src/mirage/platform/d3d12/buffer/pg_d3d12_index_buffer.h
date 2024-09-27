@@ -17,7 +17,7 @@ namespace Pagoda::Mirage {
         virtual void Bind() const override;
         virtual void Unbind() const override;
     private:
-        std::shared_ptr<D3D12Context> m_context;
+        std::shared_ptr<D3D12Context> m_ctx;
 
         ComPtr<ID3D12Resource> m_indexBuffer;
         D3D12_INDEX_BUFFER_VIEW m_indexBufferView;

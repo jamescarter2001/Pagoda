@@ -2,7 +2,7 @@
 #include "pg_d3d11_resource_allocator.h"
 
 namespace Pagoda::Mirage {
-    D3D11ResourceAllocator::D3D11ResourceAllocator(std::shared_ptr<D3D11Context> ctx) : m_context(ctx) {
+    D3D11ResourceAllocator::D3D11ResourceAllocator(std::shared_ptr<D3D11Context> ctx) : m_ctx(ctx) {
     }
 
     D3D11ResourceAllocator::~D3D11ResourceAllocator() {
@@ -17,7 +17,7 @@ namespace Pagoda::Mirage {
         desc.BindFlags = bufferType;
         D3D11_SUBRESOURCE_DATA sr_data = {0};
         sr_data.pSysMem = buff;
-        HRESULT hr = this->m_context->GetDevice()->CreateBuffer(
+        HRESULT hr = this->m_ctx->GetDevice()->CreateBuffer(
             &desc,
             &sr_data,
             ptr);
@@ -33,7 +33,7 @@ namespace Pagoda::Mirage {
         desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.BindFlags = bufferType;
         desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-        HRESULT hr = this->m_context->GetDevice()->CreateBuffer(
+        HRESULT hr = this->m_ctx->GetDevice()->CreateBuffer(
             &desc,
             nullptr,
             ptr);

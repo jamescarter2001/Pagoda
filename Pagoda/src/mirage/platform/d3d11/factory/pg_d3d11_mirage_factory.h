@@ -8,7 +8,7 @@ namespace Pagoda::Mirage {
     class PAGODA_API D3D11MirageFactory : public MirageFactory {
     public:
         D3D11MirageFactory(WindowData& wd, std::shared_ptr<D3D11Context> c)
-            : MirageFactory(wd), m_context(c) {
+            : MirageFactory(wd), m_ctx(c) {
         }
 
         virtual VertexBuffer* CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const override;
@@ -23,6 +23,6 @@ namespace Pagoda::Mirage {
         virtual Extension* CreateChiselExtension() const override;
 
     private:
-        std::shared_ptr<D3D11Context> m_context;
+        std::shared_ptr<D3D11Context> m_ctx;
     };
 }
