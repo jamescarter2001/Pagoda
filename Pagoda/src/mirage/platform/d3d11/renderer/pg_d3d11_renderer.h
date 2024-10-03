@@ -18,6 +18,6 @@ namespace Pagoda::Mirage {
         virtual ConstantBuffer<float>* CreateMVP() override;
 
     private:
-        std::shared_ptr<D3D11Context> m_context;
+        std::shared_ptr<D3D11Context> m_ctx;
     };
 }

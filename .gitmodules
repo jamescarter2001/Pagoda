@@ -13,6 +13,3 @@
 [submodule "Pagoda/vendor/imgui"]
 	path = Pagoda/vendor/imgui
 	url = git@github.com:ocornut/imgui.git
-[submodule "Pagoda/vendor/opencv"]
-	path = Pagoda/vendor/opencv
-	url = git@github.com:opencv/opencv.git

@@ -7,7 +7,7 @@ namespace Pagoda::Mirage {
     class PAGODA_API D3D12MirageFactory : public MirageFactory {
     public:
         D3D12MirageFactory(WindowData& wd, std::shared_ptr<D3D12Context> c)
-            : MirageFactory(wd), m_context(c) {
+            : MirageFactory(wd), m_ctx(c) {
         }
 
         virtual ~D3D12MirageFactory() {
@@ -25,6 +25,6 @@ namespace Pagoda::Mirage {
         virtual Extension* CreateChiselExtension() const override;
 
     private:
-        std::shared_ptr<D3D12Context> m_context;
+        std::shared_ptr<D3D12Context> m_ctx;
     };
 }

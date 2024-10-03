@@ -14,8 +14,8 @@ namespace Pagoda::Mirage {
             this->Write(buffer);
         }
 
-        D3D11ConstantBuffer(std::shared_ptr<D3D11Context> ctx, int size, ConstantBufferType type) : ConstantBuffer(size, type), m_context(ctx) {
-            D3D11ResourceAllocator(m_context).AllocateReadWrite(&this->m_constantBuffer, size, D3D11_BIND_CONSTANT_BUFFER);
+        D3D11ConstantBuffer(std::shared_ptr<D3D11Context> ctx, int size, ConstantBufferType type) : ConstantBuffer(size, type), m_ctx(ctx) {
+            D3D11ResourceAllocator(m_ctx).AllocateReadWrite(&this->m_constantBuffer, size, D3D11_BIND_CONSTANT_BUFFER);
             PG_CORE_ASSERT(this->m_constantBuffer != NULL, "Constant buffer pointer should not be null!");
 
             switch (type) {
@@ -34,7 +34,7 @@ namespace Pagoda::Mirage {
         virtual ~D3D11ConstantBuffer() {}
 
         virtual void Bind() const override {
-            m_context->GetDeviceContext()->VSSetConstantBuffers(this->m_slot, 1, &this->m_constantBuffer);
+            m_ctx->GetDeviceContext()->VSSetConstantBuffers(this->m_slot, 1, &this->m_constantBuffer);
         }
 
         virtual void Unbind() const override {
@@ -44,13 +44,13 @@ namespace Pagoda::Mirage {
             Buffer::Write(buffer);
 
             D3D11_MAPPED_SUBRESOURCE resource;
-            m_context->GetDeviceContext()->Map(this->m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
+            m_ctx->GetDeviceContext()->Map(this->m_constantBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &resource);
             memcpy(resource.pData, buffer, this->m_BufferSize);
-            m_context->GetDeviceContext()->Unmap(this->m_constantBuffer, 0);
+            m_ctx->GetDeviceContext()->Unmap(this->m_constantBuffer, 0);
         }
 
     private:
-        std::shared_ptr<D3D11Context> m_context;
+        std::shared_ptr<D3D11Context> m_ctx;
 
         ID3D11Buffer* m_constantBuffer;
 

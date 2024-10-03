@@ -339,7 +339,10 @@ namespace Pagoda::Mirage {
         // Record commands.
         const float clearColor[] = {0.0f, 0.0f, 0.0f, 1.0f};
         this->m_commandList->ClearRenderTargetView(rtvHandle, clearColor, 0, nullptr);
-        this->m_commandList->SetDescriptorHeaps(1, m_srvHeap.GetAddressOf());
+
+        ID3D12DescriptorHeap* ppDescHeaps[] = { m_srvHeap.Get() };
+        this->m_commandList->SetDescriptorHeaps(1, ppDescHeaps);
+
         this->m_commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     }
 

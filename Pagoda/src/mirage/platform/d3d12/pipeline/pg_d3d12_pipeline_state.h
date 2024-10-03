@@ -21,7 +21,7 @@ namespace Pagoda::Mirage {
         virtual void Unbind() const override;
 
     private:
-        std::shared_ptr<D3D12Context> m_context;
+        std::shared_ptr<D3D12Context> m_ctx;
 
         ComPtr<ID3D12PipelineState> m_pipelineState;
     };

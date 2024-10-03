@@ -12,11 +12,11 @@
 
 namespace Pagoda::Mirage {
     VertexBuffer* D3D12MirageFactory::CreateVertexBuffer(float buffer[], int bufferCount, int vertexCount, VertexBufferLayout& layout) const {
-        return new D3D12VertexBuffer(m_context, buffer, bufferCount, vertexCount, layout);
+        return new D3D12VertexBuffer(m_ctx, buffer, bufferCount, vertexCount, layout);
     }
 
     IndexBuffer* D3D12MirageFactory::CreateIndexBuffer(unsigned int buffer[], int bufferCount) const {
-        return new D3D12IndexBuffer(m_context, buffer, bufferCount);
+        return new D3D12IndexBuffer(m_ctx, buffer, bufferCount);
     }
 
     Shader* D3D12MirageFactory::CreateShader(std::string& filePath, VertexBufferLayout& vertexBufferLayout, ShaderType shaderType) const {
@@ -24,23 +24,23 @@ namespace Pagoda::Mirage {
     }
 
     Renderer* D3D12MirageFactory::CreateRenderer() const {
-        return new D3D12Renderer(m_context);
+        return new D3D12Renderer(m_ctx);
     }
 
     PipelineState* D3D12MirageFactory::CreatePipelineState(Shader* vertexShader, Shader* fragmentShader, VertexBufferLayout& vertexBufferLayout) const {
-        return new D3D12PipelineState(m_context, vertexShader, fragmentShader, vertexBufferLayout);
+        return new D3D12PipelineState(m_ctx, vertexShader, fragmentShader, vertexBufferLayout);
     }
 
     ConstantBuffer<float>* D3D12MirageFactory::CreateTransformConstantBuffer(int size) const {
-        return new D3D12ConstantBuffer<float>(m_context, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
+        return new D3D12ConstantBuffer<float>(m_ctx, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
     }
 
     ConstantBuffer<float>* D3D12MirageFactory::CreateTransformConstantBuffer(float buffer[], int size) const {
-        return new D3D12ConstantBuffer<float>(m_context, buffer, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
+        return new D3D12ConstantBuffer<float>(m_ctx, buffer, size, ConstantBufferType::CONSTANT_BUFFER_TYPE_TRANSFORM);
     }
 
     Extension* D3D12MirageFactory::CreateChiselExtension() const {
-        return new Chisel::ChiselD3D12MirageExtension(m_context);
+        return new Chisel::ChiselD3D12MirageExtension(m_ctx);
     }
 
 }

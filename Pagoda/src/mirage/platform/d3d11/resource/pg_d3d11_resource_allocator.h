@@ -13,6 +13,6 @@ namespace Pagoda::Mirage {
         void AllocateReadWrite(ID3D11Buffer** ptr, int size, D3D11_BIND_FLAG bufferType);
 
     private:
-        std::shared_ptr<D3D11Context> m_context;
+        std::shared_ptr<D3D11Context> m_ctx;
     };
 }
