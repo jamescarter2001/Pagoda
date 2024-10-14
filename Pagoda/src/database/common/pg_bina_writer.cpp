@@ -30,24 +30,26 @@ namespace Pagoda::Database {
     
     void BinaWriter::WriteData(char** offset, std::vector<void*> structs) {
         for (void* structData : structs) {
+            // Write the struct to the block.
             unsigned long long structSize = this->m_structSizeMap.at(structData);
             memcpy(*offset, structData, structSize);
+
+            // Cache the current block offset, so that pointers to this struct can be fixed later.
             this->m_offsetMap.insert({structData, *offset});
+
+            // Set the block pointer to the end of the written struct data.
             *offset += structSize;
         }
 
-        unsigned long long alignment = (unsigned long long)*offset % 4;
-
-        if (alignment != 0) {
-            *offset += 4 - alignment;
-        }
+        // Align the written struct data to 4 bytes.
+        *offset += GetAlignment((size_t)*offset, 4);
     }
 
     void BinaWriter::Write(const char filePath[]) {
         unsigned int stringAlignment = GetAlignment(this->m_stringTableSize, 4);
 
         // Allocate enough bytes for bina header and node data.
-        unsigned long long heapSize = sizeof(BINAHeader) + sizeof(NodeHeader) + this->m_structSize + this->m_stringTableSize + stringAlignment;
+        size_t heapSize = sizeof(BINAHeader) + sizeof(NodeHeader) + this->m_structSize + this->m_stringTableSize + stringAlignment;
         char* pBinaNode = new char[heapSize];
 
         // Initialise the allocated heap space to zero.
@@ -79,6 +81,8 @@ namespace Pagoda::Database {
         nodeHeader->stringTableOffset = (unsigned int)this->m_structSize;
         nodeHeader->stringTableLength = (unsigned int)this->m_stringTableSize + stringAlignment;
 
+        nodeHeader->additionalDataLength = ADD_DATA_LENGTH;
+
         // Map pointers to the correct structs in the file.
         FixPointers(pNodeBody);
 
@@ -104,16 +108,18 @@ namespace Pagoda::Database {
     }
 
     void BinaWriter::FixPointers(char* nodeBody) {
-        unsigned int count = (unsigned int)(this->m_structSize / sizeof(void*));
+        unsigned int count = (unsigned int)(this->m_structSize / sizeof(uint32_t));
         char** ptr = (char**)nodeBody;
 
         unsigned long long lastOffset = 0;
         for (unsigned int i = 0; i < count; i++) {
-            auto relativeOffset = this->m_offsetMap.at(*(ptr + i));
-            if (relativeOffset != nullptr) {
-                *(ptr + i) = (char*)(relativeOffset - nodeBody);
+            char** ppCurrentPos = ptr + i;
+            auto blockOffset = this->m_offsetMap.find((void*)*ppCurrentPos);
+            if (blockOffset != m_offsetMap.end()) {
+                const size_t offsetFromBlockStart = blockOffset->second - nodeBody;
+                *(ppCurrentPos) = (char*)offsetFromBlockStart;
 
-                unsigned long long offset = (unsigned long long)(ptr + i) - (unsigned long long)nodeBody;
+                const size_t offset = ((size_t)ppCurrentPos - (size_t)nodeBody);
                 this->m_offsets.push_back(offset - lastOffset);
 
                 lastOffset = offset;

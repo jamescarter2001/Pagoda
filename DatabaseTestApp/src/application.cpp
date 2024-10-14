@@ -9,10 +9,36 @@
 #include "database/model/pg_model.h"
 #include "database/hedgehog/lightfield/pg_lightfield.h"
 
+struct Test {
+    int a;
+    int b;
+    float c;
+    int padding1 = 0;
+    char* d;
+    char* e;
+    char* f;
+};
+
 int main() {
     Pagoda::Database::BinaReader binaReader;
 
-    Pagoda::Database::BINATemplateConverter conv(PTR_SIZE_64);
+    std::string s1 = "HELLO";
+    std::string s2 = "WORLD";
+    std::string s3 = "BINA";
+
+    Test test = {1, 2, 3.0f, 0, (char*)s1.c_str(), (char*)s2.c_str(), (char*)s3.c_str()};
+
+    Pagoda::Database::BinaWriter bw;
+
+    bw.AddStruct(&test, sizeof(test));
+
+    bw.AddString((char*)s1.c_str());
+    bw.AddString((char*)s2.c_str());
+    bw.AddString((char*)s3.c_str());
+
+    bw.Write("../output/test_struct.orc");
+
+    /* Pagoda::Database::BINATemplateConverter conv(PTR_SIZE_64);
     conv.ConvertTemplateAndSave("res/basic.bt", "../output/test.orc", false);
 
     std::string stg = "901";
@@ -94,7 +120,7 @@ int main() {
 
     std::vector<data_t*> binaFile = binaReader.Read("C:/w1r03_gedit/w1r03_autotest.gedit");
     Pagoda::Database::SetData setData = Pagoda::Database::SetData::SetDataFromNodeData(binaFile[0]);
-    setData.Print();
+    setData.Print();*/
 
     return 0;
 }

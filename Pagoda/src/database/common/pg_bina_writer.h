@@ -21,18 +21,17 @@ namespace Pagoda::Database {
         };
 
         void Write(const char filePath[]);
-
+    private:
         void WriteData(char** offset, std::vector<void*> structs);
         void FixPointers(char* nodeBody);
         unsigned int GetAlignment(size_t count, unsigned int factor);
 
-    private:
         std::vector<void*> m_structs;
         std::vector<void*> m_strings;
         std::vector<unsigned long long> m_offsets;
 
-        std::map<void*, char*> m_offsetMap;
-        std::map<void*, size_t> m_structSizeMap;
+        std::unordered_map<void*, char*> m_offsetMap;
+        std::unordered_map<void*, size_t> m_structSizeMap;
 
         size_t m_structSize = 0;
         size_t m_stringTableSize = 0;
