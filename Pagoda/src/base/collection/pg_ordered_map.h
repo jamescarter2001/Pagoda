@@ -6,7 +6,7 @@ namespace Pagoda::Base {
     template <typename K, typename V>
     class OrderedMap : public Map<K, V> {
     public:
-        virtual inline void Put(const K key, const V value) override {
+        virtual inline void Put(const K& key, const V& value) override {
             m_underlying.insert({key, value});
             m_insertionOrder.emplace_back(key);
         }

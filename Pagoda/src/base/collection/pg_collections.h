@@ -1,11 +1,12 @@
 #pragma once
 #include "pgpch.h"
+#include "base/functional/pg_functional.h"
 
 namespace Pagoda::Base {
     class Collections {
     public:
         template <typename T>
-        static const T* const FindFirst(const std::vector<T>& vec, const std::function<bool(const T&)>& predicate) {
+        static const T* const FindFirst(const std::vector<T>& vec, const Predicate<T>& predicate) {
             for (const T& o : vec) {
                 if (predicate(o)) {
                     return &o;
@@ -16,7 +17,7 @@ namespace Pagoda::Base {
         }
 
         template<typename T>
-        static std::vector<T> Filter(const std::vector<T>& vec, const std::function<bool(const T&)>& predicate) {
+        static std::vector<T> Filter(const std::vector<T>& vec, const Predicate<T>& predicate) {
             std::vector<T> result;
             result.reserve(vec.size());
 

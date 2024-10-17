@@ -5,7 +5,7 @@ namespace Pagoda::Base {
     template <typename K, typename V>
     class Map {
     public:
-        virtual inline void Put(const K key, const V value) = 0;
+        virtual inline void Put(const K& key, const V& value) = 0;
         virtual inline void Remove(const K& key) = 0;
 
         virtual inline const V* FindFirst(const std::function<bool(const K&, const V&)>& biPredicate) {
