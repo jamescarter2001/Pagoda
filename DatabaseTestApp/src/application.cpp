@@ -17,16 +17,16 @@ struct Test {
     char* d;
     char* e;
     char* f;
+    char* g;
 };
 
 int main() {
-    Pagoda::Database::BinaReader binaReader;
-
     std::string s1 = "HELLO";
     std::string s2 = "WORLD";
     std::string s3 = "BINA";
+    std::string s4 = "HELLO";
 
-    Test test = {1, 2, 3.0f, 0, (char*)s1.c_str(), (char*)s2.c_str(), (char*)s3.c_str()};
+    Test test = {1, 2, 3.0f, 0, (char*)s1.c_str(), (char*)s2.c_str(), (char*)s3.c_str(), (char*)s4.c_str()};
 
     Pagoda::Database::BinaWriter bw;
 
@@ -35,8 +35,15 @@ int main() {
     bw.AddString((char*)s1.c_str());
     bw.AddString((char*)s2.c_str());
     bw.AddString((char*)s3.c_str());
+    bw.AddString((char*)s4.c_str());
 
     bw.Write("../output/test_struct.orc");
+
+    /* Pagoda::Database::BinaReader binaReader;
+    std::vector<data_t*> testFile = binaReader.Read("../output/test_struct.orc");
+    Test* s = reinterpret_cast<Test*>(testFile[0]);
+
+    std::cout << "Done!" << std::endl;*/
 
     /* Pagoda::Database::BINATemplateConverter conv(PTR_SIZE_64);
     conv.ConvertTemplateAndSave("res/basic.bt", "../output/test.orc", false);
