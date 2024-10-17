@@ -30,18 +30,29 @@ int main() {
 
     Pagoda::Database::BinaWriter bw;
 
+    bw.BeginNode();
     bw.AddStruct(&test, sizeof(test));
 
     bw.AddString((char*)s1.c_str());
     bw.AddString((char*)s2.c_str());
     bw.AddString((char*)s3.c_str());
     bw.AddString((char*)s4.c_str());
+    bw.EndNode();
 
-    bw.Write("../output/test_struct.orc");
+    bw.BeginNode();
+    bw.AddStruct(&test, sizeof(test));
+
+    bw.AddString((char*)s1.c_str());
+    bw.AddString((char*)s2.c_str());
+    bw.AddString((char*)s3.c_str());
+    bw.AddString((char*)s4.c_str());
+    bw.EndNode();
+
+    bw.Write("../output/test_struct_2.orc");
 
     /* Pagoda::Database::BinaReader binaReader;
-    std::vector<data_t*> testFile = binaReader.Read("../output/test_struct.orc");
-    Test* s = reinterpret_cast<Test*>(testFile[0]);
+    std::vector<data_t*> testFile = binaReader.Read("../output/test_struct_2.orc");
+    Test* s = reinterpret_cast<Test*>(testFile[1]);
 
     std::cout << "Done!" << std::endl;*/
 

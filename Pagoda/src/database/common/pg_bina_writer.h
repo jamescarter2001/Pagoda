@@ -12,7 +12,7 @@ namespace Pagoda::Database {
     };
 
     struct StructHandle {
-        void* pStruct;
+        const void* pStruct;
         bool writable;
         size_t pOffset;
         size_t size;
@@ -20,36 +20,53 @@ namespace Pagoda::Database {
         StructHandleType type;
     };
 
+    struct NodeInfo {
+        Base::OrderedMap<const void*, StructHandle> structs;
+        std::stringstream offsetTable;
+
+        size_t length = 0;
+        size_t padding = 0;
+        size_t structsSize = 0;
+        size_t stringTableSize = 0;
+        size_t offsetTableSize = 0;
+    };
+
     /**
      * Utility class for writing structs directly to binary container (BINA) files.
      */
     class BinaWriter {
     public:
-        void AddString(char* str);
-        void AddStruct(void* structData, size_t size);
+        BinaWriter();
+        ~BinaWriter();
 
-        void AddStringVector(std::vector<char*>& structData);
+        void BeginNode();
+        void EndNode();
+
+        void AddString(const char* const str);
+        void AddStruct(const void* const structData, const size_t size);
+
+        void AddStringVector(const std::vector<char*>& structData);
 
         template<typename T>
-        void AddStructVector(std::vector<T*>& structData) {
+        void AddStructVector(const std::vector<T*>& structData) {
             this->AddStruct(&structData[0], sizeof(T*) * (unsigned int)structData.size());
 
-            for (T* s : structData) {
+            for (const auto& s : structData) {
                 this->AddStruct(s, sizeof(T));
             }
         };
 
         void Write(const char filePath[]);
     private:
-        void WriteData(char** offset, const Base::OrderedMap<void*, StructHandle>& structs, const StructHandleType& handleType);
-        void FixPointers(char* nodeBody);
-        size_t GetAlignment(size_t count, unsigned int factor);
+        static std::vector<size_t> SeekOffsets(const NodeInfo* const nodeInfo);
+        static void FixPointers(char* const pNodeBody, NodeInfo* const nodeInfo);
 
-        Base::OrderedMap<void*, StructHandle> m_structs;
+        static size_t GetAlignment(const size_t count, const unsigned int factor);
 
-        std::vector<unsigned long long> m_offsets;
+        void WriteData(char** const offset, const Base::OrderedMap<const void*, StructHandle>& structs, const StructHandleType& handleType);
+        void WriteData(char** const offset, const Base::OrderedMap<const void*, StructHandle>& structs, const StructHandleType& handleType, const size_t padding);
 
-        size_t m_structSize = 0;
-        size_t m_stringTableSize = 0;
+        std::vector<NodeInfo*> m_nodes;
+        NodeInfo* m_activeNode = nullptr;
     };
 }
