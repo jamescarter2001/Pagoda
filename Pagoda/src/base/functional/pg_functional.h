@@ -3,6 +3,11 @@
 
 namespace Pagoda::Base {
 
+	// Functions
+
+	template <typename T, typename U>
+    using Function = std::function<U(const T&)>;
+
 	// Operators
 
 	template <typename T>

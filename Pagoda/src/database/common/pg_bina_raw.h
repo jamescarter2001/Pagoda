@@ -5,6 +5,20 @@
 #define ENDIAN_FLAG_BIG 'B'
 #define ENDIAN_FLAG_LITTLE 'L'
 
+#define BINA_OFFSET_END 0b00000000
+#define BINA_OFFSET_6 0b01000000
+#define BINA_OFFSET_14 0b10000000
+#define BINA_OFFSET_30 0b11000000
+
+const unsigned int binaSig = 0x414E4942;  // BINA
+const unsigned int pacSig = 0x78434150;   // PACx
+
+const unsigned int dataSig = 0x41544144;  // DATA
+
+const char pacxVer[4] = "301";
+
+const char binaVer[4] = "210";
+
 namespace Pagoda::Database {
 
     // Common
@@ -22,20 +36,6 @@ namespace Pagoda::Database {
     };
 
     char SwapFlag(char flag);
-
-    // PACx2
-    
-    struct PACV2Header {
-        unsigned int signature;
-        unsigned int blockSize;
-        unsigned int dataEntriesSize;
-        unsigned int proxiesSize;
-        unsigned int stringTableSize;
-        unsigned int offsetTableSize;
-        uint8_t unknown1;
-        uint8_t padding1;
-        uint16_t padding2;
-    };
 
     // BINA1
 
@@ -90,4 +90,5 @@ namespace Pagoda::Database {
     };
 
     void SwapNodeHeader(NodeHeader* nh);
+    bool VersionEquals(const char ver1[], const char ver2[]);
 }

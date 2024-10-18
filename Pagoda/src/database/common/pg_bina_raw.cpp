@@ -22,4 +22,14 @@ namespace Pagoda::Database {
         nh->offsetTableLength = _byteswap_ulong(nh->offsetTableLength);
         nh->additionalDataLength = _byteswap_ushort(nh->additionalDataLength);
     }
+
+    bool VersionEquals(const char ver1[], const char ver2[]) {
+        bool matches = true;
+        for (int i = 0; i < 3; i++) {
+            matches = matches && ver1[i] == ver2[i];
+        }
+
+        return matches;
+    }
+
 }

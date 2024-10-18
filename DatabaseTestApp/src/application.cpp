@@ -1,6 +1,7 @@
 #include "pgpch.h"
 
 #include "database/common/pg_bina.h"
+#include "database/common/pg_pacx.h"
 #include "database/common/pg_bina_reader.h"
 #include "database/common/pg_bina_writer.h"
 #include "database/common/pg_bina_template_converter.h"
@@ -39,7 +40,7 @@ int main() {
     bw.AddString((char*)s4.c_str());
     bw.EndNode();
 
-    bw.BeginNode();
+    bw.BeginNode(Pagoda::Database::OffsetType::OFFSET_TYPE_ABSOLUTE);
     bw.AddStruct(&test, sizeof(test));
 
     bw.AddString((char*)s1.c_str());
@@ -50,11 +51,13 @@ int main() {
 
     bw.Write("../output/test_struct_2.orc");
 
-    /* Pagoda::Database::BinaReader binaReader;
-    std::vector<data_t*> testFile = binaReader.Read("../output/test_struct_2.orc");
-    Test* s = reinterpret_cast<Test*>(testFile[1]);
+    Pagoda::Database::BinaReader binaReader;
+    std::vector<data_t*> testFile = binaReader.Read("../input/w1f01_trr_heightfield.pac");
+    Pagoda::Database::PACV3NodeTree* s = reinterpret_cast<Pagoda::Database::PACV3NodeTree*>(testFile[0]);
 
-    std::cout << "Done!" << std::endl;*/
+    std::vector<Pagoda::Database::PACV3TreeNode<void>> treeNodes(s->nodes, s->nodes + s->nodeCount);
+
+    std::cout << "Done!" << std::endl;
 
     /* Pagoda::Database::BINATemplateConverter conv(PTR_SIZE_64);
     conv.ConvertTemplateAndSave("res/basic.bt", "../output/test.orc", false);

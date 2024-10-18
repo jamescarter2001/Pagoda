@@ -6,6 +6,16 @@ namespace Pagoda::Base {
     class Collections {
     public:
         template <typename T>
+        static const size_t Sum(const std::vector<T>& vec, const Function<T, size_t>& mapper) {
+            size_t sum = 0;
+            for (const T& o : vec) {
+                sum += mapper(o);
+            }
+
+            return sum;
+        }
+
+        template <typename T>
         static const T* const FindFirst(const std::vector<T>& vec, const Predicate<T>& predicate) {
             for (const T& o : vec) {
                 if (predicate(o)) {

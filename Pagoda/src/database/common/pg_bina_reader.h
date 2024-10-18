@@ -12,8 +12,13 @@ namespace Pagoda::Database {
         BinaReader();
         virtual ~BinaReader();
 
+        void FixPointers(data_t* dataBlock, const std::vector<size_t*>& offsets);
+
         std::vector<data_t*> Read(std::string path);
         std::vector<data_t*> ReadV1(bina_t* bina);
         std::vector<data_t*> ReadV2(bina_t* bina);
+
+        std::vector<data_t*> ReadPACV3(bina_t* bina);
+        std::vector<data_t*> ReadPACV403(bina_t* bina);
     };
 }
