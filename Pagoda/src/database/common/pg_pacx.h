@@ -21,10 +21,17 @@ namespace Pagoda::Database {
     // PACx3
 
     enum class PACV3Type : uint16_t {
-        PAC_V3_ROOT = 0x1,
-        PAC_V3_IS_SPLIT = 0x2,
-        PAC_V3_HAS_SPLITS = 0x4,
-        PAC_V3_UNKNOWN = 0x8,
+        PAC_V3_TYPE_NONE = 0,
+        PAC_V3_TYPE_ROOT = 1,
+        PAC_V3_TYPE_IS_SPLIT = 2,
+        PAC_V3_TYPE_HAS_SPLITS = 4,
+        PAC_V3_TYPE_UNKNOWN = 8,
+    };
+
+    enum class PACV3Flags : uint16_t {
+        PAC_V3_FLAGS_UNKNOWN1 = 8,
+        PAC_V3_FLAGS_DEFLATE_COMPRESSED = 0x100U,
+        PAC_V3_FLAGS_LZ4_COMPRESSED = 0x200U
     };
 
     struct PACV3Header {
@@ -40,11 +47,11 @@ namespace Pagoda::Database {
         unsigned int fileDataSize;     // Total size, in bytes, of the raw files that have been packed into this PAC file.
         unsigned int offsetTableSize;  // Total size, in bytes, of the offset table.
         PACV3Type type;                // is_root = 0x1, is_split = 0x2, has_splits = 0x4, unknown = 0x8
-        unsigned short flags;          // unknown = 0x8, deflate_compressed = 0x100U, lz4_compressed = 0x200U
+        PACV3Flags flags;              // unknown = 0x8, deflate_compressed = 0x100U, lz4_compressed = 0x200U
         unsigned int depCount;
     };
 
-    template <typename T>
+    template <class T>
     struct PACV3TreeNode {
         char* name;
         T* data;
@@ -57,10 +64,11 @@ namespace Pagoda::Database {
         uint8_t bufStartIndex;
     };
 
+    template <class T>
     struct PACV3NodeTree {
         unsigned int nodeCount;
         unsigned int dataNodeCount;
-        PACV3TreeNode<void>* nodes;
+        PACV3TreeNode<T>* nodes;
         int32_t* dataNodeIndicies;
     };
 
@@ -75,6 +83,13 @@ namespace Pagoda::Database {
 
     // PACx4
 
+    enum class PACV4Flags : uint16_t {
+        PACV4_FLAGS_NONE = 0,
+        PACV4_FLAGS_UNKNOWN1 = 1,
+        PACV4_FLAGS_HAS_PARENTS = 2,
+        PACV4_FLAGS_HAS_METADATA = 8
+    };
+
     struct PACV403Header {
         uint32_t signature;      // PACx
         char version[3];         // 403
@@ -84,8 +99,8 @@ namespace Pagoda::Database {
         uint32_t rootOffset;
         uint32_t rootCompressedSize;
         uint32_t rootUncompressedSize;
-        uint16_t flagsV4;
-        uint16_t flagsV3;
+        PACV4Flags flagsV4;
+        PACV3Flags flagsV3;
     };
 
     struct PACV403MetadataHeader {
@@ -99,4 +114,12 @@ namespace Pagoda::Database {
         uint32_t compressedSize;
         uint32_t uncompressedSize;
     };
+
+    inline bool isFlagSet(PACV3Flags src, PACV3Flags flag) {
+        return static_cast<uint16_t>(src) & static_cast<uint16_t>(flag);
+    }
+
+    inline bool isFlagSet(PACV4Flags src, PACV4Flags flag) {
+        return static_cast<uint16_t>(src) & static_cast<uint16_t>(flag);
+    }
 }

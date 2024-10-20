@@ -19,6 +19,6 @@ namespace Pagoda::Database {
         std::vector<data_t*> ReadV2(bina_t* bina);
 
         std::vector<data_t*> ReadPACV3(bina_t* bina);
-        std::vector<data_t*> ReadPACV403(bina_t* bina);
+        std::vector<data_t*> ReadPACV403(bina_t* bina, const std::string& fileName);
     };
 }

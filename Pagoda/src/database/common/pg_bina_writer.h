@@ -82,8 +82,6 @@ namespace Pagoda::Database {
         static std::vector<size_t> SeekOffsets(const NodeInfo* const nodeInfo);
         static void FixPointers(char* const pNodeBody, const NodeInfo* const nodeInfo, const size_t fromOffset);
 
-        static size_t GetAlignment(const size_t count, const unsigned int factor);
-
         void WriteData(char** const offset, const Base::OrderedMap<const void*, StructHandle>& structs, const StructHandleType& handleType);
         void WriteData(char** const offset, const Base::OrderedMap<const void*, StructHandle>& structs, const StructHandleType& handleType, const size_t padding);
 

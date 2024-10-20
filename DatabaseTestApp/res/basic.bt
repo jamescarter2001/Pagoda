@@ -1,12 +1,15 @@
 head:
-	u32 300
+	u32 0x10 0x20 0x30 0x40
 	u32 500
-	u32 600
+	u32 900
 	u32 700
 	str hello
 	str hello2
 	str hello3
 	str hello
+	u16 123
+	u8 4
+	u8 5
 	ref nodes
 nodes:
 	u32 500

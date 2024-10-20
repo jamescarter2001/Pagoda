@@ -22,7 +22,10 @@ struct Test {
 };
 
 int main() {
-    std::string s1 = "HELLO";
+    Pagoda::Database::BINATemplateConverter conv(PTR_SIZE_64);
+    conv.ConvertTemplateAndSave("res/basic.bt", "../output/test.orc");
+
+    /* std::string s1 = "HELLO";
     std::string s2 = "WORLD";
     std::string s3 = "BINA";
     std::string s4 = "HELLO";
@@ -52,12 +55,15 @@ int main() {
     bw.Write("../output/test_struct_2.orc");
 
     Pagoda::Database::BinaReader binaReader;
-    std::vector<data_t*> testFile = binaReader.Read("../input/w1f01_trr_heightfield.pac");
-    Pagoda::Database::PACV3NodeTree* s = reinterpret_cast<Pagoda::Database::PACV3NodeTree*>(testFile[0]);
+    std::vector<data_t*> testFile = binaReader.Read("../input/w1f01_trr_height.pac");
+    Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3DataEntry>>* s = reinterpret_cast<Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3DataEntry>>*>(testFile[0]);
 
-    std::vector<Pagoda::Database::PACV3TreeNode<void>> treeNodes(s->nodes, s->nodes + s->nodeCount);
+    std::vector<Pagoda::Database::PACV3TreeNode<Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3DataEntry>>> testVec(s->nodes, s->nodes + s->nodeCount);
+    std::vector<Pagoda::Database::PACV3TreeNode<Pagoda::Database::PACV3DataEntry>> testVec2(s->nodes[2].data->nodes, s->nodes[2].data->nodes + s->nodes[2].data->nodeCount);
 
-    std::cout << "Done!" << std::endl;
+    Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3DataEntry>* testPtr = s->nodes[2].data;
+
+    std::cout << s->nodes[0].name << std::endl;*/
 
     /* Pagoda::Database::BINATemplateConverter conv(PTR_SIZE_64);
     conv.ConvertTemplateAndSave("res/basic.bt", "../output/test.orc", false);

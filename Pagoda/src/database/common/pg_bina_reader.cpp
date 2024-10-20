@@ -39,7 +39,7 @@ namespace Pagoda::Database {
             bina = new bina_t[pacv4Header.fileSize];
             file.read(bina, pacv4Header.fileSize);
 
-            return ReadPACV403(bina);
+            return ReadPACV403(bina, path.replace(path.find(".pac"), sizeof(".pac") - 1, ".inf.pac"));
         }
 
         BINAV1Header binav1Header;
@@ -89,9 +89,14 @@ namespace Pagoda::Database {
         return std::vector<data_t*>({dataBlock + sizeof(PACV3Header)});
     }
 
-    std::vector<data_t*> BinaReader::ReadPACV403(bina_t* bina) {
+    std::vector<data_t*> BinaReader::ReadPACV403(bina_t* bina, const std::string& fileName) {
         PACV403Header* header = reinterpret_cast<PACV403Header*>(bina);
         PACV403MetadataHeader* metaHeader = reinterpret_cast<PACV403MetadataHeader*>(bina + sizeof(PACV403Header));
+
+        if (isFlagSet(header->flagsV4, PACV4Flags::PACV4_FLAGS_HAS_PARENTS)) {
+            std::cout << "Warning: Parent PAC required!" << std::endl;
+            return ReadPACV3(bina + 0x80);
+        }
         
         data_t* dataBlock = bina;
         data_t* pRoot = bina + header->rootOffset;
@@ -106,17 +111,17 @@ namespace Pagoda::Database {
         bina_t* pCurrent = uncompressed;
 
         unsigned int* chunkTableCount = reinterpret_cast<unsigned int*>(bina + (header->rootOffset - metaHeader->offsetTableSize - metaHeader->stringTableSize - metaHeader->chunkTableSize));
-        PACV403ChunkTableEntry* entry = reinterpret_cast<PACV403ChunkTableEntry*>(chunkTableCount + 1);
+        PACV403ChunkTableEntry* chunkTableFirst = reinterpret_cast<PACV403ChunkTableEntry*>(chunkTableCount + 1);
 
         for (int i = 0; i < *chunkTableCount; i++) {
-            PACV403ChunkTableEntry* e = entry + i;
+            PACV403ChunkTableEntry* e = chunkTableFirst + i;
             LZ4_decompress_safe(pRoot, pCurrent, e->compressedSize, e->uncompressedSize);
             pRoot += e->compressedSize;
             pCurrent += e->uncompressedSize;
         }
 
         std::ofstream outFile;
-        outFile.open("../output/w1f01_trr_heightfield.pac", std::ios::out | std::ios::binary);
+        outFile.open(fileName, std::ios::out | std::ios::binary);
         outFile.write(uncompressed, header->rootUncompressedSize);
         outFile.close();
 

@@ -25,7 +25,7 @@ namespace Pagoda::Database {
 
     void BinaWriter::EndNode() {
         // If misc data has been declared, we align the string table to 16 bytes. Otherwise, 4 bytes is sufficient.
-        m_activeNode->stringTableSize += GetAlignment(m_activeNode->stringTableSize, m_activeNode->miscSize > 0 ? 0x10: 0x4);
+        m_activeNode->stringTableSize += DatabaseUtils::GetAlignment(m_activeNode->stringTableSize, m_activeNode->miscSize > 0 ? 0x10 : 0x4);
         std::vector<size_t> offsets = SeekOffsets(m_activeNode);
 
         // Convert the first offset to an absolute offset if required.
@@ -37,7 +37,7 @@ namespace Pagoda::Database {
         m_activeNode->offsetTableSize = m_activeNode->offsetTable.str().size();
 
         size_t nodeLength = GetNodeHeaderSize() + m_activeNode->structsSize + m_activeNode->stringTableSize + m_activeNode->miscSize + m_activeNode->offsetTableSize;
-        const size_t offsetTablePadding = GetAlignment(nodeLength, 0x10);
+        const size_t offsetTablePadding = DatabaseUtils::GetAlignment(nodeLength, 0x10);
         m_activeNode->offsetTableSize += offsetTablePadding;
         m_activeNode->length = nodeLength + offsetTablePadding;
 
@@ -47,7 +47,7 @@ namespace Pagoda::Database {
 
     void BinaWriter::AddStruct(const void* const structData, const size_t size) {
         // Store the size of the struct.
-        const size_t alignedSize = size + GetAlignment(size, 0x10);
+        const size_t alignedSize = size + DatabaseUtils::GetAlignment(size, 0x10);
         m_activeNode->structs.Put(structData, StructHandle{structData, true, m_activeNode->structsSize, size, alignedSize, StructHandleType::STRUCT_HANDLE_TYPE_STD});
 
         m_activeNode->structsSize += alignedSize;
@@ -55,7 +55,7 @@ namespace Pagoda::Database {
 
     void BinaWriter::AddMisc(const void* const structData, const size_t size) {
         // Store the size of the blob.
-        const size_t alignedSize = size + GetAlignment(size, 0x10);
+        const size_t alignedSize = size + DatabaseUtils::GetAlignment(size, 0x10);
         m_activeNode->structs.Put(structData, StructHandle{structData, true, m_activeNode->miscSize, size, alignedSize, StructHandleType::STRUCT_HANDLE_TYPE_MSC});
 
         m_activeNode->miscSize += alignedSize;
@@ -183,11 +183,6 @@ namespace Pagoda::Database {
         outFile.close();
 
         delete[] pBinaNode;
-    }
-
-    size_t BinaWriter::GetAlignment(const size_t count, const unsigned int factor) {
-        size_t val = factor - (count % factor);
-        return val == factor ? 0 : val;
     }
 
     std::vector<size_t> BinaWriter::SeekOffsets(const NodeInfo* const nodeInfo) {
