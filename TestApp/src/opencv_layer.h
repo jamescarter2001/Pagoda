@@ -4,6 +4,8 @@
 
 #include <opencv2/opencv.hpp>
 
+#include "manager/OCVCameraManager.h"
+
 class OpenCVLayer : public Pagoda::Universe::Layer {
     public:
 	    OpenCVLayer();
@@ -14,13 +16,7 @@ class OpenCVLayer : public Pagoda::Universe::Layer {
         virtual void OnAttach(Pagoda::Universe::ApplicationContext& ctx) override;
 
     private:
-        Pagoda::Base::ReentrantLock m_lock;
-        std::thread m_tframeUpdate;
-
-        cv::Mat m_frame;
-
-        void UpdateCameraFrame();
-        std::unique_ptr<cv::VideoCapture> m_cap;
+        std::unique_ptr<OCVCameraManager> m_cameraManager;
 
         bool m_grayscale = false;
 };

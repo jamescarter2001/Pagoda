@@ -3,10 +3,10 @@
 #include "pg_bina.h"
 
 namespace Pagoda::Database {
-    std::vector<unsigned long long> Node::SeekOffsets(unsigned long long start, char* offsetTable, unsigned int offsetTableLength) {
-        unsigned long long current = start;
+    std::vector<size_t*> Node::SeekOffsets(data_t* const start, char* offsetTable, unsigned int offsetTableLength) {
+        data_t* current = start;
 
-        std::vector<unsigned long long> offsets;
+        std::vector<size_t*> offsets;
         unsigned int i = 0;
         while (i < offsetTableLength) {
             if (*offsetTable & BINA_OFFSET_6) {
@@ -18,7 +18,7 @@ namespace Pagoda::Database {
 
                 current = current + o;
 
-                offsets.push_back(current);
+                offsets.push_back(reinterpret_cast<size_t*>(current));
                 offsetTable++;
                 i++;
             } else if (*offsetTable & BINA_OFFSET_14) {
@@ -31,7 +31,7 @@ namespace Pagoda::Database {
 
                 current = current + o;
 
-                offsets.push_back(current);
+                offsets.push_back(reinterpret_cast<size_t*>(current));
                 offsetTable = offsetTable + 2;
                 i = i + 2;
             } else if (*offsetTable & BINA_OFFSET_30) {
@@ -44,7 +44,7 @@ namespace Pagoda::Database {
 
                 current = current + o;
 
-                offsets.push_back(current);
+                offsets.push_back(reinterpret_cast<size_t*>(current));
                 offsetTable = offsetTable + 4;
                 i = i + 4;
             } else if (*offsetTable == '\0') {
@@ -52,28 +52,29 @@ namespace Pagoda::Database {
                 return offsets;
             } else {
                 std::cout << "Invalid offset table!" << std::endl;
-                return std::vector<unsigned long long>();
+                return {};
             }
         }
         return offsets;
     }
 
-    std::vector<unsigned long long> Node::PrintOffsets(unsigned long long start, char* offsetTable, unsigned int offsetTableLength) {
-        std::vector<unsigned long long> offsets = Node::SeekOffsets(start, offsetTable, offsetTableLength);
+    std::vector<size_t*> Node::PrintOffsets(data_t* const start, char* offsetTable, unsigned int offsetTableLength) {
+        std::vector<size_t*> offsets = Node::SeekOffsets(start, offsetTable, offsetTableLength);
 
-        for (unsigned long long o : offsets) {
+        for (const auto& o : offsets) {
             std::cout << std::hex << o << std::endl;
         }
 
         return offsets;
     }
 
-    std::vector<unsigned long long> Node::SeekOffsets(node_t* node) {
+    std::vector<size_t*> Node::SeekOffsets(node_t* node) {
         NodeHeader nh = *(NodeHeader*)node;
 
         char* offsetTable = node + sizeof(nh) + nh.stringTableOffset + nh.stringTableLength;
-        unsigned long long start = (unsigned long long) node + sizeof(nh);
+        data_t* start = node + sizeof(nh);
 
         return Node::SeekOffsets(start, offsetTable, nh.offsetTableLength);
     }
+
 }

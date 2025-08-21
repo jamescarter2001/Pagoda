@@ -83,7 +83,8 @@ project "Pagoda"
 		"%{prj.name}/vendor/DirectX-Headers/include",
 		"%{prj.name}/vendor/glm",
 		"%{prj.name}/vendor/imgui",
-		"%{prj.name}/vendor/opencv/build/include"
+		"%{prj.name}/vendor/opencv/build/include",
+		"%{prj.name}/vendor/lz4/include"
 	}
 
 	includedirs {
@@ -153,7 +154,8 @@ project "DatabaseTestApp"
 
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
-		"Pagoda/vendor/spdlog/build"
+		"Pagoda/vendor/spdlog/build",
+		"Pagoda/vendor/lz4/static"
 	}
 	
 	--[[postbuildcommands {
@@ -192,7 +194,8 @@ project "DatabaseTestApp"
 			"d3d11",
 			"d3d12",
 			"dxgi",
-			"d3dcompiler"
+			"d3dcompiler",
+			"liblz4_static"
 		}
 
 	filter {"system:windows", "configurations:Release"}
@@ -207,7 +210,8 @@ project "DatabaseTestApp"
 			"d3d11",
 			"d3d12",
 			"dxgi",
-			"d3dcompiler"
+			"d3dcompiler",
+			"liblz4_static"
 		}
 		
 	filter "system:macosx"
@@ -259,13 +263,15 @@ project "TestApp"
 		"Pagoda/vendor/DirectX-Headers/include",
 		"Pagoda/vendor/glm",
 		"Pagoda/vendor/imgui",
-		"Pagoda/vendor/opencv/build/include"
+		"Pagoda/vendor/opencv/build/include",
+		"Pagoda/vendor/lz4/include"
 	}
 
 	libdirs {
 		"bin/%{outputdir}/Pagoda",
 		"Pagoda/vendor/spdlog/build",
-		"Pagoda/vendor/opencv/build/x64/vc16/lib"
+		"Pagoda/vendor/opencv/build/x64/vc16/lib",
+		"Pagoda/vendor/lz4/static"
 	}
 	
 	--[[postbuildcommands {
@@ -305,7 +311,8 @@ project "TestApp"
 			"d3d12",
 			"dxgi",
 			"d3dcompiler",
-			"opencv_world4100d"
+			"opencv_world4100d",
+			"liblz4_static"
 		}
 
 	filter {"system:windows", "configurations:Release"}
@@ -320,7 +327,8 @@ project "TestApp"
 			"d3d11",
 			"d3d12",
 			"dxgi",
-			"d3dcompiler"
+			"d3dcompiler",
+			"liblz4_static"
 		}
 		
 	filter "system:macosx"

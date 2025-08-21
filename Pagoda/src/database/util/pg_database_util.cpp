@@ -2,20 +2,14 @@
 #include "pg_database_util.h"
 
 namespace Pagoda::Database {
-    unsigned int DatabaseUtils::GetAlignment(size_t count, unsigned int factor) {
+    size_t DatabaseUtils::GetAlignment(const size_t count, const size_t factor) {
         size_t val = factor - (count % factor);
-
-        // Is the string already aligned?
-        if (val == factor) {
-            return 0;
-        }
-
-        return (unsigned int)val;
+        return val == factor ? 0 : val;
     }
 
-    std::stringstream DatabaseUtils::GenerateBINAOffsetTable(std::vector<unsigned long long> offsets) {
+    std::stringstream DatabaseUtils::GenerateBINAOffsetTable(const std::vector<size_t>& offsets) {
         std::stringstream offsetTableStream;
-        for (unsigned long long o : offsets) {
+        for (const auto& o : offsets) {
             if (o > 0xFFFC) {
                 uint32_t val = ((uint32_t)o >> 2) | 0xC0000000;
                 char* bytes = (char*)&val;
@@ -35,10 +29,16 @@ namespace Pagoda::Database {
         return offsetTableStream;
     }
 
-    void DatabaseUtils::Align(std::stringstream& ss) {
-        unsigned int alignment = DatabaseUtils::GetAlignment(ss.str().size());
+    size_t DatabaseUtils::Align(std::stringstream& ss, const size_t factor) {
+        return Align(ss, factor, ss.str().size());
+    };
+
+    size_t DatabaseUtils::Align(std::stringstream& ss, const size_t factor, const size_t size) {
+        size_t alignment = DatabaseUtils::GetAlignment(size, factor);
         for (unsigned int i = 0; i < alignment; i++) {
             ss << '\0';
         }
+
+        return alignment;
     }
 }
