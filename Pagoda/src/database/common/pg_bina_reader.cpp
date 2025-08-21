@@ -1,7 +1,6 @@
 #include "pgpch.h"
 
 #include "pg_bina_reader.h"
-#include "pg_pacx.h"
 
 #include "lz4.h"
 
@@ -34,8 +33,8 @@ namespace Pagoda::Database {
         READ_STRUCT(file, pacv4Header);
         file.seekg(0, std::ios::beg);
 
-        if (pacv4Header.signature == pacSig && VersionEquals(pacv4Header.version, "403")) {
-            std::cout << "Reading PAC: V4" << std::endl;
+        if (pacv4Header.signature == pacSig && (VersionEquals(pacv4Header.version, "403") || VersionEquals(pacv4Header.version, "405"))) {
+            std::cout << "Reading PAC: " << std::string(pacv4Header.version, pacv4Header.version + 3) << std::endl;
             bina = new bina_t[pacv4Header.fileSize];
             file.read(bina, pacv4Header.fileSize);
 
@@ -81,7 +80,7 @@ namespace Pagoda::Database {
 
         char* offsetTable = bina + (pacV3Header.fileSize - pacV3Header.offsetTableSize);
 
-        std::vector<size_t*> offsets = Node::SeekOffsets((unsigned long long)dataBlock, offsetTable, pacV3Header.offsetTableSize);
+        std::vector<size_t*> offsets = Node::SeekOffsets(dataBlock, offsetTable, pacV3Header.offsetTableSize);
 
         // Fix pointers in memory.
         FixPointers(dataBlock, offsets);
@@ -91,49 +90,56 @@ namespace Pagoda::Database {
 
     std::vector<data_t*> BinaReader::ReadPACV403(bina_t* bina, const std::string& fileName) {
         PACV403Header* header = reinterpret_cast<PACV403Header*>(bina);
-        PACV403MetadataHeader* metaHeader = reinterpret_cast<PACV403MetadataHeader*>(bina + sizeof(PACV403Header));
-
-        if (isFlagSet(header->flagsV4, PACV4Flags::PACV4_FLAGS_HAS_PARENTS)) {
-            std::cout << "Warning: Parent PAC required!" << std::endl;
-            return ReadPACV3(bina + 0x80);
-        }
+        PACV403MetadataHeader* metaHeader = header->MetadataHeader();
         
         data_t* dataBlock = bina;
-        data_t* pRoot = bina + header->rootOffset;
 
-        char* offsetTable = bina + (header->rootOffset - metaHeader->offsetTableSize);
-        std::vector<size_t*> offsets = Node::SeekOffsets((unsigned long long)dataBlock, offsetTable, metaHeader->offsetTableSize);
+        char* offsetTable = metaHeader->OffsetTable();
+        std::vector<size_t*> offsets = Node::SeekOffsets(dataBlock, offsetTable, metaHeader->offsetTableSize);
 
         // Fix pointers in memory.
         FixPointers(dataBlock, offsets);
 
-        bina_t* uncompressed = new bina_t[header->rootUncompressedSize];
-        bina_t* pCurrent = uncompressed;
+        PACV403ParentTable* parentTable = metaHeader->ParentTable();
+        std::vector<PAC403ParentInfo> parents(parentTable->data, parentTable->data + parentTable->parentCount);
 
-        unsigned int* chunkTableCount = reinterpret_cast<unsigned int*>(bina + (header->rootOffset - metaHeader->offsetTableSize - metaHeader->stringTableSize - metaHeader->chunkTableSize));
-        PACV403ChunkTableEntry* chunkTableFirst = reinterpret_cast<PACV403ChunkTableEntry*>(chunkTableCount + 1);
+        PACV403ChunkTable* chunkTable = reinterpret_cast<PACV403ChunkTable*>(bina + sizeof(PACV403Header) + sizeof(PACV403MetadataHeader) + metaHeader->parentsSize);
 
-        for (int i = 0; i < *chunkTableCount; i++) {
-            PACV403ChunkTableEntry* e = chunkTableFirst + i;
-            LZ4_decompress_safe(pRoot, pCurrent, e->compressedSize, e->uncompressedSize);
-            pRoot += e->compressedSize;
-            pCurrent += e->uncompressedSize;
+        pac_t* pUncompressedRoot = PACV4Decompress(bina + header->rootOffset, header->rootUncompressedSize, chunkTable->entries, chunkTable->chunkCount);
+
+        PACV3Header* rootHeader = reinterpret_cast<PACV3Header*>(pUncompressedRoot);
+        char* rootOffsetTable = pUncompressedRoot + (rootHeader->fileSize - rootHeader->offsetTableSize);
+        std::vector<size_t*> rootOffsets = Node::SeekOffsets(pUncompressedRoot, rootOffsetTable, rootHeader->offsetTableSize);
+        FixPointers(pUncompressedRoot, rootOffsets);
+
+        std::vector<pac_t*> pacs;
+        pacs.push_back(pUncompressedRoot);
+        PACV3DepTable<LZ4DepInfo>* depTable = reinterpret_cast<PACV3DepTable<LZ4DepInfo>*>(pUncompressedRoot + sizeof(PACV3Header) + rootHeader->treesSize);
+
+        for (int i = 0; i < rootHeader->depCount; i++) {
+            LZ4DepInfo* di = depTable->entries + i;
+            pac_t* pUncompressedSplit = PACV4Decompress(bina + di->dataPos, di->uncompressedSize, di->entries, di->chunkCount);
+            pacs.push_back(pUncompressedSplit);
         }
 
-        std::ofstream outFile;
-        outFile.open(fileName, std::ios::out | std::ios::binary);
-        outFile.write(uncompressed, header->rootUncompressedSize);
-        outFile.close();
+        int fileIndex = 0;
+        for (const auto& p : pacs) {
+            PACV3Header* pacV3Header = reinterpret_cast<PACV3Header*>(p);
+            std::ofstream outFile;
+            outFile.open(fileName + "." + std::to_string(fileIndex++), std::ios::out | std::ios::binary);
+            outFile.write(p, pacV3Header->fileSize);
+            outFile.close();
+        }
 
-        return ReadPACV3(uncompressed);
+        return ReadPACV3(pUncompressedRoot);
 
     }
 
     std::vector<data_t*> BinaReader::ReadV1(bina_t* bina) {
-        BINAV1Header binaHeader = *(BINAV1Header*)bina;
+        BINAV1Header binaHeader = *reinterpret_cast<BINAV1Header*>(bina);
         data_t* dataBlock = bina + sizeof(binaHeader);
 
-        std::vector<size_t*> offsets = Node::SeekOffsets((unsigned long long)bina + sizeof(binaHeader), bina + sizeof(binaHeader) + binaHeader.offsetTableOffset, binaHeader.offsetTableLength);
+        std::vector<size_t*> offsets = Node::SeekOffsets(bina + sizeof(binaHeader), bina + sizeof(binaHeader) + binaHeader.offsetTableOffset, binaHeader.offsetTableLength);
 
         // Fix pointers in memory.
         FixPointers(dataBlock, offsets);
@@ -167,6 +173,22 @@ namespace Pagoda::Database {
             current += nh->length;
         }
         return dataBlocks;
+    }
+
+    pac_t* BinaReader::PACV4Decompress(pac_t* const pCompressedPac, const unsigned int pacUncompressedSize, PACV403ChunkTableEntry* const chunkTable, const unsigned int chunkCount) {
+        pac_t* pUncompressedPac = new pac_t[pacUncompressedSize];
+
+        pac_t* pCompressedCursor = pCompressedPac;
+        pac_t* pUncompressedCursor = pUncompressedPac;
+
+        for (int i = 0; i < chunkCount; i++) {
+            PACV403ChunkTableEntry* e = chunkTable + i;
+            LZ4_decompress_safe(pCompressedCursor, pUncompressedCursor, e->compressedSize, e->uncompressedSize);
+            pCompressedCursor += e->compressedSize;
+            pUncompressedCursor += e->uncompressedSize;
+        }
+
+        return pUncompressedPac;
     }
 
 }

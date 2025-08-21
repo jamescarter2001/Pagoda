@@ -3,8 +3,8 @@
 #include "pg_bina.h"
 
 namespace Pagoda::Database {
-    std::vector<size_t*> Node::SeekOffsets(unsigned long long start, char* offsetTable, unsigned int offsetTableLength) {
-        unsigned long long current = start;
+    std::vector<size_t*> Node::SeekOffsets(data_t* const start, char* offsetTable, unsigned int offsetTableLength) {
+        data_t* current = start;
 
         std::vector<size_t*> offsets;
         unsigned int i = 0;
@@ -58,7 +58,7 @@ namespace Pagoda::Database {
         return offsets;
     }
 
-    std::vector<size_t*> Node::PrintOffsets(unsigned long long start, char* offsetTable, unsigned int offsetTableLength) {
+    std::vector<size_t*> Node::PrintOffsets(data_t* const start, char* offsetTable, unsigned int offsetTableLength) {
         std::vector<size_t*> offsets = Node::SeekOffsets(start, offsetTable, offsetTableLength);
 
         for (const auto& o : offsets) {
@@ -72,7 +72,7 @@ namespace Pagoda::Database {
         NodeHeader nh = *(NodeHeader*)node;
 
         char* offsetTable = node + sizeof(nh) + nh.stringTableOffset + nh.stringTableLength;
-        unsigned long long start = (unsigned long long) node + sizeof(nh);
+        data_t* start = node + sizeof(nh);
 
         return Node::SeekOffsets(start, offsetTable, nh.offsetTableLength);
     }

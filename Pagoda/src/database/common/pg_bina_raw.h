@@ -21,6 +21,11 @@ const char binaVer[4] = "210";
 
 namespace Pagoda::Database {
 
+    template<typename T>
+    inline T* ptradd(void* const ptr, const unsigned int value) {
+        return reinterpret_cast<T*>(static_cast<char*>(ptr) + value);
+    }
+
     // Common
 
     struct Vector3 {

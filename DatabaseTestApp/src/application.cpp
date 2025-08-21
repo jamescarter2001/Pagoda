@@ -22,8 +22,18 @@ struct Test {
 };
 
 int main() {
-    Pagoda::Database::BINATemplateConverter conv(PTR_SIZE_64);
-    conv.ConvertTemplateAndSave("res/basic.bt", "../output/test.orc");
+    Pagoda::Database::BinaReader binaReader;
+    std::vector<data_t*> testFile = binaReader.Read("../input/EventCommon.pac");
+    Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3DataEntry>>* s = reinterpret_cast<Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3DataEntry>>*>(testFile[0]);
+
+    std::vector<Pagoda::Database::PACV3TreeNode<Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3DataEntry>>> testVec(s->nodes, s->nodes + s->nodeCount);
+    std::vector<Pagoda::Database::PACV3TreeNode<Pagoda::Database::PACV3DataEntry>> testVec2(s->nodes[13].data->nodes, s->nodes[13].data->nodes + s->nodes[13].data->nodeCount);
+
+    Pagoda::Database::PACV3NodeTree<Pagoda::Database::PACV3DataEntry>* testPtr = s->nodes[2].data;
+
+    std::cout << s->nodes[0].name << std::endl;
+    /* Pagoda::Database::BINATemplateConverter conv(PTR_SIZE_64);
+    conv.ConvertTemplateAndSave("res/basic.bt", "../output/test.orc");*/
 
     /* std::string s1 = "HELLO";
     std::string s2 = "WORLD";

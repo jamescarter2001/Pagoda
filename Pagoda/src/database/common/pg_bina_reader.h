@@ -1,6 +1,8 @@
 #pragma once
 #include "pgpch.h"
 
+#include "pg_pacx.h"
+
 #include "database/common/pg_bina.h"
 
 #define READ_BYTES(f, s, n) f.read((char*)s, n)
@@ -20,5 +22,7 @@ namespace Pagoda::Database {
 
         std::vector<data_t*> ReadPACV3(bina_t* bina);
         std::vector<data_t*> ReadPACV403(bina_t* bina, const std::string& fileName);
+
+        pac_t* PACV4Decompress(pac_t* const pCompressedPac, const unsigned int pacUncompressedSize, PACV403ChunkTableEntry* const chunkTable, const unsigned int chunkCount);
     };
 }
